@@ -10,8 +10,9 @@ namespace FirstApp.WebAPI
     public class Employee
     {
         [Key]
-        public string EmpId { get; set; }=Guid.NewGuid().ToString();
+        public string EmpId { get; set; } = Guid.NewGuid().ToString();
         public required string DisplayName { get; set; }
         public required string Email { get; set; }
+        public bool IsActive { get; set; } = true;
     }
 }
