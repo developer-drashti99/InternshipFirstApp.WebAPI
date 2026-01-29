@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { tap } from 'rxjs';
-import { User, LoginCreds, RegisterCreds } from '../../types/user';
+import { User, LoginCreds, RegisterCreds, AuthUser } from '../../types/user';
 @Injectable({ providedIn: 'root' })
 export class AccountService {
   private http = inject(HttpClient);
@@ -12,7 +12,7 @@ export class AccountService {
 
   register(credentials: RegisterCreds) {
     return this.http
-      .post<User>(this.apiUrl + 'account/register', credentials)
+      .post<AuthUser>(this.apiUrl + 'account/register', credentials)
       .pipe(tap(user => {
         this.setcurrentUser(user);
       })

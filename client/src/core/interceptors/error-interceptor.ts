@@ -12,8 +12,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       if (error) {
         switch (error.status) {
           case 500:
-            const navigationExtras:NavigationExtras={state:{error:error.error}}
-            router.navigateByUrl('/server-error',navigationExtras);
+            const navigationExtras: NavigationExtras = { state: { error: error.error } }
+            router.navigateByUrl('/server-error', navigationExtras);
             break;
           case 400:
             toast.error(error.error);

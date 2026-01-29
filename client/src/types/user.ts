@@ -5,6 +5,13 @@ export type User = {
     // token: string;
     // imageUrl?: string;
 }
+export type AuthUser = {
+    id: number;
+    displayName: string;
+    email: string;
+    token: string;
+    // imageUrl?: string;
+}
 export type LoginCreds = {
     email: string;
     password: string;

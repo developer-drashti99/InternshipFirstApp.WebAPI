@@ -1,23 +1,20 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { NavBar } from "../layout/nav-bar/nav-bar";
-import { AccountService } from '../core/services/account-service';
-import { lastValueFrom } from 'rxjs';
-import { Home } from '../features/home/home';
-import { Employee } from '../types/user';
 
 @Component({
   selector: 'app-root',
-  imports: [NavBar, RouterOutlet],
+  imports: [NavBar, RouterOutlet, RouterModule, CommonModule, FormsModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App 
+export class App
 // implements OnInit
- {
+{
 
-  protected router=inject(Router);
+  protected router = inject(Router);
 
 
   // private accountService = inject(AccountService);
@@ -30,8 +27,8 @@ export class App
   //     this.employees.set(await this.getEmployees());
   //     console.log("from on init:  ");
 
-      // 👇this code is in init-service👇
-      // this.setCurrentEmployees();
+  // 👇this code is in init-service👇
+  // this.setCurrentEmployees();
 
 
   //   } catch (error) {
@@ -51,6 +48,6 @@ export class App
   // }
 
   // async getEmployees() {
-    // return lastValueFrom(this.http.get<Employee[]>(this.apiUrl));
+  // return lastValueFrom(this.http.get<Employee[]>(this.apiUrl));
   // }
 }

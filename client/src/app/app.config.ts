@@ -1,36 +1,35 @@
 import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter, withViewTransitions } from '@angular/router';
 
-import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { InitService } from '../core/services/init-service';
 import { lastValueFrom } from 'rxjs';
 import { errorInterceptor } from '../core/interceptors/error-interceptor';
+import { InitService } from '../core/services/init-service';
+import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     // i have added second param for smooth transition
-    provideRouter(routes,withViewTransitions()),
+    provideRouter(routes, withViewTransitions()),
     provideHttpClient(withInterceptors([errorInterceptor])),
-    provideAppInitializer(async ()=>{
-      const initService=inject(InitService);
+    provideAppInitializer(async () => {
+      const initService = inject(InitService);
 
-      return new Promise<void>((resolve)=>{
-        setTimeout(async() => {
-              try {
-                return lastValueFrom(initService.init());
-              } finally{
-                const splash=document.getElementById('initial-splash');
-                if(splash)
-                {
-                  splash.remove();
-                }
-                resolve();
-              }
-              }, 500);
-            });
-      })
+      return new Promise<void>((resolve) => {
+        setTimeout(async () => {
+          try {
+            return lastValueFrom(initService.init());
+          } finally {
+            const splash = document.getElementById('initial-splash');
+            if (splash) {
+              splash.remove();
+            }
+            resolve();
+          }
+        }, 500);
+      });
+    })
   ]
 }

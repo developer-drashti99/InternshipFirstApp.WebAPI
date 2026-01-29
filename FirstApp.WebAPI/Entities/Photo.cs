@@ -9,5 +9,6 @@ public class Photo
     public string? PublicId { get; set; }
 
     // Navigational Property
-    public Member member { get; set; } = null;
+    public Member Member { get; set; } = null!;
+    public string MemberId { get; set; }=null!;
 }
