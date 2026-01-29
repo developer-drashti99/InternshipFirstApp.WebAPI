@@ -16,8 +16,6 @@ namespace FirstApp.WebAPI
         public required byte[] PasswordSalt { get; set; }
         public bool IsActive { get; set; } = true;
 
-        // specify foreign key
-        [ForeignKey(nameof(Id))]
-        public Member Member { get; set; }=null!;
+       
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FirstApp.WebAPI.Entities;
 
@@ -16,6 +17,8 @@ public class Member
     public required string Country { get; set; }
 
     // Navigational Property
+    // specify foreign key
+    [ForeignKey(nameof(Id))]
     public AppUser User { get; set; } = null;
 
 }
