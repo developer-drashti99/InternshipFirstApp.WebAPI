@@ -1,6 +1,6 @@
 import { Component, inject, Input, signal } from '@angular/core';
 import { Register } from "../account/register/register";
-import { Employee } from '../../types/employee';
+import { Employee } from '../../types/user';
 import { AccountService } from '../../core/services/account-service';
 
 @Component({

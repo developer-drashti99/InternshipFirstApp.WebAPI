@@ -5,7 +5,7 @@ import { NavBar } from "../layout/nav-bar/nav-bar";
 import { AccountService } from '../core/services/account-service';
 import { lastValueFrom } from 'rxjs';
 import { Home } from '../features/home/home';
-import { Employee } from '../types/employee';
+import { Employee } from '../types/user';
 
 @Component({
   selector: 'app-root',
