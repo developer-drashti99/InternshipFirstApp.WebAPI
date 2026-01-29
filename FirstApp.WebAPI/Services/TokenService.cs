@@ -7,7 +7,7 @@ namespace FirstApp.WebAPI.Services
 {
     public class TokenService(IConfiguration config) : ITokenService
     {
-        public string CreateToken(Employee employee)
+        public string CreateToken(AppUser user)
         {
             //?? is null collision operator
             var tokenKey = config["TokenKey"] ?? throw new Exception("Can not get Token Key");
@@ -19,8 +19,8 @@ namespace FirstApp.WebAPI.Services
 
             var claims = new List<Claim>
             {
-                new(ClaimTypes.Email,employee.Email),
-                new(ClaimTypes.NameIdentifier,employee.EmpId),
+                new(ClaimTypes.Email,user.Email),
+                new(ClaimTypes.NameIdentifier,user.Id),
             };
 
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);

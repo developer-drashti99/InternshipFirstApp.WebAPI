@@ -1,15 +1,23 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using FirstApp.WebAPI.Entities;
 
 namespace FirstApp.WebAPI
 {
-    public class Employee
+    public class AppUser
     {
         [Key]
-        public string EmpId { get; set; } = Guid.NewGuid().ToString();
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public required string DisplayName { get; set; }
         public required string Email { get; set; }
+        // for early access
+        public string? ImageUrl { get; set; }
         public required byte[] PasswordHash { get; set; }
         public required byte[] PasswordSalt { get; set; }
         public bool IsActive { get; set; } = true;
+
+        // specify foreign key
+        [ForeignKey(nameof(Id))]
+        public Member Member { get; set; }=null!;
     }
 }

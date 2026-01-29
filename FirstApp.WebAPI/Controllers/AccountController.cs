@@ -1,10 +1,10 @@
-﻿using FirstApp.WebAPI.DTOs;
+﻿using System.Security.Cryptography;
+using System.Text;
+using FirstApp.WebAPI.DTOs;
 using FirstApp.WebAPI.Extensions;
 using FirstApp.WebAPI.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace FirstApp.WebAPI.Controllers
 {
@@ -18,7 +18,7 @@ namespace FirstApp.WebAPI.Controllers
             else
             {   
                 using var hmac = new HMACSHA512();
-                Employee employee = new Employee
+                AppUser employee = new AppUser
                 {
                     DisplayName = registerDto.DisplayName,
                     Email = registerDto.Email,
@@ -26,7 +26,7 @@ namespace FirstApp.WebAPI.Controllers
                     PasswordSalt = hmac.Key,
                     IsActive = true
                 };
-                context.Employees.Add(employee);
+                context.Users.Add(employee);
                 await context.SaveChangesAsync();
                 return employee.ToAuthDto(tokenService);
             }
@@ -35,7 +35,7 @@ namespace FirstApp.WebAPI.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<AuthUserDto>> Login(LoginDto loginDto)
         {
-            Employee employee = await context.Employees.SingleOrDefaultAsync(e => e.Email == loginDto.Email);
+            AppUser employee = await context.Users.SingleOrDefaultAsync(e => e.Email == loginDto.Email);
             if (employee == null) return Unauthorized("Invalid Email Address");
 
             using var hmac = new HMACSHA512(employee.PasswordSalt);
@@ -51,8 +51,8 @@ namespace FirstApp.WebAPI.Controllers
         }
         private async Task<bool> EmailExists(string email)
         {
-            //return await context.Employees.AnyAsync(e=>e.Email.Equals(email,StringComparison.CurrentCultureIgnoreCase));
-            return await context.Employees.AnyAsync(e => e.Email.ToLower() == email.ToLower());
+            // return await context.Users.AnyAsync(e=>e.Email.Equals(email,StringComparison.CurrentCultureIgnoreCase));
+            return await context.Users.AnyAsync(e => e.Email.ToLower() == email.ToLower());
         }
     }
 }
