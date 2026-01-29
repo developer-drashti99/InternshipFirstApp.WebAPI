@@ -1,0 +1,23 @@
+<div class="hero bg-base-200 min-h-screen">
+    
+    <div class="hero-content text-center">
+        <div class="flex flex-col items-center">
+            <i class="pi pi-users text-6xl mb-4 text-primary"></i>
+            <h1 class="text-5xl font-bold">welcome to our site</h1>
+
+            <p class="py-6">
+                Discover a world of opportunities with us. Join our community and explore the endless
+                possibilities!
+            </p>
+            @if(!accountService.currentUser())
+            {
+
+                <div class="flex items-center gap-3">
+                    <button class="btn btn-primary">Register</button>
+                    <button class="btn btn-secondary ml-4">Learn More</button>
+                </div>
+            }
+        </div>
+    </div>
+    
+</div>

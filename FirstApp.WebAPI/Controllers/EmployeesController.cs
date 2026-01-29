@@ -1,20 +1,21 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FirstApp.WebAPI.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using FirstApp.WebAPI.Extensions;
 namespace FirstApp.WebAPI.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class EmployeesController(AppDbContext context) : ControllerBase
+    [Authorize]
+    public class EmployeesController(AppDbContext context) : BaseApiController
     {
+        [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<List<Employee>>> GetEmployees()
+        public async Task<ActionResult<List<EmployeeDto>>> GetEmployees()
         {
             try
             {
                 List<Employee> employees = await context.Employees.ToListAsync();
-                return employees.Count > 0 ? Ok(employees) : BadRequest("No Employees Found");
+                return employees.Count > 0 ? Ok(employees.Select(e => e.ToDto()).ToList()) : BadRequest("No Employees Found");
             }
             catch (Exception ex)
             {
@@ -23,12 +24,12 @@ namespace FirstApp.WebAPI.Controllers
         }
 
         [HttpGet("{empId}")]
-        public ActionResult<Employee> GetEmployeeById(string empId)
+        public ActionResult<EmployeeDto> GetEmployeeById(string empId)
         {
             try
             {
                 Employee? employee = context.Employees.Find(empId);
-                return employee != null ? Ok(employee) : BadRequest($"Employee Not Found having the empId {empId}");
+                return employee != null ? Ok(employee.ToDto()) : BadRequest($"Employee Not Found having the empId {empId}");
             }
             catch (Exception ex)
             {

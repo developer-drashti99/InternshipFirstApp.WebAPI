@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" class="bg-base-300">
+
+<head>
+  <meta charset="utf-8">
+  <title>Client</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+
+<body>
+  <div id="initial-splash" class="fixed inset-0 flex flex-col items-center justify-center bg-base-300 z-50">
+    <!-- Logo / Icon -->
+    <div class="text-6xl mb-4 animate-pulse">
+      <i class="pi pi-users"></i>
+    </div>
+
+    <!-- App name -->
+    <h1 class="text-3xl font-bold mb-2">DatingApp</h1>
+
+    <!-- Loading text -->
+    <p class="opacity-70 mb-6">Finding your perfect match…</p>
+
+    <!-- Spinner -->
+    <span class="loading loading-spinner loading-lg text-primary"></span>
+  </div>
+
+  <app-root></app-root>
+</body>
+
+</html>

@@ -1,0 +1,31 @@
+<h1>api-without-signal works!</h1>
+<div class="container mt-3 m-auto">
+    <!-- @if (Employees.length>0) { -->
+    <table class="table table-responsive table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Employee ID</th>
+                <th></th>
+            </tr>
+        </thead>
+        @for (item of Employees; track item.empId) {
+        <tr>
+            <td>{{item.displayName}}</td>
+            <td>{{item.email}}</td>
+            <td>{{item.empId}}</td>
+            <td class="d-flex gap-2">
+                <button class="btn btn-dark"><span class="fa fa-list"></span></button>
+                <button class="btn btn-primary"><span class="fa fa-pen"></span></button>
+                <button class="btn btn-danger"><span class="fa fa-trash"></span></button>
+            </td>
+        </tr>
+        }
+    </table>
+    <!-- } -->
+    <!-- @else {
+    <h2>No Employees Found</h2>
+} -->
+    <!-- <h1>{{Employees.length}}</h1> -->
+</div>
