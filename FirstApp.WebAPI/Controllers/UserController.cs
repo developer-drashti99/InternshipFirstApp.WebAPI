@@ -7,7 +7,7 @@ namespace FirstApp.WebAPI.Controllers
     [Authorize]
     public class UsersController(IMemberRepository memberRepository) : BaseApiController
     {
-        [AllowAnonymous]
+        // [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<Member>>> GetUsers()
         {
