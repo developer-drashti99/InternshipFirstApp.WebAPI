@@ -1,7 +1,7 @@
 import { Component, inject, input, Input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { User, RegisterCreds } from '../../../types/user';
-import { AccountService } from '../../../core/services/account-service';
+import { AccountService } from '../../../core/services/account-service.service';
 
 @Component({
   selector: 'app-register',

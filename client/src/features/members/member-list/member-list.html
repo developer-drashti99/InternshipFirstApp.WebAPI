@@ -1,0 +1,16 @@
+<div class="p-6">
+  <h2 class="text-center text-4xl font-bold mb-8">Members</h2>
+
+  @if (members$) {
+  <div class="grid grid-cols-5 gap-6">
+
+    @for (member of members$ | async; track member.id) {
+    <app-member-card [member]="member"></app-member-card>
+    }
+
+  </div>
+  }
+  @else {
+  <p class="text-center text-gray-500 text-lg">No users</p>
+  }
+</div>

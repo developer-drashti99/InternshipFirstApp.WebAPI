@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
-import { AccountService } from '../../core/services/account-service';
+import { AccountService } from '../../core/services/account-service.service';
 
 @Component({
   selector: 'app-api-with-signal',

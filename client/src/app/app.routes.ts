@@ -1,26 +1,37 @@
 import { Routes } from '@angular/router';
 import { Home } from '../features/home/home';
-import { MemberDetails } from '../features/member-details/member-details';
+import { MemberDetails } from '../features/members/member-details/member-details';
 import { Messages } from '../features/messages/messages';
 import { authGuard } from '../core/guards/auth-guard';
 import { TestErrors } from '../features/test-errors/test-errors';
 import { NotFound } from '../shared/errors/not-found/not-found';
 import { ServerError } from '../shared/errors/server-error/server-error';
 import { Register } from '../features/account/register/register';
-import { MemberList } from '../features/member-list/member-list';
+import { MemberList } from '../features/members/member-list/member-list';
+import { MemberProfileComponent } from '../features/members/member-profile/member-profile.component';
+import { MemberMessagesComponent } from '../features/members/member-messages/member-messages.component';
+import { MemberPhotosComponent } from '../features/members/member-photos/member-photos.component';
 
 export const routes: Routes = [
-    { path: '', component: Home },
-    {
-        path: '',
+  { path: '', component: Home },
+  {
+    path: '',
+    children: [
+      { path: 'members', component: MemberList },
+      {
+        path: 'members/:id', component: MemberDetails,
         children: [
-            { path: 'employees', component: MemberList },
-            { path: 'employees/:id', component: MemberDetails },
-            { path: 'messages', component: Messages },
-        ],
-        canActivate: [authGuard]
-    },
-    { path: 'errors', component: TestErrors },
-    { path: 'server-error', component: ServerError },
-    { path: '**', component: NotFound },
+          { path: '', redirectTo: 'profile', pathMatch: 'full' },
+          { path: 'profile', component: MemberProfileComponent, title: 'Profile' },
+          { path: 'messages', component: MemberMessagesComponent, title: 'Messages' },
+          { path: 'photos', component: MemberPhotosComponent, title: 'Photos' },
+        ]
+      },
+      { path: 'messages', component: Messages },
+    ],
+    canActivate: [authGuard]
+  },
+  { path: 'errors', component: TestErrors },
+  { path: 'server-error', component: ServerError },
+  { path: '**', component: NotFound },
 ];

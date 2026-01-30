@@ -4,7 +4,7 @@ import { provideRouter, withViewTransitions } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
 import { errorInterceptor } from '../core/interceptors/error-interceptor';
-import { InitService } from '../core/services/init-service';
+import { InitService } from '../core/services/init-service.service';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
