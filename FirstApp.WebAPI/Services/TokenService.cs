@@ -1,7 +1,7 @@
-﻿using FirstApp.WebAPI.Interfaces;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using FirstApp.WebAPI.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FirstApp.WebAPI.Services
 {

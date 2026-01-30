@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace FirstApp.WebAPI.DTOs
+﻿namespace FirstApp.WebAPI.DTOs
 {
     public class UserDto
     {

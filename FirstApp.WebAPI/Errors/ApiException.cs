@@ -1,5 +1,3 @@
-using System;
-
 namespace FirstApp.WebAPI.Errors;
 
 public class ApiException(int statusCode, string message, string? details)

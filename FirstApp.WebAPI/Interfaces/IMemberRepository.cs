@@ -1,4 +1,3 @@
-using System;
 using FirstApp.WebAPI.Entities;
 
 namespace FirstApp.WebAPI.Interfaces;

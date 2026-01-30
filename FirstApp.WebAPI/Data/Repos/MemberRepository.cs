@@ -1,4 +1,3 @@
-using System;
 using FirstApp.WebAPI.Entities;
 using FirstApp.WebAPI.Interfaces;
 using Microsoft.EntityFrameworkCore;

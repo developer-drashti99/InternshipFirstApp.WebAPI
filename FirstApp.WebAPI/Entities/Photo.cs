@@ -1,5 +1,3 @@
-using System;
-
 namespace FirstApp.WebAPI.Entities;
 
 public class Photo
