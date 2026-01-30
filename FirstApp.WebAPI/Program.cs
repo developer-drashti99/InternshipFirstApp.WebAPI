@@ -1,5 +1,6 @@
 using FirstApp.WebAPI;
 using FirstApp.WebAPI.Data;
+using FirstApp.WebAPI.Data.Repos;
 using FirstApp.WebAPI.Interfaces;
 using FirstApp.WebAPI.Middleware;
 using FirstApp.WebAPI.Services;
@@ -22,6 +23,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddCors();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
+
+builder.Services.AddScoped<IMemberRepository,MemberRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

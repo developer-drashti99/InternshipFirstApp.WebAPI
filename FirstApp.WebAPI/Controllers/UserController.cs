@@ -1,35 +1,34 @@
-﻿using FirstApp.WebAPI.DTOs;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using FirstApp.WebAPI.Extensions;
+using FirstApp.WebAPI.Interfaces;
+using FirstApp.WebAPI.Entities;
 namespace FirstApp.WebAPI.Controllers
 {
     [Authorize]
-    public class UsersController(AppDbContext context) : BaseApiController
+    public class UsersController(IMemberRepository memberRepository) : BaseApiController
     {
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<List<UserDto>>> GetUsers()
+        public async Task<ActionResult<IReadOnlyList<Member>>> GetUsers()
         {
             try
             {
-                List<AppUser> users = await context.Users.ToListAsync();
-                return users.Count > 0 ? Ok(users.Select(e => e.ToDto()).ToList()) : BadRequest("No Users Found");
+                return Ok(await memberRepository.GetMembersAsync());
             }
             catch (Exception ex)
             {
-                return BadRequest($"{ex.Message}  {ex.Data}");  
+                return BadRequest($"{ex.Message}  {ex.Data}");
             }
         }
 
         [HttpGet("{Id}")]
-        public ActionResult<UserDto> GetUserById(string Id)
+        public async Task<ActionResult<Member>> GetUserById(string Id)
         {
             try
             {
-                AppUser? user = context.Users.Find(Id);
-                return user != null ? Ok(user.ToDto()) : BadRequest($"User Not Found having the Id {Id}");
+                var member = await memberRepository.GetMemberByIdAsync(Id);
+                if (member == null) return NotFound();
+                return member;
             }
             catch (Exception ex)
             {
@@ -37,35 +36,40 @@ namespace FirstApp.WebAPI.Controllers
             }
         }
 
-        [HttpDelete("{Id}")]
-        public ActionResult DeleteUser(string Id)
+        // [HttpDelete("{Id}")]
+        // public ActionResult DeleteUser(string Id)
+        // {
+        //     try
+        //     {
+        //         AppUser? user = context.Users.Find(Id);
+        //         if (user != null)
+        //         {
+        //             user.IsActive=false;
+        //             context.SaveChanges();
+        //             return Ok($"User Deleted Successfully having the Id  {user.Id}");
+        //         }
+        //         else
+        //             return BadRequest($"User Not Found having the Id {Id}");
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         return BadRequest($"{ex.Message}  {ex.Data}");
+        //     }
+        // }
+
+        [HttpGet("{id}/photos")]
+        public async Task<ActionResult<IReadOnlyList<Photo>>> GetMemberPhotos(string id)
         {
-            try
-            {
-                AppUser? user = context.Users.Find(Id);
-                if (user != null)
-                {
-                    // context.Users.Remove(user);
-                    user.IsActive=false;
-                    context.SaveChanges();
-                    return Ok($"User Deleted Successfully having the Id  {user.Id}");
-                }
-                else
-                    return BadRequest($"User Not Found having the Id {Id}");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"{ex.Message}  {ex.Data}");
-            }
+            return Ok(await memberRepository.GetPhotosForMemberAsync(id));
         }
 
         [HttpPost]
-        public ActionResult AddUser([FromBody]AppUser user)
+        public ActionResult AddUser([FromBody] AppUser user)
         {
             try
             {
-                context.Users.Add(user);
-                context.SaveChanges();
+                // context.Users.Add(user);
+                memberRepository.SaveAllAsync();
                 return Ok($"User Added Successfully having the Id {user.Id}");
             }
             catch (Exception ex)
