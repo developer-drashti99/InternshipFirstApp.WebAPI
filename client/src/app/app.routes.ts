@@ -6,7 +6,6 @@ import { authGuard } from '../core/guards/auth-guard';
 import { TestErrors } from '../features/test-errors/test-errors';
 import { NotFound } from '../shared/errors/not-found/not-found';
 import { ServerError } from '../shared/errors/server-error/server-error';
-import { Register } from '../features/account/register/register';
 import { MemberList } from '../features/members/member-list/member-list';
 import { MemberProfileComponent } from '../features/members/member-profile/member-profile.component';
 import { MemberMessagesComponent } from '../features/members/member-messages/member-messages.component';
