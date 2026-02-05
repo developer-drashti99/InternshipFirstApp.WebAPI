@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { Member } from '../../../types/member';
-import { AsyncPipe, Location } from '@angular/common';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-member-details',
