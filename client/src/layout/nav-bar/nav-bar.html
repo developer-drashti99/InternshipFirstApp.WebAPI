@@ -11,7 +11,7 @@
       @if(accountService.currentUser())
       {
 
-      <a routerLink="/members" routerLinkActive="font-bold" class="text-white hover:underline">Matches</a>
+      <a routerLink="/members" routerLinkActive="font-bold" [routerLinkActiveOptions]="{exact:true}" class="text-white hover:underline">Matches</a>
 
       <a routerLink="/messages" routerLinkActive="font-bold">Messages</a>
       }

@@ -15,7 +15,7 @@ transition transition-all duration-300 ease-in-out transform hover:-translate-y-
    ">
     <div class="flex flex-col">
       <span class="font-semibold">
-        {{ member.displayName }},25
+        {{ member.displayName }},{{member.dateOfBirth|age}}
       </span>
       <span class="text-sm text-gray-500 mt-1">
         {{ member.city }}
