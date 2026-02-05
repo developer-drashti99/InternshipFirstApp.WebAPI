@@ -1,15 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { Member } from '../../types/member';
-import { AccountService } from './account-service.service';
+import { Member, Photo } from '../../types/member';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MemberService {
   private http = inject(HttpClient);
-  private accountService = inject(AccountService);
   private siteUrl = environment.apiUrl;
 
   getMembers() {
@@ -17,5 +15,8 @@ export class MemberService {
   }
   getMember(id: string) {
     return this.http.get<Member>(this.siteUrl + 'Users/' + id);
+  }
+  getMemberPhotos(id:string){
+    return this.http.get<Photo[]>(this.siteUrl+'Users/'+id+'/photos');
   }
 }
