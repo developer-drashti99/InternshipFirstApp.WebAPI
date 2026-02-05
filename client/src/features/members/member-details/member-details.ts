@@ -1,9 +1,11 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { Member } from '../../../types/member';
 import { Location } from '@angular/common';
 import { AgePipe } from '../../../core/pipes/age-pipe';
+import { AccountService } from '../../../core/services/account-service.service';
+import { MemberService } from '../../../core/services/member-service.service';
 
 @Component({
   selector: 'app-member-details',
@@ -14,9 +16,15 @@ import { AgePipe } from '../../../core/pipes/age-pipe';
 export class MemberDetails implements OnInit {
   private route = inject(ActivatedRoute);
   protected router = inject(Router);
-  protected member = signal<Member | undefined>(undefined);
   private location = inject(Location);
+  private accountService=inject(AccountService);
+  protected memberService=inject(MemberService);
+  protected member = signal<Member | undefined>(undefined);
   protected title = signal<string | undefined>('Profile');
+  protected isCurrentUser=computed(()=>{
+    return this.accountService.currentUser()?.id === 
+    this.route.snapshot.paramMap.get("id");
+  });
 
   ngOnInit(): void {
     // this.member$ = this.loadMember();

@@ -23,7 +23,10 @@
           <a routerLink="photos" routerLinkActive="text-primary">Photos</a>
         </li>
         <li>
+          @if(isCurrentUser())
+          {
           <a routerLink="messages" routerLinkActive="text-primary">Messages</a>
+          }
         </li>
       </ul>
     </div>
@@ -33,7 +36,16 @@
     </div>
   </div>
   <div class="card bg-base-100 w-3/4 p-6">
-    <h3 class="card-title text-3xl text-primary">{{title()}}</h3>
+    <div class="flex justify-between items-center">
+      <h3 class="card-title text-3xl text-primary">{{title()}}</h3>
+      @if(isCurrentUser())
+      {
+      <button class="btn btn-outline btn-primary"
+        (click)="memberService.editMode.set(!memberService.editMode())">
+      {{memberService.editMode()?'Cancel':'Edit'}}  
+      </button>
+      }
+    </div>
     <div class="divider divider-primary"></div>
     <div>
       <router-outlet></router-outlet>

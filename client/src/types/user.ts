@@ -1,12 +1,12 @@
 export type User = {
-    id: number;
+    id: string;
     displayName: string;
     email: string;
     token: string;
     imageUrl?: string;
 }
 export type AuthUser = {
-    id: number;
+    id: string;
     displayName: string;
     email: string;
     token: string;

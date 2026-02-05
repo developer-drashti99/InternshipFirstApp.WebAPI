@@ -4,7 +4,7 @@
     <a routerLink="/"
       class="flex items-center gap-2 max-h-16 border-r-white border-r-2 pr-6 text-xl font-bold">
       <i class="pi pi-users"></i>
-      EMS
+      Dating App
     </a>
 
     <a routerLink="/" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="font-bold">Home</a>
@@ -52,7 +52,7 @@
           </span>
         </div>
         <ul tabindex="-1" class="dropdown-content dropdown-end menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-          <li><a> <i class="pi pi-user"></i> My Profile</a></li>
+          <li><a routerLink="/members/{{user.id}}"> <i class="pi pi-user"></i> My Profile</a></li>
           <li><a (click)="logout()"> <i class="pi pi-logout"></i> Logout</a></li>
         </ul>
       </div>
