@@ -8,40 +8,44 @@ import { MemberCardComponent } from "../member-card/member-card.component";
 
 @Component({
   selector: 'app-member-details',
-  imports: [AsyncPipe, MemberCardComponent, RouterLink, RouterLinkActive,RouterOutlet],
+  imports: [AsyncPipe, MemberCardComponent, RouterLink, RouterLinkActive, RouterOutlet],
   templateUrl: './member-details.html',
   styleUrl: './member-details.css',
 })
 export class MemberDetails implements OnInit {
- 
+
   private memberService = inject(MemberService);
   private route = inject(ActivatedRoute);
-  protected router=inject(Router);
-  protected member$?: Observable<Member>;
-  private location=inject(Location);
-  protected title=signal<string|undefined>('Profile');
-  
+  protected router = inject(Router);
+  protected member = signal<Member | undefined>(undefined);
+  private location = inject(Location);
+  protected title = signal<string | undefined>('Profile');
+
   ngOnInit(): void {
-    this.member$ = this.loadMember();
+    // this.member$ = this.loadMember();
+    // loaded member from resolver req
+    this.route.data.subscribe({
+      next: data => this.member.set(data['member'])
+    });
     this.title.set(this.route.firstChild?.snapshot?.title);
 
     this.router.events.pipe(
-      filter(event=>event instanceof NavigationEnd)
+      filter(event => event instanceof NavigationEnd)
     ).subscribe({
-      next:()=>
-      {
+      next: () => {
         this.title.set(this.route.firstChild?.snapshot?.title)
       }
     })
   }
-  loadMember() {
-    // for getting id by url
-    const id = this.route.snapshot.paramMap.get('id');
-    if (!id)
-      return;
-    return this.memberService.getMember(id);
-  }
-   goBack() {
+  // because we are using resolver to prefetch the data we don't need this
+  // loadMember() {
+  //   // for getting id by url
+  //   const id = this.route.snapshot.paramMap.get('id');
+  //   if (!id)
+  //     return;
+  //   return this.memberService.getMember(id);
+  // }
+  goBack() {
     this.location.back();
   }
 }

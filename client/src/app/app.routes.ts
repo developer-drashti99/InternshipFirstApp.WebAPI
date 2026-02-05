@@ -10,6 +10,7 @@ import { MemberList } from '../features/members/member-list/member-list';
 import { MemberProfileComponent } from '../features/members/member-profile/member-profile.component';
 import { MemberMessagesComponent } from '../features/members/member-messages/member-messages.component';
 import { MemberPhotosComponent } from '../features/members/member-photos/member-photos.component';
+import { memberResolver } from '../features/members/member-resolver';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -19,6 +20,8 @@ export const routes: Routes = [
       { path: 'members', component: MemberList },
       {
         path: 'members/:id', component: MemberDetails,
+        resolve: { member: memberResolver },
+        runGuardsAndResolvers:'always',
         children: [
           { path: '', redirectTo: 'profile', pathMatch: 'full' },
           { path: 'profile', component: MemberProfileComponent, title: 'Profile' },
