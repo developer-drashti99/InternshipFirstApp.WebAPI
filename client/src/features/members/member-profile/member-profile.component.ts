@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Member } from '../../../types/member';
 
 @Component({
   selector: 'app-member-profile',
@@ -6,10 +8,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./member-profile.component.css']
 })
 export class MemberProfileComponent implements OnInit {
+  private route=inject(ActivatedRoute);
+  protected member=signal<Member|undefined>(undefined);
 
-  constructor() { }
-
-  ngOnInit() {
+  ngOnInit(): void {
+   this.route.parent?.data.subscribe(data=>{
+    this.member.set(data["member"])
+   });
   }
-
 }

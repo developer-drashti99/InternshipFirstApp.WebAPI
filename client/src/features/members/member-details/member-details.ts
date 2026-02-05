@@ -1,20 +1,16 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { MemberService } from '../../../core/services/member-service.service';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { filter, Observable } from 'rxjs';
+import { filter } from 'rxjs';
 import { Member } from '../../../types/member';
 import { AsyncPipe, Location } from '@angular/common';
-import { MemberCardComponent } from "../member-card/member-card.component";
 
 @Component({
   selector: 'app-member-details',
-  imports: [AsyncPipe, MemberCardComponent, RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [ RouterLink, RouterLinkActive, RouterOutlet],
   templateUrl: './member-details.html',
   styleUrl: './member-details.css',
 })
 export class MemberDetails implements OnInit {
-
-  private memberService = inject(MemberService);
   private route = inject(ActivatedRoute);
   protected router = inject(Router);
   protected member = signal<Member | undefined>(undefined);
