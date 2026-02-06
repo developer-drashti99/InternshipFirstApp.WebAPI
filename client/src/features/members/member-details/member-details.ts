@@ -19,19 +19,16 @@ export class MemberDetails implements OnInit {
   private location = inject(Location);
   private accountService=inject(AccountService);
   protected memberService=inject(MemberService);
-  protected member = signal<Member | undefined>(undefined);
   protected title = signal<string | undefined>('Profile');
   protected isCurrentUser=computed(()=>{
-    return this.accountService.currentUser()?.id === 
+    return this.accountService.currentUser()?.id ===
     this.route.snapshot.paramMap.get("id");
   });
 
   ngOnInit(): void {
     // this.member$ = this.loadMember();
     // loaded member from resolver req
-    this.route.data.subscribe({
-      next: data => this.member.set(data['member'])
-    });
+
     this.title.set(this.route.firstChild?.snapshot?.title);
 
     this.router.events.pipe(

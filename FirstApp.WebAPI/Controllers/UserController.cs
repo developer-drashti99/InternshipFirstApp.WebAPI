@@ -92,9 +92,9 @@ namespace FirstApp.WebAPI.Controllers
             if (member == null) return BadRequest("Could not get member");
 
             member.DisplayName = memberUpdateDto.DisplayName ?? member.DisplayName;
-            member.Description = memberUpdateDto.DisplayName ?? member.Description;
-            member.City = memberUpdateDto.DisplayName ?? member.City;
-            member.Country = memberUpdateDto.DisplayName ?? member.Country;
+            member.Description = memberUpdateDto.Description ?? member.Description;
+            member.City = memberUpdateDto.City ?? member.City;
+            member.Country = memberUpdateDto.Country ?? member.Country;
 
             // update displayname in user also
             member.User.DisplayName=memberUpdateDto.DisplayName??member.User.DisplayName;

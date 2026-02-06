@@ -5,7 +5,7 @@ import { Member } from '../../types/member';
 import { EMPTY } from 'rxjs';
 
 export const memberResolver: ResolveFn<Member> = (route, state) => {
-  // use this in route file for particular component to prefetch the dataro
+  // use this in route file for particular component to prefetch the data
 
   const memberService = inject(MemberService);
   const router = inject(Router);

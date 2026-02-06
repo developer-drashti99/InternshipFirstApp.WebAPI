@@ -1,4 +1,4 @@
-@if(member() ;as member)
+@if(memberService.member() ;as member)
 {
 <!-- <app-member-card [member]="member"></app-member-card> -->
 <div class="flex gap-6">
@@ -42,7 +42,7 @@
       {
       <button class="btn btn-outline btn-primary"
         (click)="memberService.editMode.set(!memberService.editMode())">
-      {{memberService.editMode()?'Cancel':'Edit'}}  
+      {{memberService.editMode()?'Cancel':'Edit'}}
       </button>
       }
     </div>
