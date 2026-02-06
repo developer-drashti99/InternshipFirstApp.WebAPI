@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, HostListener, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EditableMember, Member } from '../../../types/member';
 import { DatePipe } from '@angular/common';
@@ -13,8 +13,15 @@ import { ToastService } from '../../../core/services/toast-service.service';
   styleUrls: ['./member-profile.component.css']
 })
 export class MemberProfileComponent implements OnInit,OnDestroy {
- 
+
   @ViewChild("editForm") editForm?:NgForm;
+  // notify while leaving the page with profile changes unsaved
+  @HostListener("window:beforeunload",['$event']) notify($event:BeforeUnloadEvent){
+    if(this.editForm?.dirty)
+    {
+      $event.preventDefault();
+    }
+  }
   protected memberService=inject(MemberService);
   private toast=inject(ToastService);
   private route=inject(ActivatedRoute);

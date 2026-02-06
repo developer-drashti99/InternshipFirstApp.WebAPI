@@ -11,6 +11,7 @@ import { MemberProfileComponent } from '../features/members/member-profile/membe
 import { MemberMessagesComponent } from '../features/members/member-messages/member-messages.component';
 import { MemberPhotosComponent } from '../features/members/member-photos/member-photos.component';
 import { memberResolver } from '../features/members/member-resolver';
+import { preventUnsavedChangesGuard } from '../core/guards/prevent-unsaved-changes-guard';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -24,7 +25,7 @@ export const routes: Routes = [
         runGuardsAndResolvers:'always',
         children: [
           { path: '', redirectTo: 'profile', pathMatch: 'full' },
-          { path: 'profile', component: MemberProfileComponent, title: 'Profile' },
+          { path: 'profile', component: MemberProfileComponent, title: 'Profile' ,canDeactivate:[preventUnsavedChangesGuard]},
           { path: 'messages', component: MemberMessagesComponent, title: 'Messages' },
           { path: 'photos', component: MemberPhotosComponent, title: 'Photos' },
         ]
