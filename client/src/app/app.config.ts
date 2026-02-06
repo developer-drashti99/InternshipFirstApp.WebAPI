@@ -7,6 +7,7 @@ import { errorInterceptor } from '../core/interceptors/error-interceptor';
 import { InitService } from '../core/services/init-service.service';
 import { routes } from './app.routes';
 import { jwtInterceptor } from '../core/interceptors/jwt-interceptor';
+import { loadingInterceptor } from '../core/interceptors/loading-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,7 +15,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     // i have added second param for smooth transition
     provideRouter(routes, withViewTransitions()),
-    provideHttpClient(withInterceptors([errorInterceptor,jwtInterceptor])),
+    provideHttpClient(withInterceptors([errorInterceptor,jwtInterceptor,loadingInterceptor])),
     provideAppInitializer(async () => {
       const initService = inject(InitService);
 

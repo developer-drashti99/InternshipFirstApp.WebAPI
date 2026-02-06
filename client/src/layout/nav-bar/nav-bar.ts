@@ -4,6 +4,7 @@ import { AccountService } from '../../core/services/account-service.service';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ToastService } from '../../core/services/toast-service.service';
 import { themes } from '../themes';
+import { BusyService } from '../../core/services/busy-service.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -12,14 +13,15 @@ import { themes } from '../themes';
   styleUrl: './nav-bar.css',
 })
 export class NavBar implements OnInit {
-  
+
   protected accountService = inject(AccountService);
+  protected busyService = inject(BusyService);
   private route=inject(Router);
   private toast=inject(ToastService);
   protected credentials: { email: string; password: string } = { email: '', password: '' };
   protected selectedTheme=signal<string>(localStorage.getItem("theme")||"light");
   protected themes=themes;
-  
+
   ngOnInit(): void {
       document.documentElement.setAttribute('data-theme',this.selectedTheme());
   }
@@ -32,11 +34,11 @@ export class NavBar implements OnInit {
     const elem=document.activeElement as HTMLDivElement;// themes dropdown which is currently active or we can say open
     if(elem) elem.blur();//for closing dropdown after selecting theme
   }
-  
+
   onLogin() {
     this.accountService.login(this.credentials).subscribe({
       next: response => {
-        this.toast.success('Logged in successfully'); 
+        this.toast.success('Logged in successfully');
         console.log('Login successful', response);
         this.route.navigateByUrl('/');
         this.credentials={email:'',password:''};
