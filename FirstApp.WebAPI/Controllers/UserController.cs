@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using FirstApp.WebAPI.Interfaces;
 using FirstApp.WebAPI.Entities;
+using FirstApp.WebAPI.DTOs;
+using System.Security.Claims;
+using FirstApp.WebAPI.Extensions;
 namespace FirstApp.WebAPI.Controllers
 {
     [Authorize]
@@ -76,6 +79,30 @@ namespace FirstApp.WebAPI.Controllers
             {
                 return BadRequest($"{ex.Message}  {ex.Data}");
             }
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> UpdateMember(MemberUpdateDto memberUpdateDto)
+        {
+            // var memberId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // if (memberId == null) return BadRequest("Oops - no id found in token");
+            var memberId = User.getMemberId();
+
+            var member = await memberRepository.GetMemberForUpdate(memberId);
+            if (member == null) return BadRequest("Could not get member");
+
+            member.DisplayName = memberUpdateDto.DisplayName ?? member.DisplayName;
+            member.Description = memberUpdateDto.DisplayName ?? member.Description;
+            member.City = memberUpdateDto.DisplayName ?? member.City;
+            member.Country = memberUpdateDto.DisplayName ?? member.Country;
+
+            // update displayname in user also
+            member.User.DisplayName=memberUpdateDto.DisplayName??member.User.DisplayName;
+
+            memberRepository.Update(member); //optional
+
+            if(await memberRepository.SaveAllAsync()) return NoContent();
+            return BadRequest("Fail to update member");
         }
     }
 }
