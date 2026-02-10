@@ -1,6 +1,7 @@
 using FirstApp.WebAPI;
 using FirstApp.WebAPI.Data;
 using FirstApp.WebAPI.Data.Repos;
+using FirstApp.WebAPI.Helpers;
 using FirstApp.WebAPI.Interfaces;
 using FirstApp.WebAPI.Middleware;
 using FirstApp.WebAPI.Services;
@@ -25,6 +26,9 @@ builder.Services.AddCors();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddScoped<IMemberRepository,MemberRepository>();
+
+//configured cloudinary api with key
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
