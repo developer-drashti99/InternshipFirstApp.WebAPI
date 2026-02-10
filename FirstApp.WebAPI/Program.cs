@@ -24,8 +24,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddCors();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IPhotoService, PhotoService>();
 
-builder.Services.AddScoped<IMemberRepository,MemberRepository>();
+builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 
 //configured cloudinary api with key
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
@@ -66,20 +67,20 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-using var scope=app.Services.CreateScope();
-var services=scope.ServiceProvider;
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
 
 try
 {
-    var context=services.GetRequiredService<AppDbContext>();
+    var context = services.GetRequiredService<AppDbContext>();
     await context.Database.MigrateAsync();
     await Seed.SeedUsers(context);
-    
+
 }
 catch (Exception ex)
 {
-    var logger=services.GetRequiredService<ILogger<Program>>();
-    logger.LogError(ex,"error in code during migration");
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "error in code during migration");
 }
 
 app.Run();
