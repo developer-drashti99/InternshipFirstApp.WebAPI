@@ -9,7 +9,7 @@ import { MemberService } from '../../../core/services/member-service.service';
 
 @Component({
   selector: 'app-member-details',
-  imports: [ RouterLink, RouterLinkActive, RouterOutlet,AgePipe],
+  imports: [ RouterLink, RouterLinkActive, RouterOutlet],
   templateUrl: './member-details.html',
   styleUrl: './member-details.css',
 })

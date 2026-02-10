@@ -10,7 +10,7 @@ import { tap } from 'rxjs';
 export class MemberService {
   private http = inject(HttpClient);
   private siteUrl = environment.apiUrl;
-  editMode=signal(false);
+  editMode=signal(true);
   member=signal<Member|null>(null);
 
   getMembers() {
@@ -30,5 +30,12 @@ export class MemberService {
   updateMember(member:EditableMember)
   {
     return this.http.put(this.siteUrl+'Users',member);
+  }
+
+  uploadPhoto(file:File)
+  {
+    const formData=new FormData();
+    formData.append('file',file);
+    return this.http.post<Photo>(this.siteUrl+'Users/add-photo',formData)
   }
 }
