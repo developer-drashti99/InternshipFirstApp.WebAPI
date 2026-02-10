@@ -4,6 +4,7 @@ export type Member = {
   dateOfBirth: string
   imageUrl?: string
   created: string
+  age:number
   lastActive: string
   gender: string
   description?: string
