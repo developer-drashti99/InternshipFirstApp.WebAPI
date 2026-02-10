@@ -1,0 +1,10 @@
+<button
+  class="z-50 cursor-pointer"
+  (click)="onClick($event)"
+  [disabled]="disabled()"
+>
+  <i
+    class="text-red-700 pi pi-trash"
+    [class.opacity-25]="disabled()"
+  ></i>
+</button>
