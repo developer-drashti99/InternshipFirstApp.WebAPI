@@ -12,9 +12,11 @@ import { MemberMessagesComponent } from '../features/members/member-messages/mem
 import { MemberPhotosComponent } from '../features/members/member-photos/member-photos.component';
 import { memberResolver } from '../features/members/member-resolver';
 import { preventUnsavedChangesGuard } from '../core/guards/prevent-unsaved-changes-guard';
+import { Register } from '../features/account/register/register';
 
 export const routes: Routes = [
   { path: '', component: Home },
+  { path: 'reg', component: Register },
   {
     path: '',
     children: [
@@ -22,10 +24,10 @@ export const routes: Routes = [
       {
         path: 'members/:id', component: MemberDetails,
         resolve: { member: memberResolver },
-        runGuardsAndResolvers:'always',
+        runGuardsAndResolvers: 'always',
         children: [
           { path: '', redirectTo: 'profile', pathMatch: 'full' },
-          { path: 'profile', component: MemberProfileComponent, title: 'Profile' ,canDeactivate:[preventUnsavedChangesGuard]},
+          { path: 'profile', component: MemberProfileComponent, title: 'Profile', canDeactivate: [preventUnsavedChangesGuard] },
           { path: 'messages', component: MemberMessagesComponent, title: 'Messages' },
           { path: 'photos', component: MemberPhotosComponent, title: 'Photos' },
         ]

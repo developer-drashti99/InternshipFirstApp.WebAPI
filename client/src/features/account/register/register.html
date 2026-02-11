@@ -1,25 +1,24 @@
-<div class="card w-1/2 bg-base-100 mx-auto flex flex-col shadow-lg p-6 rounded-lg">
-    <div class="card-title justify-center text-3xl text-primary">
-        Registration
-    </div>
-    <div class="card-body w-full">
-        <form #registrationForm="ngForm" class="flex flex-col gap-4 w-full" (ngSubmit)="register()">
+<div class="card w-full bg-base-100 mx-auto flex flex-col shadow-lg p-6 rounded-lg">
+  <div class="card-title justify-center text-3xl text-primary">Registration</div>
+  <div class="card-body w-full">
+    <form [formGroup]="registerForm" class="flex flex-col gap-4 w-full" (ngSubmit)="register()">
 
-            <input type="text" class="input input-bordered w-full" name="username" required
-                [(ngModel)]="credentials.displayName" placeholder="Username" />
-
-            <input type="email" class="input input-bordered w-full" name="email" required
-                [(ngModel)]="credentials.email" placeholder="Email" />
-
-            <input type="password" class="input input-bordered w-full" name="password" required
-                [(ngModel)]="credentials.password" placeholder="Password" />
-
-            <div class="flex items-center justify-end gap-3">
-                <button class="btn" (click)="cancel()">Cancel</button>
-                <button type="submit" class="btn btn-primary">
-                    Register
-                </button>
-            </div>
-        </form>
-    </div>
+      <!-- reusable component for control with possible all the errors -->
+      <app-text-input label="Username" formControlName="displayName"/>
+      <app-text-input label="Email" formControlName="email"/>
+      <app-text-input label="Password" formControlName="password" type="password"/>
+      <app-text-input label="Confirm Password" formControlName="confirmPassword" type="password"/>
+      
+      <div class="flex items-center justify-end gap-3">
+        <button class="btn" (click)="cancel()">Cancel</button>
+        <button type="submit" class="btn btn-primary" [disabled]="!registerForm.valid">
+          Register
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="flex flex-col w-full mockup-code text-lg items-start px-3">
+    <div>Form Value {{ registerForm.value | json }}</div>
+    <div>Form status {{ registerForm.status | json }}</div>
+  </div>
 </div>

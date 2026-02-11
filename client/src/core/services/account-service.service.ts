@@ -8,7 +8,7 @@ export class AccountService {
   private http = inject(HttpClient);
 
   public currentUser = signal<User | null>(null);
-
+  public registerMode = signal(false);
   private apiUrl = environment.apiUrl;
 
   register(credentials: RegisterCreds) {
