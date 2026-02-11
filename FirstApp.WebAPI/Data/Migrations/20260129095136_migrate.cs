@@ -5,7 +5,7 @@
 namespace FirstApp.WebAPI.data.Migrations
 {
     /// <inheritdoc />
-    public partial class migrate : Migration
+    public partial class migrateData : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

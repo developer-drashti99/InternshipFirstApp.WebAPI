@@ -116,7 +116,7 @@ namespace FirstApp.WebAPI.Controllers
 
             var photo = new Photo
             {
-                Url = result.SecureUri.AbsoluteUri,
+                Url = result.SecureUrl.AbsoluteUri,
                 PublicId = result.PublicId,
                 MemberId = User.getMemberId(),
             };
