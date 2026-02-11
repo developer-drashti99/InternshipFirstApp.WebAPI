@@ -10,7 +10,6 @@ export type AuthUser = {
     displayName: string;
     email: string;
     token: string;
-    // imageUrl?: string;
 }
 export type LoginCreds = {
     email: string;
@@ -19,5 +18,9 @@ export type LoginCreds = {
 export type RegisterCreds = {
     displayName: string;
     email: string;
-    password : string;
+    password: string;
+    gender: string;
+    dateOfBirth: string;
+    city: string;
+    country: string;
 }

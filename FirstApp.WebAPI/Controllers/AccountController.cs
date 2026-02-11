@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using FirstApp.WebAPI.DTOs;
+using FirstApp.WebAPI.Entities;
 using FirstApp.WebAPI.Extensions;
 using FirstApp.WebAPI.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,7 @@ namespace FirstApp.WebAPI.Controllers
             if (await EmailExists(registerDto.Email))
                 return BadRequest("Email is already registered");
             else
-            {   
+            {
                 using var hmac = new HMACSHA512();
                 AppUser employee = new AppUser
                 {
@@ -24,7 +25,16 @@ namespace FirstApp.WebAPI.Controllers
                     Email = registerDto.Email,
                     PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
                     PasswordSalt = hmac.Key,
-                    IsActive = true
+                    IsActive = true,
+                    Member = new Member
+                    {
+                        DisplayName = registerDto.DisplayName,
+                        City = registerDto.City,
+                        Country = registerDto.Country,
+                        Gender = registerDto.Gender,
+                        DateOfBirth=registerDto.DateOfBirth
+
+                    }
                 };
                 context.Users.Add(employee);
                 await context.SaveChangesAsync();

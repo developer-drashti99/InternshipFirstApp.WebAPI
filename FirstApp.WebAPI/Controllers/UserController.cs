@@ -3,9 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using FirstApp.WebAPI.Interfaces;
 using FirstApp.WebAPI.Entities;
 using FirstApp.WebAPI.DTOs;
-using System.Security.Claims;
 using FirstApp.WebAPI.Extensions;
-using FirstApp.WebAPI.Services;
 namespace FirstApp.WebAPI.Controllers
 {
     [Authorize]

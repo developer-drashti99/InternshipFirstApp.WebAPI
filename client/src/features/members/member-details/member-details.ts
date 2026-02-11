@@ -1,7 +1,6 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
-import { Member } from '../../../types/member';
 import { Location } from '@angular/common';
 import { AgePipe } from '../../../core/pipes/age-pipe';
 import { AccountService } from '../../../core/services/account-service.service';
@@ -9,7 +8,7 @@ import { MemberService } from '../../../core/services/member-service.service';
 
 @Component({
   selector: 'app-member-details',
-  imports: [ RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [ RouterLink, RouterLinkActive, RouterOutlet,AgePipe],
   templateUrl: './member-details.html',
   styleUrl: './member-details.css',
 })
