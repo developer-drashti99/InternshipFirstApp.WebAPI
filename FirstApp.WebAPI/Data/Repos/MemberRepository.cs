@@ -1,4 +1,5 @@
 using FirstApp.WebAPI.Entities;
+using FirstApp.WebAPI.Helpers;
 using FirstApp.WebAPI.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,11 +12,11 @@ public class MemberRepository(AppDbContext context) : IMemberRepository
         return await context.Members.FindAsync(id);
     }
 
-    public async Task<IReadOnlyList<Member>> GetMembersAsync()
+    public async Task<PaginatedResult<Member>> GetMembersAsync(PagingParams pagingParams)
     {
-        return await context.Members
-        .Include(x => x.Photos)
-        .ToListAsync();
+        var query = context.Members.Include(x => x.Photos).AsQueryable();
+
+        return await PaginationHelper.CreateAsync(query, pagingParams.PageNumber, pagingParams.PageSize);
     }
 
     public async Task<IReadOnlyList<Photo>> GetPhotosForMemberAsync(string memberId)

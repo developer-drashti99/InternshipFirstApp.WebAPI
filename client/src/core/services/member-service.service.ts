@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { EditableMember, Member, Photo } from '../../types/member';
 import { tap } from 'rxjs';
+import { PaginatedResult } from '../../types/pagination';
 
 @Injectable({
   providedIn: 'root'
@@ -10,41 +11,54 @@ import { tap } from 'rxjs';
 export class MemberService {
   private http = inject(HttpClient);
   private siteUrl = environment.apiUrl;
-  editMode=signal(false);
-  member=signal<Member|null>(null);
+  editMode = signal(false);
+  member = signal<Member | null>(null);
 
-  getMembers() {
-    return this.http.get<Member[]>(this.siteUrl + 'Users');
+  // getMembers(pageNumber = 1, pageSize = 5) {
+  //   let params = new HttpParams();
+
+  //   params.append('pageNumber', pageNumber);
+  //   params.append('pageSize', pageSize);
+
+  //   return this.http.get<PaginatedResult<Member>>(this.siteUrl + 'Users?' + { params });
+  // }
+  getMembers(pageNumber = 1, pageSize = 5) {
+    let params = new HttpParams()
+      .set('pageNumber', pageNumber)
+      .set('pageSize', pageSize);
+
+    return this.http.get<PaginatedResult<Member>>(
+      this.siteUrl + 'Users',
+      { params }
+    );
   }
+
   getMember(id: string) {
     return this.http.get<Member>(this.siteUrl + 'Users/' + id).pipe(
-      tap(member=>{
+      tap(member => {
         this.member.set(member)
       })
     )
   }
-  getMemberPhotos(id:string){
-    return this.http.get<Photo[]>(this.siteUrl+'Users/'+id+'/photos');
+  getMemberPhotos(id: string) {
+    return this.http.get<Photo[]>(this.siteUrl + 'Users/' + id + '/photos');
   }
 
-  updateMember(member:EditableMember)
-  {
-    return this.http.put(this.siteUrl+'Users',member);
+  updateMember(member: EditableMember) {
+    return this.http.put(this.siteUrl + 'Users', member);
   }
 
-  uploadPhoto(file:File)
-  {
-    const formData=new FormData();
-    formData.append('file',file);
-    return this.http.post<Photo>(this.siteUrl+'Users/add-photo',formData)
+  uploadPhoto(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<Photo>(this.siteUrl + 'Users/add-photo', formData)
   }
 
-  setMainPhoto(photo:Photo)
-  {
-    return this.http.put(this.siteUrl+'Users/set-main-photo/'+photo.id,{});
+  setMainPhoto(photo: Photo) {
+    return this.http.put(this.siteUrl + 'Users/set-main-photo/' + photo.id, {});
   }
 
-  deletePhoto(photoId:number){
-    return this.http.delete(this.siteUrl+'Users/delete-photo/'+photoId);
+  deletePhoto(photoId: number) {
+    return this.http.delete(this.siteUrl + 'Users/delete-photo/' + photoId);
   }
 }

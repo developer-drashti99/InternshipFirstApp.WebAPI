@@ -4,6 +4,7 @@ using FirstApp.WebAPI.Interfaces;
 using FirstApp.WebAPI.Entities;
 using FirstApp.WebAPI.DTOs;
 using FirstApp.WebAPI.Extensions;
+using FirstApp.WebAPI.Helpers;
 namespace FirstApp.WebAPI.Controllers
 {
     [Authorize]
@@ -11,11 +12,11 @@ namespace FirstApp.WebAPI.Controllers
     {
         // [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<Member>>> GetUsers()
+        public async Task<ActionResult<IReadOnlyList<Member>>> GetUsers([FromQuery]PagingParams pagingParams)
         {
             try
             {
-                return Ok(await memberRepository.GetMembersAsync());
+                return Ok(await memberRepository.GetMembersAsync(pagingParams));
             }
             catch (Exception ex)
             {

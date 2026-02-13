@@ -3,19 +3,16 @@ using System;
 using FirstApp.WebAPI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace FirstApp.WebAPI.data.Migrations
+namespace FirstApp.WebAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260129095136_migrate")]
-    partial class migrate
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
@@ -99,6 +96,10 @@ namespace FirstApp.WebAPI.data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("MemberId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("PublicId")
                         .HasColumnType("TEXT");
 
@@ -106,13 +107,9 @@ namespace FirstApp.WebAPI.data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("memberId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("memberId");
+                    b.HasIndex("MemberId");
 
                     b.ToTable("Photos");
                 });
@@ -120,8 +117,8 @@ namespace FirstApp.WebAPI.data.Migrations
             modelBuilder.Entity("FirstApp.WebAPI.Entities.Member", b =>
                 {
                     b.HasOne("FirstApp.WebAPI.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("Id")
+                        .WithOne("Member")
+                        .HasForeignKey("FirstApp.WebAPI.Entities.Member", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -130,13 +127,24 @@ namespace FirstApp.WebAPI.data.Migrations
 
             modelBuilder.Entity("FirstApp.WebAPI.Entities.Photo", b =>
                 {
-                    b.HasOne("FirstApp.WebAPI.Entities.Member", "member")
-                        .WithMany()
-                        .HasForeignKey("memberId")
+                    b.HasOne("FirstApp.WebAPI.Entities.Member", "Member")
+                        .WithMany("Photos")
+                        .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("member");
+                    b.Navigation("Member");
+                });
+
+            modelBuilder.Entity("FirstApp.WebAPI.AppUser", b =>
+                {
+                    b.Navigation("Member")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FirstApp.WebAPI.Entities.Member", b =>
+                {
+                    b.Navigation("Photos");
                 });
 #pragma warning restore 612, 618
         }
