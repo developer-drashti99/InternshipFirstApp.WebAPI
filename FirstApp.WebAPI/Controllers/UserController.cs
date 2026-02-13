@@ -12,11 +12,13 @@ namespace FirstApp.WebAPI.Controllers
     {
         // [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<Member>>> GetUsers([FromQuery]PagingParams pagingParams)
+        public async Task<ActionResult<IReadOnlyList<Member>>> GetUsers([FromQuery]MemberParams memberParams)
         {
             try
             {
-                return Ok(await memberRepository.GetMembersAsync(pagingParams));
+                memberParams.CurrentMemberId = User.getMemberId();
+
+                return Ok(await memberRepository.GetMembersAsync(memberParams));
             }
             catch (Exception ex)
             {
