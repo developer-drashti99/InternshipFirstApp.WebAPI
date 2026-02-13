@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { EditableMember, Member, Photo } from '../../types/member';
+import { EditableMember, Member, MemberParams, Photo } from '../../types/member';
 import { tap } from 'rxjs';
 import { PaginatedResult } from '../../types/pagination';
 
@@ -22,10 +22,15 @@ export class MemberService {
 
   //   return this.http.get<PaginatedResult<Member>>(this.siteUrl + 'Users?' + { params });
   // }
-  getMembers(pageNumber = 1, pageSize = 5) {
+  getMembers(memberParams: MemberParams) {
     let params = new HttpParams()
-      .set('pageNumber', pageNumber)
-      .set('pageSize', pageSize);
+      .set('pageNumber', memberParams.pageNumber)
+      .set('pageSize', memberParams.pageSize)
+      .set('minAge', memberParams.minAge)
+      .set('maxAge', memberParams.maxAge);
+
+    if (memberParams.gender)
+      params = params.append('gender', memberParams.gender);
 
     return this.http.get<PaginatedResult<Member>>(
       this.siteUrl + 'Users',
