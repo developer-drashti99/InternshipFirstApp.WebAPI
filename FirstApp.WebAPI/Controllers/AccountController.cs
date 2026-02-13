@@ -45,7 +45,7 @@ namespace FirstApp.WebAPI.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<AuthUserDto>> Login(LoginDto loginDto)
         {
-            AppUser employee = await context.Users.SingleOrDefaultAsync(e => e.Email == loginDto.Email);
+            AppUser? employee = await context.Users.SingleOrDefaultAsync(e => e.Email == loginDto.Email);
             if (employee == null) return Unauthorized("Invalid Email Address");
 
             using var hmac = new HMACSHA512(employee.PasswordSalt);

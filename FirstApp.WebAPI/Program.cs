@@ -28,6 +28,8 @@ builder.Services.AddScoped<IPhotoService, PhotoService>();
 
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 
+builder.Services.AddScoped<LogUserActivity>();
+
 //configured cloudinary api with key
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 

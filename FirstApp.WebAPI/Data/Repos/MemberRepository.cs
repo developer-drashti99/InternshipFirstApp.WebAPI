@@ -27,6 +27,13 @@ public class MemberRepository(AppDbContext context) : IMemberRepository
 
         query = query.Where(x => x.DateOfBirth >= minDob && x.DateOfBirth <= maxDob);
 
+        query = memberParams.OrderBy switch
+        {
+            "created" => query.OrderByDescending(m => m.Created),
+            _ => query.OrderByDescending(m => m.LastActive)
+        };
+
+
         return await PaginationHelper.CreateAsync(query, memberParams.PageNumber, memberParams.PageSize);
     }
 
