@@ -31,4 +31,6 @@ export class MemberParams{
 
   pageNumber=1
   pageSize=10
+
+  orderBy="lastActive"
 }

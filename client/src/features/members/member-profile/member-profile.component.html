@@ -7,7 +7,9 @@
     <div class="flex gap-3">
       <span class="font-semibold">Last active:</span>
       <!-- <span>{{member.lastActive| date:'MMMM d, y'}}</span> -->
-      <span>{{member.lastActive| date:'dd MMM y h:mm:s a'}}</span>
+      <!-- <span>{{member.lastActive| date:'dd MMM y h:mm:s a'}}</span> -->
+      <span>{{member.lastActive|timeAgo}}</span>
+      <!-- <span>{{member.lastActive| timeago}}</span> -->
     </div>
     <h3 class="text-lg font-semibold text-primary">About {{member.displayName}}</h3>
     @if(memberService.editMode())

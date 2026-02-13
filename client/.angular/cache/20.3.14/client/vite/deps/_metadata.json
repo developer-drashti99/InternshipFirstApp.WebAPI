@@ -1,49 +1,55 @@
 {
-  "hash": "7b49d4a1",
-  "configHash": "f842c37d",
-  "lockfileHash": "8b5af9ab",
-  "browserHash": "c387e122",
+  "hash": "1f53445c",
+  "configHash": "5c682b12",
+  "lockfileHash": "e2a3a121",
+  "browserHash": "4e47b356",
   "optimized": {
     "@angular/common": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
       "file": "@angular_common.js",
-      "fileHash": "2a7c655f",
+      "fileHash": "9e37e2b2",
       "needsInterop": false
     },
     "@angular/common/http": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/http.mjs",
       "file": "@angular_common_http.js",
-      "fileHash": "7aab64e4",
+      "fileHash": "b2cc1086",
       "needsInterop": false
     },
     "@angular/core": {
       "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
-      "fileHash": "53a4e6d5",
+      "fileHash": "26941bc5",
       "needsInterop": false
     },
     "@angular/forms": {
       "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
       "file": "@angular_forms.js",
-      "fileHash": "c340127b",
+      "fileHash": "e3cfd617",
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
-      "fileHash": "dff12a54",
+      "fileHash": "380b1eaf",
       "needsInterop": false
     },
     "@angular/router": {
       "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
       "file": "@angular_router.js",
-      "fileHash": "9356849b",
+      "fileHash": "26cc0d1d",
       "needsInterop": false
     },
     "rxjs": {
       "src": "../../../../../../node_modules/rxjs/dist/esm5/index.js",
       "file": "rxjs.js",
-      "fileHash": "d35f35f9",
+      "fileHash": "17d1ee62",
+      "needsInterop": false
+    },
+    "ngx-timeago": {
+      "src": "../../../../../../node_modules/ngx-timeago/fesm2022/ngx-timeago.mjs",
+      "file": "ngx-timeago.js",
+      "fileHash": "d3568c38",
       "needsInterop": false
     }
   },

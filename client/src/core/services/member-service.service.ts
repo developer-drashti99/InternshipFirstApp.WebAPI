@@ -27,7 +27,8 @@ export class MemberService {
       .set('pageNumber', memberParams.pageNumber)
       .set('pageSize', memberParams.pageSize)
       .set('minAge', memberParams.minAge)
-      .set('maxAge', memberParams.maxAge);
+      .set('maxAge', memberParams.maxAge)
+      .set('orderBy', memberParams.orderBy);
 
     if (memberParams.gender)
       params = params.append('gender', memberParams.gender);
