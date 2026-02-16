@@ -1,5 +1,6 @@
 using FirstApp.WebAPI.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FirstApp.WebAPI
 {
@@ -8,5 +9,28 @@ namespace FirstApp.WebAPI
         public DbSet<AppUser> Users { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<Photo> Photos { get; set; }
+        public DbSet<MemberLike> Likes { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            //Get DateTime from the SQL server and convert that in DateTime UTC 
+            var dateTimeConverter = new ValueConverter<DateTime, DateTime>(
+                v => v.ToUniversalTime(),
+                v => DateTime.SpecifyKind(v, DateTimeKind.Utc)
+            );
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entityType.GetProperties())
+                {
+                    if(property.ClrType==typeof(DateTime))
+                    {
+                        property.SetValueConverter(dateTimeConverter);
+                    }
+                }
+            }
+        }
     }
 }

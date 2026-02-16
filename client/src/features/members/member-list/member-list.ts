@@ -23,6 +23,15 @@ export class MemberList implements OnInit {
   protected memberParams = new MemberParams();
   protected updatedParams = new MemberParams();
 
+  constructor() {
+    const filters = localStorage.getItem('filters');
+    if(filters)
+    {
+      this.memberParams=JSON.parse(filters);
+      this.updatedParams=JSON.parse(filters);
+    }
+  }
+
   ngOnInit(): void {
     this.loadMembers();
   }
@@ -50,8 +59,8 @@ export class MemberList implements OnInit {
 
   onFilterChange(data: MemberParams) {
     // console.log('Modal submitted data ',data);
-    this.memberParams = {...data};
-    this.updatedParams={...data};
+    this.memberParams = { ...data };
+    this.updatedParams = { ...data };
     this.loadMembers();
   }
 
