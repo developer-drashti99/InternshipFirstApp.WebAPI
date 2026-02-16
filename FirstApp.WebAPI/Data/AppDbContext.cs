@@ -15,12 +15,42 @@ namespace FirstApp.WebAPI
         {
             base.OnModelCreating(modelBuilder);
 
+            //many to many relationShip configuration
+            // MemberLike is a join table between Members.
+            // We are creating a composite primary key using:
+            // SourceMemberId + TargetMemberId
+            modelBuilder.Entity<MemberLike>()
+                .HasKey(x => new { x.SourceMemberId,x.TargetMemberId });
+
+
+            // One Member (SourceMember) can like many Members.
+            // This defines the relationship from SourceMember side.
+            modelBuilder.Entity<MemberLike>()
+                .HasOne(s => s.SourceMember)
+                .WithMany(t => t.LikedMembers)
+                .HasForeignKey(s => s.SourceMemberId)
+                .OnDelete(DeleteBehavior.Cascade);
+            // If SourceMember is deleted, delete related likes
+
+
+            // One Member (TargetMember) can be liked by many Members.
+            // This defines the relationship from TargetMember side.
+            modelBuilder.Entity<MemberLike>()
+                .HasOne(s => s.TargetMember)
+                .WithMany(t => t.LikedByMembers)
+                .HasForeignKey(s => s.TargetMemberId)
+                .OnDelete(DeleteBehavior.NoAction);
+            // Prevent cascade delete to avoid circular cascade path error
+
+
+            // GLOBAL DATETIME CONVERSION TO UTC
             //Get DateTime from the SQL server and convert that in DateTime UTC 
             var dateTimeConverter = new ValueConverter<DateTime, DateTime>(
                 v => v.ToUniversalTime(),
                 v => DateTime.SpecifyKind(v, DateTimeKind.Utc)
             );
 
+            // Apply this converter to ALL DateTime properties in all entities.
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 foreach (var property in entityType.GetProperties())

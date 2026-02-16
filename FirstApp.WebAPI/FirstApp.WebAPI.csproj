@@ -20,8 +20,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Data\Migrations\" />
-		<Folder Include="Data\Repos\" />
 		<Folder Include="Errors\" />
 		<Folder Include="Middleware\" />
 	</ItemGroup>

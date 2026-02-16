@@ -90,6 +90,21 @@ namespace FirstApp.WebAPI.Migrations
                     b.ToTable("Members");
                 });
 
+            modelBuilder.Entity("FirstApp.WebAPI.Entities.MemberLike", b =>
+                {
+                    b.Property<string>("SourceMemberId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TargetMemberId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("SourceMemberId", "TargetMemberId");
+
+                    b.HasIndex("TargetMemberId");
+
+                    b.ToTable("Likes");
+                });
+
             modelBuilder.Entity("FirstApp.WebAPI.Entities.Photo", b =>
                 {
                     b.Property<int>("Id")
@@ -125,6 +140,25 @@ namespace FirstApp.WebAPI.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("FirstApp.WebAPI.Entities.MemberLike", b =>
+                {
+                    b.HasOne("FirstApp.WebAPI.Entities.Member", "SourceMember")
+                        .WithMany("LikedMembers")
+                        .HasForeignKey("SourceMemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FirstApp.WebAPI.Entities.Member", "TargetMember")
+                        .WithMany("LikedByMembers")
+                        .HasForeignKey("TargetMemberId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("SourceMember");
+
+                    b.Navigation("TargetMember");
+                });
+
             modelBuilder.Entity("FirstApp.WebAPI.Entities.Photo", b =>
                 {
                     b.HasOne("FirstApp.WebAPI.Entities.Member", "Member")
@@ -138,12 +172,15 @@ namespace FirstApp.WebAPI.Migrations
 
             modelBuilder.Entity("FirstApp.WebAPI.AppUser", b =>
                 {
-                    b.Navigation("Member")
-                        .IsRequired();
+                    b.Navigation("Member");
                 });
 
             modelBuilder.Entity("FirstApp.WebAPI.Entities.Member", b =>
                 {
+                    b.Navigation("LikedByMembers");
+
+                    b.Navigation("LikedMembers");
+
                     b.Navigation("Photos");
                 });
 #pragma warning restore 612, 618
