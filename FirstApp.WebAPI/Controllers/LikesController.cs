@@ -33,7 +33,7 @@ namespace FirstApp.WebAPI.Controllers
             return BadRequest("Failed to update like");
         }
 
-        [HttpGet]
+        [HttpGet("list") ]
         public async Task<ActionResult<IReadOnlyList<string>>> GetCurrentMemberLikeIds()
         {
             return Ok(await likesRepository.GetCurrentMemberLikeIds(User.getMemberId()));
