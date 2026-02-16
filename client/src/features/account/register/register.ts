@@ -20,14 +20,18 @@ export class Register {
   protected credentialsForm: FormGroup;
   protected profileForm: FormGroup;
   protected currentStep = signal(1);
-  protected validationErrors=signal<string[]>([]);
-  
+  protected validationErrors = signal<string[]>([]);
+
   constructor() {
     this.credentialsForm = this.formBuilder.group({
       displayName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      // email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.email, Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+      )
+      ]],
       password: ['', [Validators.required,
-      Validators.minLength(4), Validators.maxLength(8)]],
+      Validators.minLength(6)
+      ]],
       confirmPassword: ['', [Validators.required, this.matchValues('password')]]
     });
 
@@ -52,44 +56,57 @@ export class Register {
       return control.value === matchValue ? null : { passwordMismatch: true }
     };
   }
-  
+
+  // nextStep() {
+  //   if (this.credentialsForm.valid) {
+  //     this.currentStep.update(prevStep => prevStep + 1);
+  //   }
+  // }
   nextStep() {
-    if (this.credentialsForm.valid) {
-      this.currentStep.update(prevStep => prevStep + 1);
+    if (this.credentialsForm.invalid) {
+      this.credentialsForm.markAllAsTouched();
+      return;
     }
+
+    this.currentStep.update(prevStep => prevStep + 1);
   }
-  getMaxDate(){
-    const today=new Date();
-    today.setFullYear(today.getFullYear()-18);
+
+  getMaxDate() {
+    const today = new Date();
+    today.setFullYear(today.getFullYear() - 18);
     console.log(today.toISOString().split('T')[0]);
+    return today.toISOString().split('T')[0];
+  }
+  getMinDate() {
+    const today = new Date();
+    today.setFullYear(today.getFullYear() - 100);
     return today.toISOString().split('T')[0];
   }
 
   prevStep() {
-    if (this.credentialsForm.valid) {
-      this.currentStep.update(prevStep => prevStep - 1);
-    }
+    this.currentStep.update(prevStep => prevStep - 1);
   }
 
+
   register(): void {
-    if (this.profileForm.valid && this.credentialsForm.valid) { 
-      const formData={...this.credentialsForm.value,...this.profileForm.value};
+    if (this.profileForm.valid && this.credentialsForm.valid) {
+      const formData = { ...this.credentialsForm.value, ...this.profileForm.value };
       console.log(formData);
-     this.accountService.register(formData).subscribe({
-      next: response => {
-        console.log('Registration successful', response);
-        this.router.navigateByUrl('/members');
-        this.accountService.registerMode.set(false);
-        this.cancel();
-      },
-      error: error => {
-        console.error('Registration failed', error);
-        this.validationErrors.set(error);
-      }
-    });
-    
+      this.accountService.register(formData).subscribe({
+        next: response => {
+          console.log('Registration successful', response);
+          this.router.navigateByUrl('/members');
+          this.accountService.registerMode.set(false);
+          this.cancel();
+        },
+        error: error => {
+          console.error('Registration failed', error);
+          this.validationErrors.set(error);
+        }
+      });
+
     }
-   console.log(this.credentialsForm.value);
+    console.log(this.credentialsForm.value);
   }
   cancel(): void {
     this.cancelRegister.emit(false);

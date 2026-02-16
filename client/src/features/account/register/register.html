@@ -51,6 +51,7 @@
           </label>
         </div>
         <app-text-input label="Date Of Birth" [maxDate]="getMaxDate()"
+        [minDate]="getMinDate()"
         formControlName="dateOfBirth" type="date" />
         <app-text-input label="City" formControlName="city" />
         <app-text-input label="Country" formControlName="country" />

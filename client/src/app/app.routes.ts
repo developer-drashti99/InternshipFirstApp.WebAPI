@@ -27,7 +27,8 @@ export const routes: Routes = [
         runGuardsAndResolvers: 'always',
         children: [
           { path: '', redirectTo: 'profile', pathMatch: 'full' },
-          { path: 'profile', component: MemberProfileComponent, title: 'Profile', canDeactivate: [preventUnsavedChangesGuard] },
+          { path: 'profile', component: MemberProfileComponent, title: 'Profile', 
+            canDeactivate: [preventUnsavedChangesGuard] },
           { path: 'messages', component: MemberMessagesComponent, title: 'Messages' },
           { path: 'photos', component: MemberPhotosComponent, title: 'Photos' },
         ]

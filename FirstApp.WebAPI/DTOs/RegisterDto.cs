@@ -9,6 +9,8 @@ namespace FirstApp.WebAPI.DTOs
 
         [Required]
         [EmailAddress]
+        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]{2,}$",
+    ErrorMessage = "Enter a valid email address.")]
         public string Email { get; set; } = "";
         
         [Required]
