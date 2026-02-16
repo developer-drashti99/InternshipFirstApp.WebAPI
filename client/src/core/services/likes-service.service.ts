@@ -17,7 +17,7 @@ export class LikesService {
   }
 
   getLikes(predicate: string) {
-    this.http.get<Member[]>(this.apiUrl + 'likes?predicate=' + predicate);
+    return this.http.get<Member[]>(this.apiUrl + 'likes?predicate=' + predicate);
   }
 
   getLikeIds() {

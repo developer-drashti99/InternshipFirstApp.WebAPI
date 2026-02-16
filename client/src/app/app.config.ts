@@ -9,13 +9,16 @@ import { routes } from './app.routes';
 import { jwtInterceptor } from '../core/interceptors/jwt-interceptor';
 import { loadingInterceptor } from '../core/interceptors/loading-interceptor';
 
+import { provideTimeago } from 'ngx-timeago';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     // i have added second param for smooth transition
     provideRouter(routes, withViewTransitions()),
-    provideHttpClient(withInterceptors([errorInterceptor,jwtInterceptor,loadingInterceptor])),
+    provideTimeago(),
+    provideHttpClient(withInterceptors([errorInterceptor, jwtInterceptor, loadingInterceptor])),
     provideAppInitializer(async () => {
       const initService = inject(InitService);
 

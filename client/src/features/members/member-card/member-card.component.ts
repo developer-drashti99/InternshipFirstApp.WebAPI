@@ -3,13 +3,17 @@ import { Member } from '../../../types/member';
 import { RouterLink } from "@angular/router";
 import { AgePipe } from '../../../core/pipes/age-pipe';
 import { LikesService } from '../../../core/services/likes-service.service';
+import { TimeagoPipe } from 'ngx-timeago';
+
 
 @Component({
   selector: 'app-member-card',
   templateUrl: './member-card.component.html',
   styleUrls: ['./member-card.component.css'],
-  imports: [RouterLink, AgePipe]
+ imports: [RouterLink, AgePipe, TimeagoPipe],
+
 })
+
 export class MemberCardComponent {
   private likeService = inject(LikesService);
   member = input.required<Member>();
