@@ -1,5 +1,6 @@
 ﻿using FirstApp.WebAPI.Entities;
 using FirstApp.WebAPI.Extensions;
+using FirstApp.WebAPI.Helpers;
 using FirstApp.WebAPI.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,16 +34,17 @@ namespace FirstApp.WebAPI.Controllers
             return BadRequest("Failed to update like");
         }
 
-        [HttpGet("list") ]
+        [HttpGet("list")]
         public async Task<ActionResult<IReadOnlyList<string>>> GetCurrentMemberLikeIds()
         {
             return Ok(await likesRepository.GetCurrentMemberLikeIds(User.getMemberId()));
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<Member>>> GetMemberLikes(string predicate)
+        public async Task<ActionResult<PaginatedResult<Member>>> GetMemberLikes([FromQuery] LikesParams likesParams)
         {
-            var members=await likesRepository.GetMemberLikes(predicate, User.getMemberId());
+            likesParams.MemberId = User.getMemberId();
+            var members = await likesRepository.GetMemberLikes(likesParams);
             return Ok(members);
         }
     }
