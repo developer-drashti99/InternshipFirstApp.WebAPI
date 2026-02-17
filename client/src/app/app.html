@@ -1,7 +1,23 @@
 <app-nav-bar></app-nav-bar>
+@if (busyService.busyRequestCount() > 0) {
+  <div
+    id="initial-splash"
+    class="fixed inset-0 z-9999 flex flex-col items-center justify-center bg-black/5 backdrop-blur-sm h-full w-full"
+  >
+    <div class="text-6xl mb-4 animate-pulse">
+      <i class="pi pi-users"></i>
+    </div>
+
+    <h1 class="text-3xl font-bold mb-2">DatingApp</h1>
+
+    <p class="mb-6 opacity-70">Finding your perfect match…</p>
+
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+}
 <div class="container mt-20 mb-4 mx-auto">
-    <router-outlet></router-outlet> 
-    <!-- for rendering routed components -->
+  <router-outlet></router-outlet>
+  <!-- for rendering routed components -->
 </div>
 <!-- <footer class="text-center mt-5">
     <p>&copy; 2024 My First Angular App</p>

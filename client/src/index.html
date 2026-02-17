@@ -1,7 +1,5 @@
 <!doctype html>
-<html lang="en" class="bg-base-300">
-<!-- <html lang="en" data-theme="light"> -->
-
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <title>Client</title>
@@ -11,23 +9,29 @@
 </head>
 
 <body>
-  <div id="initial-splash" class="fixed inset-0 flex flex-col items-center justify-center bg-[rgba-0.5] z-50">
-    <!-- Logo / Icon -->
+
+  <app-root></app-root>
+
+  <!-- <div
+    id="initial-splash"
+    class="fixed inset-0 z-9999
+           flex flex-col items-center justify-center
+           bg-black/5 backdrop-blur-sm"
+  >
     <div class="text-6xl mb-4 animate-pulse">
       <i class="pi pi-users"></i>
     </div>
 
-    <!-- App name -->
-    <h1 class="text-3xl font-bold mb-2">DatingApp</h1>
+    <h1 class="text-3xl font-bold mb-2">
+      DatingApp
+    </h1>
 
-    <!-- Loading text -->
-    <p class="opacity-70 mb-6">Finding your perfect match…</p>
+    <p class="mb-6 opacity-70">
+      Finding your perfect match…
+    </p>
 
-    <!-- Spinner -->
-    <span class="loading loading-spinner loading-lg text-primary"></span>
-  </div>
+    <span class="loading loading-spinner loading-lg"></span>
+  </div> -->
 
-  <app-root></app-root>
 </body>
-
 </html>
