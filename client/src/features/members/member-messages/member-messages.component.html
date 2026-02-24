@@ -1,3 +1,49 @@
-<p>
-  member-messages works!
-</p>
+<div class="flex flex-col w-full h-[70vh]">
+  <div class="flex flex-col grow overflow-auto">
+    @for (item of messages(); track $index) {
+      <!-- <div
+    class="flex flex-col sm:flex-row sm:items-center py-4 px-6 gap-4 chat"
+    [class.chat-end]="item.senderId === memberService.member()?.id"
+    [class.chat-start]="item.senderId !== memberService.member()?.id"
+  >
+  </div> -->
+      <div class="not-prose">
+        <div
+          class="chat"
+          [class.chat-start]="item.senderId === memberService.member()?.id"
+          [class.chat-end]="item.senderId !== memberService.member()?.id"
+        >
+          <div class="chat-image avatar">
+            <div class="w-10 h-10 rounded-full overflow-hidden shrink-0">
+              <img [src]="item.senderImageUrl" class="w-full h-full object-cover" alt="avatar" />
+            </div>
+          </div>
+          <div class="chat-header">
+            {{ item.senderDisplayName }}
+            <time class="text-xs opacity-50 ml-2">
+              {{ item.messageSent | date: 'd/M/yyyy, h:mm a' }}
+            </time>
+          </div>
+          <div class="chat-bubble">
+            {{ item.content }}
+          </div>
+          <div class="chat-footer opacity-50">
+            @if (item.currentUserSender && item.dateRead) {
+              Seen {{ item.dateRead | timeAgo }}
+            } @else if (item.currentUserSender && !item.dateRead) {
+              Not read
+            } @else {
+              Delievered
+            }
+          </div>
+        </div>
+      </div>
+    }
+    <div #messageEndRef></div>
+  </div>
+  <div class="flex join w-full ">
+    <input [(ngModel)]="messageContent" class="input input-bordered w-full"
+    placeholder="Enter your message" (keydown.enter)="sendMessage()">
+    <button (click)="sendMessage()" type="submit" class="btn btn-primary join-item">Send</button>
+  </div>
+</div>

@@ -1,1 +1,107 @@
-<p>messages works!</p>
+<div class="rounded-2xl shadow-lg overflow-hidden">
+  <!-- Tabs -->
+  <div class="border-b border-surface-200 px-4 pt-4">
+    <p-tabs value="0">
+      <p-tablist>
+        @for (tab of tabs; track tab.value) {
+          <p-tab
+            [value]="tab.value"
+            (click)="setContainer(tab.value)"
+            class="font-medium px-4 py-2"
+          >
+            {{ tab.title }}
+          </p-tab>
+        }
+      </p-tablist>
+    </p-tabs>
+  </div>
+
+  <!-- Paginator -->
+  <div class="p-4">
+    <p-paginator
+      (onPageChange)="onPageChange($event)"
+      [first]="first"
+      [rows]="pageSize"
+      [totalRecords]="paginatedMessages()?.metadata?.totalCount"
+      [rowsPerPageOptions]="[5, 10, 15, 20, 30]"
+    />
+  </div>
+
+  <div class="mx-[2vw]">
+    <!-- Message List -->
+    <p-dataview [value]="paginatedMessages()?.items ?? []" layout="list">
+      <ng-template #list let-items>
+        <div *ngFor="let item of items; let isFirst = first">
+          <div
+            class="p-72 flex justify-between items-center px-6 py-4 transition-all duration-200 hover:bg-surface-50"
+            [ngClass]="{ 'border-t border-surface-200 dark:border-surface-700': !isFirst }"
+          >
+            <!-- LEFT SIDE -->
+            <div
+              class="flex items-center gap-4 flex-1 cursor-pointer"
+              routerLink="/members/{{ isInbox ? item.senderId : item.recipientId }}/messages"
+            >
+              <!-- Avatar -->
+              <div class="rounded-full overflow-hidden shrink-0">
+                <img
+                  [src]="isInbox ? item.senderImageUrl : item.recipientImageUrl"
+                  class="w-full h-full object-cover"
+                  alt="avatar"
+                />
+              </div>
+
+              <!-- Text Content -->
+              <div class="flex flex-col flex-1 min-w-0">
+                <!-- Name + Time -->
+                <div class="flex justify-between items-center">
+                  <span class="font-semibold text-base text-surface-900 dark:text-surface-0">
+                    {{ isInbox ? item.senderDisplayName : item.recipientDisplayName }}
+                  </span>
+                </div>
+              </div>
+              <div class="flex flex-col flex-1 min-w-0">
+                <!-- Message Preview -->
+                <span class="font-semibold text-base text-surface-900 dark:text-surface-0">
+                  Message: {{ item.content }}
+                </span>
+              </div>
+              <div class="flex flex-col flex-1 min-w-0">
+                <span class="text-xs text-color-secondary whitespace-nowrap ml-4">
+                  {{ item.messageSent | date: 'short' }}
+                </span>
+              </div>
+            </div>
+
+            <!-- DELETE BUTTON -->
+            <button
+              type="button"
+              class="ml-4 text-red-400 hover:text-red-600 transition"
+              (click)="openDeleteModal(item.id)"
+            >
+              <i class="pi pi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </ng-template>
+    </p-dataview>
+  </div>
+</div>
+<!--  -->
+<dialog #deleteModal class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Delete Message?</h3>
+    <p class="py-4">
+      This message will disappear from your account, but the other person will still be able to see
+      it. This action cannot be undone.
+    </p>
+    <div class="modal-action">
+      <form method="dialog">
+        <!-- if there is a button in form, it will close the modal -->
+        <button class="btn btn-error mr-2" (click)="deleteMessage($event, messageToDeleteId!)">
+          Delete
+        </button>
+        <button class="btn">Cancel</button>
+      </form>
+    </div>
+  </div>
+</dialog>

@@ -2,7 +2,7 @@
 {
 <!-- <app-member-card [member]="member"></app-member-card> -->
 <div class="flex gap-6">
-  <div class="card bg-base-100 flex flex-col h-[85vh] w-1/4">
+  <div class="card bg-base-100 flex flex-col h-[85vh] w-1/4 border">
     <img src="{{member.imageUrl||'default_user.jpg'}}" alt="image of member"
       class="rounded-full mx-10 mt-3 object-cover">
     <div class="card-body py-0">
@@ -23,19 +23,19 @@
           <a routerLink="photos" routerLinkActive="text-primary">Photos</a>
         </li>
         <li>
-          @if(isCurrentUser())
-          {
+          <!-- @if(isCurrentUser())
+          { -->
           <a routerLink="messages" routerLinkActive="text-primary">Messages</a>
-          }
+          <!-- } -->
         </li>
       </ul>
     </div>
-    <div class="card-actions justify-between gap-2 px-2 mb-3">
+    <div class="card-actions justify-between gap-2 px-2 mb-3 ">
       <button class="btn btn-info flex-1" (click)="goBack()"><i class="pi pi-arrow-left"></i> Go Back</button>
       <!-- <button class="btn btn-info flex-1">Like User <i class="pi pi-heart-fill"></i> </button> -->
     </div>
   </div>
-  <div class="card bg-base-100 w-3/4 p-6">
+  <div class="card bg-base-100 w-3/4 pt-3 pb-5 px-6 flex flex-col h-[85vh] border">
     <div class="flex justify-between items-center">
       <h3 class="card-title text-3xl text-primary">{{title()}}</h3>
       @if(isCurrentUser())
@@ -45,9 +45,10 @@
       {{memberService.editMode()?'Cancel':'Edit'}}
       </button>
       }
+     
     </div>
     <div class="divider divider-primary"></div>
-    <div>
+    <div class="h-full">
       <router-outlet></router-outlet>
     </div>
   </div>

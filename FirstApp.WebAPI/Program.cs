@@ -3,6 +3,7 @@ using FirstApp.WebAPI.Data;
 using FirstApp.WebAPI.Data.Repos;
 using FirstApp.WebAPI.Helpers;
 using FirstApp.WebAPI.Interfaces;
+using FirstApp.WebAPI.Mapping;
 using FirstApp.WebAPI.Middleware;
 using FirstApp.WebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -27,8 +28,12 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 builder.Services.AddScoped<ILikesRepository, LikesRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
 builder.Services.AddScoped<LogUserActivity>();
+
+// added automapper to the service container and specified the mapping profile
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 //configured cloudinary api with key
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));

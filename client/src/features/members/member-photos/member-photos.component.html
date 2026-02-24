@@ -6,7 +6,7 @@
           @if (isCurrentUser()) {
             <div class="relative">
               <img src="{{ photo.url }}" alt="photo of member" 
-              class="w-full rounded-lg" />
+              class="h-40 w-40 rounded-lg" />
               <app-star-button 
               [disabled]="photo.url ===memberService.member()?.imageUrl"
               [selected]="photo.url ===memberService.member()?.imageUrl"
@@ -14,12 +14,14 @@
               />
               <app-delete-button  
               [disabled]="photo.url ===memberService.member()?.imageUrl"
-               (clickEvent)="deletePhoto(photo.id)" 
+               (clickEvent)="openDeleteModal(photo.id)" 
                class="absolute top-1 left-1"
                />
             </div>
           } @else {
-            <img src="{{ photo.url }}" alt="photo of member" class="w-full rounded-lg" />
+             <div class="relative">
+               <img src="{{ photo.url }}" alt="photo of member"  class="w-full rounded-lg" />
+              </div>
           }
         }
         <!-- @for (photo of photoMocks; track $index){
@@ -33,3 +35,20 @@
 } @else {
   <app-image-upload (uploadFile)="onUploadImage($event)" [loading]="loading()"></app-image-upload>
 }
+<dialog #deleteModal class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Delete Image?</h3>
+    <p class="py-4">
+      This image will be deleted from your account. This action cannot be undone.
+    </p>
+    <div class="modal-action">
+      <form method="dialog">
+        <!-- if there is a button in form, it will close the modal -->
+        <button class="btn btn-error mr-2" (click)="deletePhoto(photoToDeleteId!)">
+          Delete
+        </button>
+        <button class="btn">Cancel</button>
+      </form>
+    </div>
+  </div>
+</dialog>

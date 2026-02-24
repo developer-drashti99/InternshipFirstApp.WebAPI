@@ -105,6 +105,44 @@ namespace FirstApp.WebAPI.Migrations
                     b.ToTable("Likes");
                 });
 
+            modelBuilder.Entity("FirstApp.WebAPI.Entities.Message", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DateRead")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("MessageSent")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("RecipientDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("RecipientId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("SenderDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SenderId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipientId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("FirstApp.WebAPI.Entities.Photo", b =>
                 {
                     b.Property<int>("Id")
@@ -159,6 +197,25 @@ namespace FirstApp.WebAPI.Migrations
                     b.Navigation("TargetMember");
                 });
 
+            modelBuilder.Entity("FirstApp.WebAPI.Entities.Message", b =>
+                {
+                    b.HasOne("FirstApp.WebAPI.Entities.Member", "Recipient")
+                        .WithMany("MessagesReceived")
+                        .HasForeignKey("RecipientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("FirstApp.WebAPI.Entities.Member", "Sender")
+                        .WithMany("MessagesSent")
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Recipient");
+
+                    b.Navigation("Sender");
+                });
+
             modelBuilder.Entity("FirstApp.WebAPI.Entities.Photo", b =>
                 {
                     b.HasOne("FirstApp.WebAPI.Entities.Member", "Member")
@@ -180,6 +237,10 @@ namespace FirstApp.WebAPI.Migrations
                     b.Navigation("LikedByMembers");
 
                     b.Navigation("LikedMembers");
+
+                    b.Navigation("MessagesReceived");
+
+                    b.Navigation("MessagesSent");
 
                     b.Navigation("Photos");
                 });
