@@ -42,6 +42,8 @@ builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection(
 
 builder.Services.AddSignalR();
 
+builder.Services.AddSingleton<PresenceTracker>();
+
 //added identity core to the service container and specified the user and role types, as well as the database context for storing user information for authentication and authorization purposes. Also configured password and user options for identity.
 builder.Services.AddIdentityCore<AppUser>(options =>
 {
@@ -71,22 +73,38 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         // so ASP.NET Core can validate the user properly.
 
         //“SignalR → token comes from query string, not header.”
-        new JwtBearerEvents()
+        //new JwtBearerEvents()
+        //{
+        //    OnMessageReceived = context =>
+        //    {
+        //        var accessToken = context.Request.Query["access_token"];
+
+        //        var path = context.HttpContext.Request.Path;
+
+        //        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+        //        {
+        //            context.Token = accessToken;
+        //        }
+
+        //        return Task.CompletedTask;
+        //    }
+        //}; 
+        options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
             {
                 var accessToken = context.Request.Query["access_token"];
-
                 var path = context.HttpContext.Request.Path;
 
-                if (string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    path.StartsWithSegments("/hubs"))
                 {
                     context.Token = accessToken;
                 }
 
                 return Task.CompletedTask;
             }
-        }; 
+        };
     });
 
 

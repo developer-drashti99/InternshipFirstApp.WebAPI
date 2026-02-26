@@ -1,0 +1,40 @@
+﻿using System.Collections.Concurrent;
+
+namespace FirstApp.WebAPI.SignalR
+{
+    public class PresenceTracker
+    {
+        //userID     connectionId 
+        private static readonly ConcurrentDictionary<string,
+            ConcurrentDictionary<string, byte>> OnlineUsers = new();
+
+        public Task UserConnected(string userId, string connectionId)
+        {
+            var connections = OnlineUsers.GetOrAdd(userId,
+                _ => new ConcurrentDictionary<string, byte>());
+
+            connections.TryAdd(connectionId, 0);
+
+            return Task.CompletedTask;
+        }
+
+        public Task UserDisconnected(string userId, string connectionId)
+        {
+            //out all the connections matched
+            if (OnlineUsers.TryGetValue(userId, out var connections))
+            {
+                connections.TryRemove(connectionId, out _);
+                if (connections.IsEmpty)
+                {
+                    OnlineUsers.TryRemove(userId, out _);
+                }
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task<string[]> GetOnlineUsers()
+        {
+            return Task.FromResult(OnlineUsers.Keys.OrderBy(k => k).ToArray());
+        }
+    }
+}
