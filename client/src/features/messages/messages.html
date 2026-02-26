@@ -44,7 +44,7 @@
               <!-- Avatar -->
               <div class="rounded-full overflow-hidden shrink-0">
                 <img
-                  [src]="isInbox ? item.senderImageUrl : item.recipientImageUrl"
+                  [src]="isInbox ? item.senderImageUrl : item.recipientImageUrl || 'default_user.jpg'"
                   class="w-full h-full object-cover"
                   alt="avatar"
                 />

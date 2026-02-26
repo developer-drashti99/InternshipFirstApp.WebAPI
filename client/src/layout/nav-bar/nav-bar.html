@@ -22,11 +22,14 @@
 
         <a routerLink="/messages" routerLinkActive="font-bold">Messages</a>
 
+        <a *appHasRole="['Admin','Moderator']" routerLink="/admin" routerLinkActive="font-bold"
+          >Admin</a
+        >
         <a routerLink="/lists" routerLinkActive="font-bold">Lists</a>
       }
       <a routerLink="/errors" routerLinkActive="font-bold">Errors</a>
     </nav>
-    
+
     <div class="flex align-middle ml-auto gap-3">
       <div class="dropdown mr-5 dropdown-end">
         <button

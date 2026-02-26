@@ -7,6 +7,7 @@ using FirstApp.WebAPI.Mapping;
 using FirstApp.WebAPI.Middleware;
 using FirstApp.WebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -38,6 +39,16 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 //configured cloudinary api with key
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
+
+//added identity core to the service container and specified the user and role types, as well as the database context for storing user information for authentication and authorization purposes. Also configured password and user options for identity.
+builder.Services.AddIdentityCore<AppUser>(options =>
+{
+    options.Password.RequireNonAlphanumeric = false;
+    options.User.RequireUniqueEmail = true;
+}).AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>();
+
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -54,6 +65,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 
+//added custom policy-based authorization ,"RequireAdminRole" for admin and "ModeratePhotoRole" for admin and moderator,These policies can be used to restrict access to certain actions or controllers based on the user's role.
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("RequireAdminRole",policy=>policy.RequireRole("Admin"))
+    .AddPolicy("ModeratePhotoRole", policy=>policy.RequireRole("Admin","Moderator"));
+
+
 //configure the HTTP request pipeline
 var app = builder.Build();
 
@@ -64,6 +81,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors(policy =>
     policy.AllowAnyHeader()
     .AllowAnyMethod()
+    .AllowCredentials()
     .WithOrigins("http://localhost:4200", "https://localhost:4200")
     // .AllowAnyOrigin()
     //.WithOrigins("http://localhost:4200/", "https://localhost:4200/")
@@ -80,8 +98,9 @@ var services = scope.ServiceProvider;
 try
 {
     var context = services.GetRequiredService<AppDbContext>();
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
     await context.Database.MigrateAsync();
-    await Seed.SeedUsers(context);
+    await Seed.SeedUsers(userManager);
 
 }
 catch (Exception ex)

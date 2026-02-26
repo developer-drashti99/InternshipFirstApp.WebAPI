@@ -4,7 +4,7 @@ import { MemberService } from '../../../core/services/member-service.service';
 import { Member, MemberParams } from '../../../types/member';
 import { MemberCardComponent } from "../member-card/member-card.component";
 import { PaginatedResult } from '../../../types/pagination';
-import { PaginatorComponent } from "../../../shared/paginator/paginator.component";
+import { PaginatorComponent } from "../../../shared/components/paginator/paginator.component";
 import { FilterModalComponent } from '../filter-modal/filter-modal.component';
 
 @Component({

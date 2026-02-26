@@ -7,11 +7,12 @@ import { themes } from '../themes';
 import { BusyService } from '../../core/services/busy-service.service';
 import { PrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
+import { HasRole } from '../../shared/directives/has-role';
 
 @Component({
   selector: 'app-nav-bar',
   standalone: true,
-  imports: [FormsModule, RouterLink, RouterLinkActive],
+  imports: [FormsModule, RouterLink, RouterLinkActive,HasRole],
   templateUrl: './nav-bar.html',
   styleUrl: './nav-bar.css',
 })

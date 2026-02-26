@@ -8,30 +8,37 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toast = inject(ToastService);
   const router = inject(Router);
   return next(req).pipe(
-    catchError(error => {
+    catchError((error) => {
       if (error) {
         switch (error.status) {
           case 500:
-            const navigationExtras: NavigationExtras = { state: { error: error.error } }
+            const navigationExtras: NavigationExtras = { state: { error: error.error } };
             router.navigateByUrl('/server-error', navigationExtras);
             break;
           case 400:
-            toast.error(error.error);
-            // router.navigateByUrl('/not-found');
+            if (error.error?.errors) {
+              const validationErrors = Object.values(error.error.errors).flat().join('\n');
+
+              toast.error(validationErrors);
+            } else if (typeof error.error === 'string') {
+              toast.error(error.error);
+            } else {
+              toast.error(error.error?.title || 'Bad Request');
+            }
             break;
           case 401:
-            toast.error("Unauthorized");
+            toast.error('Unauthorized');
             break;
           case 404:
             router.navigateByUrl('/not-found');
             break;
 
           default:
-            toast.error("Something went wrong");
+            toast.error('Something went wrong');
             break;
         }
       }
       throw error;
-    })
-  )
+    }),
+  );
 };

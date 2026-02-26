@@ -2,7 +2,7 @@ import { Component, inject, output, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { RegisterCreds } from '../../../types/user';
 import { AccountService } from '../../../core/services/account-service.service';
-import { TextInputComponent } from "../../../shared/text-input/text-input.component";
+import { TextInputComponent } from "../../../shared/components/text-input/text-input.component";
 import { Router } from '@angular/router';
 
 @Component({

@@ -30,6 +30,10 @@
           "skipTests": true,
           "path": "src/core/pipes"
         },
+        "@schematics/angular:directive": {
+          "skipTests": true,
+          "path": "src/shared/directives"
+        }
       },
       "root": "",
       "sourceRoot": "src",
@@ -81,18 +85,16 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "options": {
-            "ssl": true,
-            "sslCert": "./ssl/localhost.pem",
-            "sslKey": "./ssl/localhost-key.pem"
-          },
           "builder": "@angular/build:dev-server",
           "configurations": {
+            "development": {
+              "buildTarget": "client:build:development",
+              "ssl": true,
+              "sslCert": "ssl/localhost.pem",
+              "sslKey": "ssl/localhost-key.pem"
+            },
             "production": {
               "buildTarget": "client:build:production"
-            },
-            "development": {
-              "buildTarget": "client:build:development"
             }
           },
           "defaultConfiguration": "development"

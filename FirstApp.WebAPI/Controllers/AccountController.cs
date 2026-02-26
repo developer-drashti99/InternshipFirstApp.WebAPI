@@ -1,68 +1,121 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using FirstApp.WebAPI.DTOs;
+﻿using FirstApp.WebAPI.DTOs;
 using FirstApp.WebAPI.Entities;
 using FirstApp.WebAPI.Extensions;
 using FirstApp.WebAPI.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FirstApp.WebAPI.Controllers
 {
-    public class AccountController(AppDbContext context, ITokenService tokenService) : BaseApiController
+    public class AccountController(UserManager<AppUser> userManager, ITokenService tokenService) : BaseApiController
     {
         [HttpPost("register")]
         public async Task<ActionResult<AuthUserDto>> Register(RegisterDto registerDto)
         {
-            if (await EmailExists(registerDto.Email))
-                return BadRequest("Email is already registered");
-            else
+            AppUser user = new AppUser
             {
-                using var hmac = new HMACSHA512();
-                AppUser employee = new AppUser
+                DisplayName = registerDto.DisplayName,
+                Email = registerDto.Email,
+                UserName = registerDto.Email,
+                IsActive = true,
+                Member = new Member
                 {
                     DisplayName = registerDto.DisplayName,
-                    Email = registerDto.Email,
-                    PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-                    PasswordSalt = hmac.Key,
-                    IsActive = true,
-                    Member = new Member
-                    {
-                        DisplayName = registerDto.DisplayName,
-                        City = registerDto.City,
-                        Country = registerDto.Country,
-                        Gender = registerDto.Gender,
-                        DateOfBirth=registerDto.DateOfBirth
-
-                    }
-                };
-                context.Users.Add(employee);
-                await context.SaveChangesAsync();
-                return employee.ToAuthDto(tokenService);
+                    City = registerDto.City,
+                    Country = registerDto.Country,
+                    Gender = registerDto.Gender,
+                    DateOfBirth = registerDto.DateOfBirth
+                }
+            };
+            var result = await userManager.CreateAsync(user, registerDto.Password);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.Code + " identity", error.Description);
+                }
+                return ValidationProblem(ModelState);
             }
+            //setting default user as member
+            var role = await userManager.AddToRoleAsync(user, "Member");
+
+            await SetRefreshTokenCookie(user);
+
+            return await user.ToAuthDto(tokenService);
+
         }
 
+        //[HttpPost("login")]
+        //public async Task<ActionResult<AuthUserDto>> Login(LoginDto loginDto)
+        //{
+        //    AppUser? user = await userManager.FindByEmailAsync(loginDto.Email);
+        //    if (user == null) return Unauthorized("Invalid Email Address");
+
+        //    var result = await userManager.CheckPasswordAsync(user, loginDto.Password);
+
+        //    if(!result) return Unauthorized("Invalid Password");) 
+
+        //    return user.ToAuthDto(tokenService);
+        //}
         [HttpPost("login")]
         public async Task<ActionResult<AuthUserDto>> Login(LoginDto loginDto)
         {
-            AppUser? employee = await context.Users.SingleOrDefaultAsync(e => e.Email == loginDto.Email);
-            if (employee == null) return Unauthorized("Invalid Email Address");
+            if (!ModelState.IsValid)
+                return BadRequest("Invalid login request");
 
-            using var hmac = new HMACSHA512(employee.PasswordSalt);
-            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
+            var user = await userManager.FindByEmailAsync(loginDto.Email);
 
-            for (int i = 0; i < computedHash.Length; i++)
-            {
-                if (computedHash[i] != employee.PasswordHash[i])
-                    return Unauthorized("Incorrect Password");
-            }
+            // Always return same message
+            if (user == null)
+                return Unauthorized("Invalid credentials");
 
-            return employee.ToAuthDto(tokenService);
+            var result = await userManager.CheckPasswordAsync(user, loginDto.Password);
+
+            if (!result)
+                return Unauthorized("Invalid credentials");
+
+            // Optional: check if account is locked
+            if (await userManager.IsLockedOutAsync(user))
+                return Unauthorized("Account is locked. Please try later.");
+
+            await SetRefreshTokenCookie(user);
+
+            return await user.ToAuthDto(tokenService);
         }
-        private async Task<bool> EmailExists(string email)
+
+
+        //generating new access token using refresh token
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<AuthUserDto>> RefreshToken()
         {
-            // return await context.Users.AnyAsync(e=>e.Email.Equals(email,StringComparison.CurrentCultureIgnoreCase));
-            return await context.Users.AnyAsync(e => e.Email.ToLower() == email.ToLower());
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (refreshToken == null) return NoContent();
+
+            var user = await userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken && u.RefreshTokenExpiry > DateTime.UtcNow);
+
+            if (user == null) return Unauthorized();
+
+            await SetRefreshTokenCookie(user);
+
+            return await user.ToAuthDto(tokenService);
+        }
+
+        private async Task SetRefreshTokenCookie(AppUser user)
+        {
+            var refreshToken = tokenService.GenerateRefreshToken();
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+            await userManager.UpdateAsync(user);
+
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,//https
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
         }
     }
 }

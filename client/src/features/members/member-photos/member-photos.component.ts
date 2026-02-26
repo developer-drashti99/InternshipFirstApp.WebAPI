@@ -2,11 +2,11 @@ import { Component, computed, ElementRef, inject, OnInit, signal, ViewChild } fr
 import { MemberService } from '../../../core/services/member-service.service';
 import { ActivatedRoute } from '@angular/router';
 import { Member, Photo } from '../../../types/member';
-import { ImageUploadComponent } from '../../../shared/image-upload/image-upload.component';
+import { ImageUploadComponent } from '../../../shared/components/image-upload/image-upload.component';
 import { AccountService } from '../../../core/services/account-service.service';
 import { User } from '../../../types/user';
-import { StarButtonComponent } from '../../../shared/star-button/star-button.component';
-import { DeleteButtonComponent } from '../../../shared/delete-button/delete-button.component';
+import { StarButtonComponent } from '../../../shared/components/star-button/star-button.component';
+import { DeleteButtonComponent } from '../../../shared/components/delete-button/delete-button.component';
 
 @Component({
   selector: 'app-member-photos',

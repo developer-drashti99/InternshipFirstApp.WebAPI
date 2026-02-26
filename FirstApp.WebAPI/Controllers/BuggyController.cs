@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FirstApp.WebAPI.Controllers
@@ -24,6 +25,13 @@ namespace FirstApp.WebAPI.Controllers
         {
             return BadRequest("This is not a good request");
             // throw new Exception("This is not a good request");
+        }
+
+        [HttpGet("admin-secret")]
+        [Authorize(Roles = "Admin")]
+        public ActionResult<string> GetSecretAdmin()
+        {
+            return Ok("Only Admin should see them");
         }
     }
 }

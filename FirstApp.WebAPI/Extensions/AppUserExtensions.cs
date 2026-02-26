@@ -11,18 +11,18 @@ namespace FirstApp.WebAPI.Extensions
             {
                 Id = user.Id,
                 DisplayName = user.DisplayName,
-                Email = user.Email,
+                Email = user.Email!,
             };
         }
-        public static AuthUserDto ToAuthDto(this AppUser user,ITokenService tokenService)
+        public static async Task<AuthUserDto> ToAuthDto(this AppUser user,ITokenService tokenService)
         {
             return new AuthUserDto
             {
                 Id = user.Id,
                 DisplayName = user.DisplayName,
-                Email = user.Email,
+                Email = user.Email!,
                 ImageUrl=user.ImageUrl,
-                Token = tokenService.CreateToken(user)
+                Token = await tokenService.CreateToken(user)
             };
         }
     }

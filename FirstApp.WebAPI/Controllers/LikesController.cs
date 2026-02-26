@@ -2,15 +2,19 @@
 using FirstApp.WebAPI.Extensions;
 using FirstApp.WebAPI.Helpers;
 using FirstApp.WebAPI.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FirstApp.WebAPI.Controllers
 {
+    //[Authorize(Roles="Member")]
     public class LikesController(ILikesRepository likesRepository) : BaseApiController
     {
         [HttpPost("{targetMemberId}")]
         public async Task<ActionResult> ToggleLike(string targetMemberId)
         {
+            if (User.IsInRole("Admin"))
+                return BadRequest("Admins cannot like members.");
             var sourceMemberId = User.getMemberId();
             if (sourceMemberId == targetMemberId) return BadRequest("You cannot like yourself");
 

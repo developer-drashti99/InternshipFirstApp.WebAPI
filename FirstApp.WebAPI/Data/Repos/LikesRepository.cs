@@ -9,6 +9,10 @@ namespace FirstApp.WebAPI.Data.Repos
     {
         public void AddLike(MemberLike like)
         {
+            Console.WriteLine("INSERTING:");
+            Console.WriteLine("Source: " + like.SourceMemberId);
+            Console.WriteLine("Target: " + like.TargetMemberId);
+
             context.Likes.Add(like);
         }
 

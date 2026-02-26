@@ -15,7 +15,7 @@
         >
           <div class="chat-image avatar">
             <div class="w-10 h-10 rounded-full overflow-hidden shrink-0">
-              <img [src]="item.senderImageUrl" class="w-full h-full object-cover" alt="avatar" />
+              <img [src]="item.senderImageUrl || 'default_user.jpg'" class="w-full h-full object-cover" alt="avatar" />
             </div>
           </div>
           <div class="chat-header">

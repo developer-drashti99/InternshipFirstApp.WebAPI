@@ -3,7 +3,7 @@ import { LikesService } from '../../core/services/likes-service.service';
 import { Member } from '../../types/member';
 import { MemberCardComponent } from '../members/member-card/member-card.component';
 import { PaginatedResult } from '../../types/pagination';
-import { PaginatorComponent } from "../../shared/paginator/paginator.component";
+import { PaginatorComponent } from "../../shared/components/paginator/paginator.component";
 @Component({
   selector: 'app-list-component',
   templateUrl: './list-component.component.html',

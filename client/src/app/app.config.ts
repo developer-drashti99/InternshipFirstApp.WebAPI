@@ -42,7 +42,7 @@ export const appConfig: ApplicationConfig = {
       return new Promise<void>((resolve) => {
         setTimeout(async () => {
           try {
-            return lastValueFrom(initService.init());
+            initService.init();
           } finally {
             const splash = document.getElementById('initial-splash');
             if (splash) {
