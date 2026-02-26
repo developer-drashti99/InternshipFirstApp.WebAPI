@@ -6,6 +6,7 @@ using FirstApp.WebAPI.Interfaces;
 using FirstApp.WebAPI.Mapping;
 using FirstApp.WebAPI.Middleware;
 using FirstApp.WebAPI.Services;
+using FirstApp.WebAPI.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +40,7 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 //configured cloudinary api with key
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
+builder.Services.AddSignalR();
 
 //added identity core to the service container and specified the user and role types, as well as the database context for storing user information for authentication and authorization purposes. Also configured password and user options for identity.
 builder.Services.AddIdentityCore<AppUser>(options =>
@@ -62,6 +64,29 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false,
             ValidateIssuer = false
         };
+
+        // SignalR sends JWT token in query string (?access_token=...)
+        // instead of Authorization header during WebSocket connection.
+        // This extracts the token from the query string for hub requests
+        // so ASP.NET Core can validate the user properly.
+
+        //“SignalR → token comes from query string, not header.”
+        new JwtBearerEvents()
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+
+                var path = context.HttpContext.Request.Path;
+
+                if (string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                {
+                    context.Token = accessToken;
+                }
+
+                return Task.CompletedTask;
+            }
+        }; 
     });
 
 
@@ -91,6 +116,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<PresenceHub>("hubs/presence");
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
