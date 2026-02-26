@@ -13,9 +13,18 @@
           [class.chat-start]="item.senderId === memberService.member()?.id"
           [class.chat-end]="item.senderId !== memberService.member()?.id"
         >
-          <div class="chat-image avatar">
+          <div
+            class="chat-image avatar"
+            [class.avatar-online]="
+              presenceService.onlineUsers().includes(item.senderId || item.recipientId)
+            "
+          >
             <div class="w-10 h-10 rounded-full overflow-hidden shrink-0">
-              <img [src]="item.senderImageUrl || 'default_user.jpg'" class="w-full h-full object-cover" alt="avatar" />
+              <img
+                [src]="item.senderImageUrl || 'default_user.jpg'"
+                class="w-full h-full object-cover"
+                alt="avatar"
+              />
             </div>
           </div>
           <div class="chat-header">
@@ -41,9 +50,13 @@
     }
     <div #messageEndRef></div>
   </div>
-  <div class="flex join w-full ">
-    <input [(ngModel)]="messageContent" class="input input-bordered w-full"
-    placeholder="Enter your message" (keydown.enter)="sendMessage()">
+  <div class="flex join w-full">
+    <input
+      [(ngModel)]="messageContent"
+      class="input input-bordered w-full"
+      placeholder="Enter your message"
+      (keydown.enter)="sendMessage()"
+    />
     <button (click)="sendMessage()" type="submit" class="btn btn-primary join-item">Send</button>
   </div>
 </div>

@@ -42,13 +42,17 @@
               routerLink="/members/{{ isInbox ? item.senderId : item.recipientId }}/messages"
             >
               <!-- Avatar -->
-              <div class="rounded-full overflow-hidden shrink-0">
-                <img
-                  [src]="isInbox ? item.senderImageUrl : item.recipientImageUrl || 'default_user.jpg'"
-                  class="w-full h-full object-cover"
-                  alt="avatar"
-                />
-              </div>
+                <div class="h-48 w-48 rounded-full overflow-hidden shrink-0">
+                  <img
+                    [src]="
+                      isInbox
+                        ? item.senderImageUrl || 'default_user.jpg'
+                        : item.recipientImageUrl || 'default_user.jpg'
+                    "
+                    class="w-full h-full object-cover"
+                    alt="avatar"
+                  />
+                </div>
 
               <!-- Text Content -->
               <div class="flex flex-col flex-1 min-w-0">

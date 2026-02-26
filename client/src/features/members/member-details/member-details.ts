@@ -5,6 +5,7 @@ import { Location } from '@angular/common';
 import { AgePipe } from '../../../core/pipes/age-pipe';
 import { AccountService } from '../../../core/services/account-service.service';
 import { MemberService } from '../../../core/services/member-service.service';
+import { PresenceService } from '../../../core/services/presence-service.service';
 
 @Component({
   selector: 'app-member-details',
@@ -16,9 +17,13 @@ export class MemberDetails implements OnInit {
   private route = inject(ActivatedRoute);
   protected router = inject(Router);
   private location = inject(Location);
+
   private accountService=inject(AccountService);
   protected memberService=inject(MemberService);
   protected title = signal<string | undefined>('Profile');
+  protected presenceService = inject(PresenceService);
+  
+
   protected isCurrentUser=computed(()=>{
     return this.accountService.currentUser()?.id ===
     this.route.snapshot.paramMap.get("id");

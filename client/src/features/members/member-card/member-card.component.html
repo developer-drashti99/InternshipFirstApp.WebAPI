@@ -11,12 +11,15 @@
     />
 
     <!-- Online Badge -->
-    <div
-      class="absolute top-3 left-3 z-30 flex items-center gap-1 px-2 py-1 text-xs rounded-full bg-green-500/90 text-white shadow"
+    @if (isOnline()) {
+        <span class="absolute status status-success status-xl top-3 left-3 z-30 animate-pulse"></span>
+    }
+    <!-- <div
+    class="absolute top-3 left-3 z-30 flex items-center gap-1 px-2 py-1 text-xs rounded-full bg-green-500/90 text-white shadow"
     >
       <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
       {{ member.lastActive | timeago }}
-    </div>
+    </div> -->
 
     <!-- Like Button -->
     <button
