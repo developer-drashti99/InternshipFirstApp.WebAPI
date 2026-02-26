@@ -1,0 +1,70 @@
+﻿using FirstApp.WebAPI.DTOs;
+using FirstApp.WebAPI.Entities;
+using FirstApp.WebAPI.Extensions;
+using FirstApp.WebAPI.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Primitives;
+
+namespace FirstApp.WebAPI.SignalR
+{
+    [Authorize]
+    public class MessageHub(IMessageRepository messageRepository,IMemberRepository memberRepository) : Hub
+    {
+        public override async Task OnConnectedAsync()
+        {
+            //http request to setup SignalR connection
+            var httpContext = Context.GetHttpContext();
+
+            var otherUser = httpContext?.Request.Query["userId"].ToString() ?? throw new HubException("Other user not found");
+
+            var groupName = GetGroupName(GetUserId(), otherUser);
+
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+
+            var messages = await messageRepository.GetMessageThread(GetUserId(), otherUser);
+
+            await Clients.Group(groupName).SendAsync("RecieveMessageThread", messages);
+        }
+
+        public override Task OnDisconnectedAsync(Exception? exception)
+        {
+            return base.OnDisconnectedAsync(exception);
+        }
+
+        public async Task SendMessage(CreateMessageDto createMessageDto)
+        {
+            var sender = await memberRepository.GetMemberByIdAsync(GetUserId());
+            var recipient = await memberRepository.GetMemberByIdAsync(createMessageDto.RecipientId);
+
+            if (recipient == null || sender == null || sender.Id == createMessageDto.RecipientId)
+                throw new  HubException("Can not send message");
+
+            var message = new Message
+            {
+                SenderId = sender.Id,
+                RecipientId = recipient.Id,
+                Content = createMessageDto.Content
+            };
+
+            messageRepository.AddMessage(message);
+            if (await messageRepository.SaveAllAsync())
+            {
+
+                var group = GetGroupName(sender.Id, recipient.Id);
+                await Clients.Group(group).SendAsync("NewMessage", await messageRepository.GetMessageDtoById(message.Id));
+            }
+        }
+
+        private string GetGroupName(string? caller, string? other)
+        {
+            var stringCompare = string.CompareOrdinal(caller, other) < 0;
+            return stringCompare ? $"{caller}-{other}" : $"{other}-{caller}";
+        }
+        private string GetUserId()
+        {
+            return Context.User?.getMemberId()
+                ?? throw new HubException("can not get memberId");
+        }
+    }
+}

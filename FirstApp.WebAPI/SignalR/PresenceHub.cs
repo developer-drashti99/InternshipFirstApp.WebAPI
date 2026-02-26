@@ -11,7 +11,6 @@ namespace FirstApp.WebAPI.SignalR
         public override async Task OnConnectedAsync()
         {
             await presenceTracker.UserConnected(GetUserId(),Context.ConnectionId);
-
             //for checking that who is online
             await Clients.Others.SendAsync("UserOnline",GetUserId());
 
