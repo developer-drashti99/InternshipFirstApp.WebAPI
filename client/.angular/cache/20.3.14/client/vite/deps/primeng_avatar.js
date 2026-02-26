@@ -1,22 +1,22 @@
 import {
   BaseComponent,
   PARENT_INSTANCE
-} from "./chunk-YR2GAM5M.js";
+} from "./chunk-LTRWCZZA.js";
 import {
   Bind
-} from "./chunk-SWUDQPYX.js";
+} from "./chunk-XMHTEWJD.js";
 import {
   BaseStyle
-} from "./chunk-BZ2BQCNM.js";
+} from "./chunk-UWKVZRU5.js";
 import {
   SharedModule
-} from "./chunk-EKNR6WFM.js";
+} from "./chunk-AKNBGUIB.js";
 import "./chunk-TIK557PQ.js";
 import {
   CommonModule,
   NgClass,
   NgIf
-} from "./chunk-IPHKZ556.js";
+} from "./chunk-ZY2NYKVD.js";
 import "./chunk-R6U7IGMG.js";
 import {
   ChangeDetectionStrategy,
@@ -58,10 +58,9 @@ import {
   ɵɵtemplateRefExtractor,
   ɵɵtext,
   ɵɵtextInterpolate
-} from "./chunk-IBCQBLWI.js";
-import "./chunk-Y72XGDAT.js";
-import "./chunk-HSWANC32.js";
-import "./chunk-GOMI4DH3.js";
+} from "./chunk-D5A67E6H.js";
+import "./chunk-RSS3ODKE.js";
+import "./chunk-XSXJULYR.js";
 
 // node_modules/@primeuix/styles/dist/avatar/index.mjs
 var style = "\n    .p-avatar {\n        display: inline-flex;\n        align-items: center;\n        justify-content: center;\n        width: dt('avatar.width');\n        height: dt('avatar.height');\n        font-size: dt('avatar.font.size');\n        background: dt('avatar.background');\n        color: dt('avatar.color');\n        border-radius: dt('avatar.border.radius');\n    }\n\n    .p-avatar-image {\n        background: transparent;\n    }\n\n    .p-avatar-circle {\n        border-radius: 50%;\n    }\n\n    .p-avatar-circle img {\n        border-radius: 50%;\n    }\n\n    .p-avatar-icon {\n        font-size: dt('avatar.icon.size');\n        width: dt('avatar.icon.size');\n        height: dt('avatar.icon.size');\n    }\n\n    .p-avatar img {\n        width: 100%;\n        height: 100%;\n    }\n\n    .p-avatar-lg {\n        width: dt('avatar.lg.width');\n        height: dt('avatar.lg.width');\n        font-size: dt('avatar.lg.font.size');\n    }\n\n    .p-avatar-lg .p-avatar-icon {\n        font-size: dt('avatar.lg.icon.size');\n        width: dt('avatar.lg.icon.size');\n        height: dt('avatar.lg.icon.size');\n    }\n\n    .p-avatar-xl {\n        width: dt('avatar.xl.width');\n        height: dt('avatar.xl.width');\n        font-size: dt('avatar.xl.font.size');\n    }\n\n    .p-avatar-xl .p-avatar-icon {\n        font-size: dt('avatar.xl.icon.size');\n        width: dt('avatar.xl.icon.size');\n        height: dt('avatar.xl.icon.size');\n    }\n\n    .p-avatar-group {\n        display: flex;\n        align-items: center;\n    }\n\n    .p-avatar-group .p-avatar + .p-avatar {\n        margin-inline-start: dt('avatar.group.offset');\n    }\n\n    .p-avatar-group .p-avatar {\n        border: 2px solid dt('avatar.group.border.color');\n    }\n\n    .p-avatar-group .p-avatar-lg + .p-avatar-lg {\n        margin-inline-start: dt('avatar.lg.group.offset');\n    }\n\n    .p-avatar-group .p-avatar-xl + .p-avatar-xl {\n        margin-inline-start: dt('avatar.xl.group.offset');\n    }\n";

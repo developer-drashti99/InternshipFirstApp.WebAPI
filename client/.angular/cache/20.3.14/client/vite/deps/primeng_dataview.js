@@ -1,34 +1,34 @@
 import {
   Paginator,
   PaginatorModule
-} from "./chunk-A5THLBJ2.js";
-import "./chunk-7KPJGOXR.js";
-import "./chunk-SOCHSFRD.js";
-import "./chunk-4PGE6FGP.js";
-import "./chunk-FBXO2HBR.js";
-import "./chunk-YELIFGFI.js";
-import "./chunk-H4UPUN7W.js";
-import "./chunk-G3YRNM46.js";
+} from "./chunk-WZTYX77C.js";
+import "./chunk-WXXHGSO2.js";
+import "./chunk-22JZ2DI3.js";
+import "./chunk-3FESJAPR.js";
+import "./chunk-5RFN3OXF.js";
+import "./chunk-E5XZVSSF.js";
+import "./chunk-ZGYNQE2G.js";
 import {
   SpinnerIcon
-} from "./chunk-T4S44PDW.js";
+} from "./chunk-TDFCVT6M.js";
 import {
   BaseComponent,
   PARENT_INSTANCE
-} from "./chunk-YR2GAM5M.js";
+} from "./chunk-LTRWCZZA.js";
 import {
   Bind
-} from "./chunk-SWUDQPYX.js";
+} from "./chunk-XMHTEWJD.js";
 import {
   BaseStyle
-} from "./chunk-BZ2BQCNM.js";
+} from "./chunk-UWKVZRU5.js";
+import "./chunk-YELIFGFI.js";
 import {
   FilterService,
   Footer,
   Header,
   SharedModule,
   TranslationKeys
-} from "./chunk-EKNR6WFM.js";
+} from "./chunk-AKNBGUIB.js";
 import {
   p
 } from "./chunk-TIK557PQ.js";
@@ -37,7 +37,7 @@ import {
   NgIf,
   NgTemplateOutlet,
   SlicePipe
-} from "./chunk-IPHKZ556.js";
+} from "./chunk-ZY2NYKVD.js";
 import "./chunk-R6U7IGMG.js";
 import {
   ChangeDetectionStrategy,
@@ -91,10 +91,9 @@ import {
   ɵɵtemplate,
   ɵɵtext,
   ɵɵtextInterpolate1
-} from "./chunk-IBCQBLWI.js";
-import "./chunk-Y72XGDAT.js";
-import "./chunk-HSWANC32.js";
-import "./chunk-GOMI4DH3.js";
+} from "./chunk-D5A67E6H.js";
+import "./chunk-RSS3ODKE.js";
+import "./chunk-XSXJULYR.js";
 
 // node_modules/@primeuix/styles/dist/dataview/index.mjs
 var style = "\n    .p-dataview {\n        position: relative;\n        border-color: dt('dataview.border.color');\n        border-width: dt('dataview.border.width');\n        border-style: solid;\n        border-radius: dt('dataview.border.radius');\n        padding: dt('dataview.padding');\n    }\n\n    .p-dataview-header {\n        background: dt('dataview.header.background');\n        color: dt('dataview.header.color');\n        border-color: dt('dataview.header.border.color');\n        border-width: dt('dataview.header.border.width');\n        border-style: solid;\n        padding: dt('dataview.header.padding');\n        border-radius: dt('dataview.header.border.radius');\n    }\n\n    .p-dataview-content {\n        background: dt('dataview.content.background');\n        border-color: dt('dataview.content.border.color');\n        border-width: dt('dataview.content.border.width');\n        border-style: solid;\n        color: dt('dataview.content.color');\n        padding: dt('dataview.content.padding');\n        border-radius: dt('dataview.content.border.radius');\n    }\n\n    .p-dataview-footer {\n        background: dt('dataview.footer.background');\n        color: dt('dataview.footer.color');\n        border-color: dt('dataview.footer.border.color');\n        border-width: dt('dataview.footer.border.width');\n        border-style: solid;\n        padding: dt('dataview.footer.padding');\n        border-radius: dt('dataview.footer.border.radius');\n    }\n\n    .p-dataview-paginator-top {\n        border-width: dt('dataview.paginator.top.border.width');\n        border-color: dt('dataview.paginator.top.border.color');\n        border-style: solid;\n    }\n\n    .p-dataview-paginator-bottom {\n        border-width: dt('dataview.paginator.bottom.border.width');\n        border-color: dt('dataview.paginator.bottom.border.color');\n        border-style: solid;\n    }\n\n    .p-dataview-loading-overlay {\n        position: absolute;\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        z-index: 2;\n    }\n";

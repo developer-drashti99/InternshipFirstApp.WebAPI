@@ -29,6 +29,7 @@
     "@angular/forms": "^20.3.0",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
+    "@microsoft/signalr": "^10.0.0",
     "@primeng/themes": "^21.0.4",
     "@tailwindcss/postcss": "^4.1.18",
     "ngx-timeago": "^4.1.0",
