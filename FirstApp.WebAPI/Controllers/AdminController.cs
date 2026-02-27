@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FirstApp.WebAPI.DTOs;
+using FirstApp.WebAPI.Helpers;
+using FirstApp.WebAPI.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -6,29 +9,39 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FirstApp.WebAPI.Controllers
 {
-    public class AdminController(UserManager<AppUser> userManager) : BaseApiController
+    public class AdminController(UserManager<AppUser> userManager,IMemberRepository memberRepository) : BaseApiController
     {
+        #region comment 
+        //[Authorize(Policy = "RequireAdminRole")]
+        //[HttpGet("users-with-roles")]
+        //public async Task<ActionResult> GetUsersWithRoles()
+        //{
+        //    var users = await userManager.Users.ToListAsync();
+        //    var userList = new List<object>();
+
+        //    foreach (var user in users)
+        //    {
+        //        var roles = await userManager.GetRolesAsync(user);
+        //        userList.Add(new
+        //        {
+        //            user.Id,
+        //            user.UserName,
+        //            user.Email,
+        //            roles
+        //        });
+
+        //    }
+
+        //    return Ok(userList);
+        //}
+        #endregion comment
+
         [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("users-with-roles")]
-        public async Task<ActionResult> GetUsersWithRoles()
+        public async Task<ActionResult<PaginatedResult<UserWithRolesDto>>> GetUsersWithRoles(
+     [FromQuery] UserParams userParams)
         {
-            var users = await userManager.Users.ToListAsync();
-            var userList = new List<object>();
-
-            foreach (var user in users)
-            {
-                var roles = await userManager.GetRolesAsync(user);
-                userList.Add(new
-                {
-                    user.Id,
-                    user.UserName,
-                    user.Email,
-                    roles
-                });
-
-            }
-
-            return Ok(userList);
+            return Ok(await memberRepository.GetUsersWithRolesAsync(userParams));
         }
 
         [Authorize(Policy = "RequireAdminRole")]

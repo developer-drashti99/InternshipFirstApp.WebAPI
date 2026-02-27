@@ -22,40 +22,65 @@ export class UserManagementComponent implements OnInit {
   protected users = signal<User[]>([]);
   protected availableRoles = [{ name: 'Member' }, { name: 'Moderator' }, { name: 'Admin' }];
   protected selectedUser: User | null = null;
-  protected selectedRoles: any[] = [];
+  protected selectedRoles: string[] = [];
+  protected totalRecords = 0;
+  protected pageNumber = 1;
+  protected pageSize = 5;
+  protected loading = false;
+
   ngOnInit(): void {
-    this.getUserWithRoles();
+    this.getUserWithRoles(this.pageNumber,this.pageSize);
   }
 
-  getUserWithRoles() {
-    this.adminService.getUserWithRoles().subscribe({
-      next: (users) => this.users.set(users),
+  getUserWithRoles(pageNumber: number, pageSize: number) {
+    this.adminService.getUserWithRoles(pageNumber, pageSize).subscribe({
+      next: (response) => {
+        this.users.set(response.items);
+        this.totalRecords = response.metadata.totalCount;
+        this.pageSize = response.metadata.pageSize;
+      },
     });
   }
 
   openRolesModal(user: User) {
     this.selectedUser = user;
-    // map string roles to object format
-    this.selectedRoles = this.availableRoles.filter((role) => user.roles.includes(role.name));
+    this.selectedRoles = [...user.roles];
     this.isRolesDialogVisible = true;
   }
 
   updateRoles() {
     if (!this.selectedUser) return;
 
-    const rolesToSend = this.selectedRoles.map((r) => r.name);
-
-    this.adminService.updateUserRoles(this.selectedUser.id, rolesToSend).subscribe({
+    this.adminService.updateUserRoles(this.selectedUser.id, this.selectedRoles).subscribe({
       next: () => {
         this.users.update((users) =>
-          users.map((user) => {
-            if (user.id === this.selectedUser?.id) user.roles = rolesToSend;
-            return user;
-          }),
+          users.map((u) =>
+            u.id === this.selectedUser?.id ? { ...u, roles: this.selectedRoles } : u,
+          ),
         );
+
         this.isRolesDialogVisible = false;
       },
-      error: (err) => this.toast.error('Failed to update roles', err),
+    });
+  }
+
+  loadUsers(event: any) {
+    const pageNumber = event.first / event.rows + 1;
+    const pageSize = event.rows;
+
+    this.loading = true;
+
+    this.adminService.getUserWithRoles(pageNumber, pageSize).subscribe({
+      next: (response) => {
+        this.users.set(response.items);
+        this.totalRecords = response.metadata.totalCount;
+        this.pageNumber=response.metadata.currentPage;
+        this.pageSize = response.metadata.pageSize;
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      },
     });
   }
 }

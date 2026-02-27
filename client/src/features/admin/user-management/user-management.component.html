@@ -1,27 +1,47 @@
 <div class="card h-[75vh]">
   <p-table
-  [value]="users()"
-  [paginator]="true"
-  [rows]="5"
-  [rowsPerPageOptions]="[5, 10, 20]"
-  [scrollable]="true"
-  scrollHeight="flex"
-  class="h-full"
->
-    <ng-template #header pTemplate="header">
+    [value]="users()"
+    [lazy]="true"
+    (onLazyLoad)="loadUsers($event)"
+    [paginator]="true"
+    [rows]="pageSize"
+    [totalRecords]="totalRecords"
+    [loading]="loading"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [scrollable]="true"
+    scrollHeight="flex"
+    class="h-full"
+  >
+    <ng-template pTemplate="header">
       <tr>
         <th>Email</th>
         <th>Active Roles</th>
-        <th>Actions</th>
+        <th style="width: 150px;">Actions</th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" #body let-user>
+
+    <ng-template pTemplate="body" let-user>
       <tr>
         <td>{{ user.email }}</td>
-        <td>{{ user.roles }}</td>
+
+        <!-- Roles as chips instead of comma string -->
         <td>
-          <button class="btn btn-primary" (click)="openRolesModal(user)">
-            <i class="pi pi-pencil"></i> Edit Roles
+          <div class="flex flex-wrap gap-2">
+            <span
+              *ngFor="let role of user.roles"
+              class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700"
+            >
+              {{ role }}
+            </span>
+          </div>
+        </td>
+
+        <td>
+          <button
+            class="btn btn-primary btn-sm"
+            (click)="openRolesModal(user)"
+          >
+            <i class="pi pi-pencil"></i> Edit
           </button>
         </td>
       </tr>
@@ -40,16 +60,15 @@
   <div class="flex flex-col gap-4">
     <h3 class="text-lg font-bold">Edit Roles for {{ selectedUser?.email }}</h3>
 
-    <p-multiselect
-      [options]="availableRoles"
-      [(ngModel)]="selectedRoles"
-      optionLabel="name"
-      display="chip"
-      appendTo="body"
-      [panelStyle]="{ 'max-height': '200px' }"
-      [disabled]="selectedUser?.email === 'admin@test.com'"
-      class="w-full"
-    />
+   <p-multiselect
+  [options]="availableRoles"
+  [(ngModel)]="selectedRoles"
+  optionLabel="name"
+  optionValue="name"
+  display="chip"
+  appendTo="body"
+  class="w-full"
+/>
 
     <div class="flex justify-end">
       <button class="btn btn-primary" (click)="updateRoles()">Submit</button>

@@ -1,3 +1,4 @@
+using FirstApp.WebAPI.DTOs;
 using FirstApp.WebAPI.Entities;
 using FirstApp.WebAPI.Helpers;
 
@@ -11,5 +12,7 @@ public interface IMemberRepository
     Task<Member?> GetMemberByIdAsync(string id);
     Task<IReadOnlyList<Photo>> GetPhotosForMemberAsync(string memberId);
     Task<Member?> GetMemberForUpdate(string id);
-    
+    public Task<PaginatedResult<UserWithRolesDto>> GetUsersWithRolesAsync(UserParams userParams);
+
+
 }

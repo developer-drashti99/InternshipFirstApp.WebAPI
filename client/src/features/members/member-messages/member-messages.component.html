@@ -1,12 +1,6 @@
 <div class="flex flex-col w-full h-[70vh]">
-  <div class="flex flex-col grow overflow-auto">
-    @for (item of messages(); track $index) {
-      <!-- <div
-    class="flex flex-col sm:flex-row sm:items-center py-4 px-6 gap-4 chat"
-    [class.chat-end]="item.senderId === memberService.member()?.id"
-    [class.chat-start]="item.senderId !== memberService.member()?.id"
-  >
-  </div> -->
+  <div class="flex flex-col grow overflow-y-auto min-h-0">
+    @for (item of messageService.messageThread(); track item.id) {
       <div class="not-prose">
         <div
           class="chat"

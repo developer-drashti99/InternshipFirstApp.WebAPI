@@ -82,23 +82,26 @@
               ]
             }
           },
-          "defaultConfiguration": "production"
-        },
-        "serve": {
-          "builder": "@angular/build:dev-server",
-          "configurations": {
-            "development": {
-              "buildTarget": "client:build:development",
-              "ssl": true,
-              "sslCert": "ssl/localhost.pem",
-              "sslKey": "ssl/localhost-key.pem"
-            },
-            "production": {
-              "buildTarget": "client:build:production"
-            }
-          },
           "defaultConfiguration": "development"
         },
+        "serve": {
+  "builder": "@angular/build:dev-server",
+  "options": {
+    "hmr": true
+  },
+  "configurations": {
+    "development": {
+      "buildTarget": "client:build:development",
+      "ssl": true,
+      "sslCert": "ssl/localhost.pem",
+      "sslKey": "ssl/localhost-key.pem"
+    },
+    "production": {
+      "buildTarget": "client:build:production"
+    }
+  },
+  "defaultConfiguration": "development"
+},
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n"
         },
