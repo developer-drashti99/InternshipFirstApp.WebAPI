@@ -27,7 +27,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
             }
             break;
           case 401:
-            toast.error('Unauthorized');
+            if (!req.url.includes('refresh-token')) {
+              toast.error('Unauthorized');
+            }
             break;
           case 404:
             router.navigateByUrl('/not-found');

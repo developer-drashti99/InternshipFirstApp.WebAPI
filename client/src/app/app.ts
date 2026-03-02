@@ -2,22 +2,22 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
-import { NavBar } from "../layout/nav-bar/nav-bar";
+import { NavBar } from '../layout/nav-bar/nav-bar';
 import { BusyService } from '../core/services/busy-service.service';
+import { AccountService } from '../core/services/account-service.service';
 
 @Component({
   selector: 'app-root',
   imports: [NavBar, RouterOutlet, RouterModule, CommonModule, FormsModule],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
-export class App
 // implements OnInit
-{
-
+export class App {
   protected router = inject(Router);
-   protected busyService = inject(BusyService);
-
+  protected busyService = inject(BusyService);
+  // protected accountService = inject(AccountService);
+ 
 
   // private accountService = inject(AccountService);
   // private http = inject(HttpClient);
@@ -32,12 +32,10 @@ export class App
   // 👇this code is in init-service👇
   // this.setCurrentEmployees();
 
-
   //   } catch (error) {
   //     console.error('Error fetching employees:', error);
   //   }
   // }
-
 
   // 👇this code is in init-service👇
   // setCurrentEmployees() {

@@ -1,13 +1,13 @@
 import {
   Paginator,
   PaginatorModule
-} from "./chunk-WZTYX77C.js";
-import "./chunk-WXXHGSO2.js";
+} from "./chunk-IENJ5L5Z.js";
+import "./chunk-7VBUZ67H.js";
 import "./chunk-22JZ2DI3.js";
 import "./chunk-3FESJAPR.js";
-import "./chunk-5RFN3OXF.js";
 import "./chunk-E5XZVSSF.js";
 import "./chunk-ZGYNQE2G.js";
+import "./chunk-5RFN3OXF.js";
 import {
   SpinnerIcon
 } from "./chunk-TDFCVT6M.js";
@@ -21,7 +21,6 @@ import {
 import {
   BaseStyle
 } from "./chunk-UWKVZRU5.js";
-import "./chunk-YELIFGFI.js";
 import {
   FilterService,
   Footer,
@@ -32,6 +31,7 @@ import {
 import {
   p
 } from "./chunk-TIK557PQ.js";
+import "./chunk-YELIFGFI.js";
 import {
   CommonModule,
   NgIf,

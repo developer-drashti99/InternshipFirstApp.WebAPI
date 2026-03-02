@@ -14,6 +14,11 @@ namespace FirstApp.WebAPI.Data.Repos
 {
     public class MessageRepository(AppDbContext context, IMapper _mapper) : IMessageRepository
     {
+        public void AddGroup(Group group)
+        {
+            context.Groups.Add(group);
+        }
+
         public void AddMessage(Message message)
         {
             context.Messages.Add(message);
@@ -22,6 +27,19 @@ namespace FirstApp.WebAPI.Data.Repos
         public void DeleteMessage(Message message)
         {
             context.Messages.Remove(message);
+        }
+
+        public async Task<Connection?> GetConnection(string connectionId)
+        {
+            return await context.Connections.FindAsync(connectionId);
+        }
+
+        public async Task<Group?> GetGroupForConnection(string connectionId)
+        {
+            return await context.Groups
+                .Include(g => g.Connections)
+                .Where(g => g.Connections.Any(c => c.ConnectionId == connectionId))
+                .FirstOrDefaultAsync();
         }
 
         public async Task<Message?> GetMessage(string messageId)
@@ -34,6 +52,13 @@ namespace FirstApp.WebAPI.Data.Repos
             return await context.Messages
             .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
             .SingleOrDefaultAsync(m => m.Id == id);
+        }
+
+        public async Task<Group?> GetMessageGroup(string groupName)
+        {
+            return await context.Groups
+                .Include(g => g.Connections)
+                .FirstOrDefaultAsync(g => g.Name == groupName);
         }
 
         public async Task<PaginatedResult<MessageDto>> GetMessagesForMember(MessageParams messageParams)
@@ -72,7 +97,7 @@ namespace FirstApp.WebAPI.Data.Repos
             return await context.Messages
                 .Where(m =>
                     (m.RecipientId == currentMemberId &&
-                    m.SenderId == recipientId &&                     
+                    m.SenderId == recipientId &&
                     !m.RecipientDeleted)
                     ||
                     (m.SenderId == currentMemberId &&
@@ -83,6 +108,14 @@ namespace FirstApp.WebAPI.Data.Repos
                 .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
+
+        public async Task RemoveConnection(string connectionId)
+        {
+            await context.Connections
+                .Where(c => c.ConnectionId == connectionId)
+                .ExecuteDeleteAsync();
+        }
+
         public async Task<bool> SaveAllAsync()
         {
             return await context.SaveChangesAsync() > 0;

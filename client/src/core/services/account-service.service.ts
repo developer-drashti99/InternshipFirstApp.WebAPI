@@ -8,7 +8,6 @@ import { PresenceService } from './presence-service.service';
 import { HubConnectionState } from '@microsoft/signalr';
 @Injectable({ providedIn: 'root' })
 export class AccountService {
-
   private http = inject(HttpClient);
   private likeService = inject(LikesService);
   private presenceService = inject(PresenceService);
@@ -16,6 +15,15 @@ export class AccountService {
   public currentUser = signal<User | null>(null);
   public registerMode = signal(false);
   private apiUrl = environment.apiUrl;
+
+  isNormalUser(): boolean {
+    if (!this.currentUser()) return false;
+
+    return (
+      !this.currentUser()?.roles?.includes('Admin') &&
+      !this.currentUser()?.roles?.includes('Moderator')
+    );
+  }
 
   register(credentials: RegisterCreds) {
     return this.http
@@ -50,18 +58,21 @@ export class AccountService {
   }
 
   startTokenRefreshInterval() {
-    setInterval(() => {
-      this.http
-        .post<User>(this.apiUrl + 'account/refresh-token', {}, { withCredentials: true })
-        .subscribe({
-          next: (user) => {
-            this.setcurrentUser(user);
-          },
-          error: () => {
-            this.logout();
-          },
-        });
-    }, 5 * 60 * 1000);//refresh every  minutes
+    setInterval(
+      () => {
+        this.http
+          .post<User>(this.apiUrl + 'account/refresh-token', {}, { withCredentials: true })
+          .subscribe({
+            next: (user) => {
+              this.setcurrentUser(user);
+            },
+            error: () => {
+              this.logout();
+            },
+          });
+      },
+      5 * 60 * 1000,
+    ); //refresh every  minutes
   }
 
   setcurrentUser(user: User | null) {
@@ -75,15 +86,16 @@ export class AccountService {
     this.likeService.getLikeIds();
 
     // if connected to hub or not checking
-    if(this.presenceService.hubConnection?.state!==HubConnectionState.Connected){
-      this.presenceService.createHubConnection(user)
+    if (this.presenceService.hubConnection?.state !== HubConnectionState.Connected) {
+      this.presenceService.createHubConnection(user);
     }
-
   }
+
   logout() {
     localStorage.removeItem('filters');
     this.likeService.clearLikeIds();
     this.currentUser.set(null);
+    this.presenceService.stopHubConnection();
   }
   private getRolesFromToken(user: User): string[] {
     const payload = user.token.split('.')[1];

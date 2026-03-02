@@ -19,15 +19,6 @@ import {
   BaseStyle
 } from "./chunk-UWKVZRU5.js";
 import {
-  animate,
-  animateChild,
-  query,
-  state,
-  style,
-  transition,
-  trigger
-} from "./chunk-YELIFGFI.js";
-import {
   MessageService,
   PrimeTemplate,
   SharedModule
@@ -37,6 +28,15 @@ import {
   l,
   s3 as s
 } from "./chunk-TIK557PQ.js";
+import {
+  animate,
+  animateChild,
+  query,
+  state,
+  style,
+  transition,
+  trigger
+} from "./chunk-YELIFGFI.js";
 import {
   CommonModule,
   NgClass,

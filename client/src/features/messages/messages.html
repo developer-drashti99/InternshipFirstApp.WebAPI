@@ -29,7 +29,7 @@
 
   <div class="mx-[2vw]">
     <!-- Message List -->
-    <p-dataview [value]="paginatedMessages()?.items ?? []" layout="list">
+    <p-dataview [value]="paginatedMessages()?.items ?? []" >
       <ng-template #list let-items>
         <div *ngFor="let item of items; let isFirst = first">
           <div
@@ -42,17 +42,18 @@
               routerLink="/members/{{ isInbox ? item.senderId : item.recipientId }}/messages"
             >
               <!-- Avatar -->
-                <div class="h-48 w-48 rounded-full overflow-hidden shrink-0">
+               <div class="chat-image avatar">
                   <img
                     [src]="
                       isInbox
                         ? item.senderImageUrl || 'default_user.jpg'
                         : item.recipientImageUrl || 'default_user.jpg'
                     "
-                    class="w-full h-full object-cover"
                     alt="avatar"
+                    class=" w-10 h-10 rounded-full"
                   />
                 </div>
+             
 
               <!-- Text Content -->
               <div class="flex flex-col flex-1 min-w-0">

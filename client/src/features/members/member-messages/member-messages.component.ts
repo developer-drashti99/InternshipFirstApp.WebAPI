@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, effect, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { Message } from '../../../types/message';
 import { MessageService } from '../../../core/services/message-service.service';
 import { MemberService } from '../../../core/services/member-service.service';
@@ -14,7 +14,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./member-messages.component.css'],
   imports: [DatePipe, TimeAgoPipe, FormsModule],
 })
-export class MemberMessagesComponent implements OnInit {
+export class MemberMessagesComponent implements OnInit,OnDestroy {
   @ViewChild('messageEndRef') messageEndRef!: ElementRef;
   
   protected messageService = inject(MessageService);
@@ -83,5 +83,8 @@ export class MemberMessagesComponent implements OnInit {
     setTimeout(() => {
       this.messageEndRef.nativeElement.scrollIntoView({ behavior: 'smooth' });
     });
+  }
+  ngOnDestroy(){
+     this.messageService.stopHubConnection();
   }
 }

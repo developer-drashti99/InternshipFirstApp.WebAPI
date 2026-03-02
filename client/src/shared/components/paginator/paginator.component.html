@@ -1,31 +1,56 @@
-<div class="flex items-center w-full py-3 gap-3">
-  <span>Items per page:</span>
-  <select class="select w-24" (change)="onPageChange(undefined, $event.target)">
-    @for (size of pageSizeOptions(); track $index) {
-      <option [value]="size" [selected]="size === pageSize()">
-        {{ size }}
-      </option>
-    }
-  </select>
-  <div class="text-sm">
-    {{ (pageNumber() - 1) * pageSize() + 1 }}-{{ lastItemIndex() }} of {{ totalCount() }}
-  </div>
-  <div class="flex items-center gap-2">
-    <button
-      class="btn btn-circle btn-ghost"
-      [disabled]="pageNumber() === 1"
-      (click)="onPageChange(pageNumber() - 1)"
-    >
-      &larr;
-    </button>
-    <div class="flex items-center gap-2">
+<div class="w-full py-4">
+
+  <div class="flex flex-col flex-wrap items-center sm:flex-row sm:items-center sm:justify-between gap-6">
+
+    <!-- LEFT SECTION -->
+    <div class="flex flex-col items-center sm:flex-row sm:items-center gap-3 text-center sm:text-left">
+
+      <div class="flex items-center gap-2">
+        <span class="text-sm opacity-70">Items:</span>
+
+        <select
+          class="select select-sm w-20"
+          (change)="onPageChange(undefined, $event.target)"
+        >
+          @for (size of pageSizeOptions(); track $index) {
+            <option [value]="size" [selected]="size === pageSize()">
+              {{ size }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <div class="text-sm opacity-80">
+        {{ (pageNumber() - 1) * pageSize() + 1 }}
+        –
+        {{ lastItemIndex() }}
+        of
+        {{ totalCount() }}
+      </div>
+
+    </div>
+
+    <!-- RIGHT SECTION -->
+    <div class="flex justify-center gap-4">
+
       <button
-        class="btn btn-circle btn-ghost"
+        class="btn btn-circle btn-sm btn-outline"
+        [disabled]="pageNumber() === 1"
+        (click)="onPageChange(pageNumber() - 1)"
+      >
+        <i class="pi pi-chevron-left"></i>
+      </button>
+
+      <button
+        class="btn btn-circle btn-sm btn-outline"
         [disabled]="pageNumber() >= totalPages()"
         (click)="onPageChange(pageNumber() + 1)"
       >
-        &rarr;
+        <i class="pi pi-chevron-right"></i>
       </button>
+
     </div>
+
   </div>
+
 </div>

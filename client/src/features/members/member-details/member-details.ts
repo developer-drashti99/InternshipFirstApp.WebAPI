@@ -18,7 +18,7 @@ export class MemberDetails implements OnInit {
   protected router = inject(Router);
   private location = inject(Location);
 
-  private accountService=inject(AccountService);
+  protected accountService=inject(AccountService);
   protected memberService=inject(MemberService);
   protected title = signal<string | undefined>('Profile');
   protected presenceService = inject(PresenceService);

@@ -145,6 +145,10 @@ try
     var context = services.GetRequiredService<AppDbContext>();
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
     await context.Database.MigrateAsync();
+    
+    //in the case of restarting server(app) connections data will be releases
+    await context.Connections.ExecuteDeleteAsync();
+
     await Seed.SeedUsers(userManager);
 
 }

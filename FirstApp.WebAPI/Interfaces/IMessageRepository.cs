@@ -17,5 +17,11 @@ namespace FirstApp.WebAPI.Interfaces
         Task<IReadOnlyList<MessageDto>> GetMessageThread(string currentMemberId, string recipientId);
         Task<MessageDto?> GetMessageDtoById(string id);
         Task<bool> SaveAllAsync();
+        //for members of the group tracking (like instant seen feature and online for message read)
+        void AddGroup(Group group);
+        Task RemoveConnection(string connectionId);
+        Task<Connection?> GetConnection(string connectionId);
+        Task<Group?> GetMessageGroup(string groupName);
+        Task<Group?> GetGroupForConnection(string connectionId);
     }
 }

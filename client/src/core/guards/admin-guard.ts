@@ -7,21 +7,13 @@ export const adminGuard: CanActivateFn = () => {
   const accountService = inject(AccountService);
   const toast = inject(ToastService);
 
-  const user = accountService.currentUser();
-
-  if (!user) {
-    toast.error('You must be logged in');
+  if (
+    accountService.currentUser()?.roles.includes('Admin') ||
+    accountService.currentUser()?.roles.includes('Moderator')
+  ) {
+    return true;
+  } else {
+    toast.error('admin moderator access');
     return false;
   }
-
-  const allowedRoles = ['Admin', 'Moderator'];
-
-  const hasAccess = user.roles?.some(role =>
-    allowedRoles.includes(role)
-  );
-
-  if (hasAccess) return true;
-
-  toast.error('You do not have permission to access this page');
-  return false;
 };

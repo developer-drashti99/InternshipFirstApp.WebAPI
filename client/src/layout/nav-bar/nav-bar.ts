@@ -12,65 +12,64 @@ import { HasRole } from '../../shared/directives/has-role';
 @Component({
   selector: 'app-nav-bar',
   standalone: true,
-  imports: [FormsModule, RouterLink, RouterLinkActive,HasRole],
+  imports: [FormsModule, RouterLink, RouterLinkActive, HasRole],
   templateUrl: './nav-bar.html',
   styleUrl: './nav-bar.css',
 })
 export class NavBar implements OnInit {
-
   protected accountService = inject(AccountService);
   protected busyService = inject(BusyService);
   private route = inject(Router);
   private toast = inject(ToastService);
-  private primeng = inject(PrimeNG);
+  // private primeng = inject(PrimeNG);
 
   protected credentials: { email: string; password: string } = { email: '', password: '' };
-  protected selectedTheme = signal<string>(localStorage.getItem("theme") || "light");
+  protected selectedTheme = signal<string>(localStorage.getItem('theme') || 'light');
   protected themes = themes;
 
   ngOnInit(): void {
-      document.documentElement.setAttribute('data-theme', this.selectedTheme());
+    document.documentElement.setAttribute('data-theme', this.selectedTheme());
 
-      // Sync PrimeNG theme on init
-      this.primeng.theme.set({
-        preset: Aura,
-        options: {
-          darkModeSelector: this.selectedTheme() === 'dark'
-        }
-      });
+    // Sync PrimeNG theme on init
+    // this.primeng.theme.set({
+    //   preset: Aura,
+    //   options: {
+    //     darkModeSelector: this.selectedTheme() === 'dark',
+    //   },
+    // });
   }
 
-  handleSelectedTheme(theme: string)
-  {
+  handleSelectedTheme(theme: string) {
     this.selectedTheme.set(theme);
-    localStorage.setItem("theme", theme);
+    localStorage.setItem('theme', theme);
     document.documentElement.setAttribute('data-theme', theme);
 
     // Sync PrimeNG theme when DaisyUI theme changes
-    this.primeng.theme.set({
-      preset: Aura,
-      options: {
-        darkModeSelector: theme === 'dark'
-      }
-    });
+    // this.primeng.theme.set({
+    //   preset: Aura,
+    //   options: {
+    //     darkModeSelector: theme === 'dark',
+    //     cssLayer: false,
+    //   },
+    // });
 
     const elem = document.activeElement as HTMLDivElement; // themes dropdown which is currently active or we can say open
-    if(elem) elem.blur(); //for closing dropdown after selecting theme
+    if (elem) elem.blur(); //for closing dropdown after selecting theme
   }
 
   onLogin() {
     this.accountService.login(this.credentials).subscribe({
-      next: response => {
+      next: (response) => {
         this.toast.success('Logged in successfully');
         console.log('Login successful', response);
         this.route.navigateByUrl('/');
         this.credentials = { email: '', password: '' };
       },
-      error: error =>{
+      error: (error) => {
         this.toast.error(error.error);
         // console.log(error.error);
         // console.error('Login failed', error.message),
-      }
+      },
     });
   }
 

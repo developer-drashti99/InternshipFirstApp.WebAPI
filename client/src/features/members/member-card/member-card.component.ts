@@ -5,15 +5,17 @@ import { AgePipe } from '../../../core/pipes/age-pipe';
 import { LikesService } from '../../../core/services/likes-service.service';
 import { TimeagoPipe } from 'ngx-timeago';
 import { PresenceService } from '../../../core/services/presence-service.service';
+import { AccountService } from '../../../core/services/account-service.service';
 
 @Component({
   selector: 'app-member-card',
   templateUrl: './member-card.component.html',
   styleUrls: ['./member-card.component.css'],
-  imports: [RouterLink, AgePipe, TimeagoPipe],
+  imports: [RouterLink, AgePipe],
 })
 export class MemberCardComponent {
   private likeService = inject(LikesService);
+  protected accountService = inject(AccountService);
   private presenceService = inject(PresenceService);
   member = input.required<Member>();
   protected hasLiked = computed(() => this.likeService.likeIds().includes(this.member().id));

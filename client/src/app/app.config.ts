@@ -25,11 +25,12 @@ export const appConfig: ApplicationConfig = {
       theme: {
         preset: Aura,
         options: {
-          darkModeSelector: false,
+          darkModeSelector:
+            '[data-theme="dark"],[data-theme="black"], [data-theme="forest"], [data-theme="synthwave"], [data-theme="night"],[data-theme="halloween"]',
         },
       },
     }),
-        provideAnimations(),
+    provideAnimations(),
     provideBrowserGlobalErrorListeners(),
     // i have added second param for smooth transition
     // provideRouter(routes, withViewTransitions),
@@ -42,7 +43,7 @@ export const appConfig: ApplicationConfig = {
       return new Promise<void>((resolve) => {
         setTimeout(async () => {
           try {
-            initService.init();
+            await lastValueFrom(initService.init());
           } finally {
             const splash = document.getElementById('initial-splash');
             if (splash) {
@@ -50,7 +51,7 @@ export const appConfig: ApplicationConfig = {
             }
             resolve();
           }
-        }, 500);
+        }, 100);
       });
     }),
   ],
