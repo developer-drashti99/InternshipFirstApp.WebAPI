@@ -9,14 +9,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace FirstApp.WebAPI.Controllers
 {
     [ApiController]
-    public class MessagesController(IMessageRepository messageRepository,
-     IMemberRepository memberRepository) : BaseApiController
+    public class MessagesController(IUnitOfWork uow) : BaseApiController
     {
         [HttpPost]
         public async Task<ActionResult<MessageDto>> CreateMessage(CreateMessageDto createMessageDto)
         {
-            var sender = await memberRepository.GetMemberByIdAsync(User.getMemberId());
-            var recipient = await memberRepository.GetMemberByIdAsync(createMessageDto.RecipientId);
+            var sender = await uow.memberRepository.GetMemberByIdAsync(User.getMemberId());
+            var recipient = await uow.memberRepository.GetMemberByIdAsync(createMessageDto.RecipientId);
 
             if (recipient == null || sender == null || sender.Id == createMessageDto.RecipientId)
                 return BadRequest("Can not send message");
@@ -28,10 +27,10 @@ namespace FirstApp.WebAPI.Controllers
                 Content = createMessageDto.Content
             };
 
-            messageRepository.AddMessage(message);
-            if (await messageRepository.SaveAllAsync())
+            uow.messageRepository.AddMessage(message);
+            if (await uow.Complete())
             {
-                var messageDto = await messageRepository.GetMessageDtoById(message.Id);
+                var messageDto = await uow.messageRepository.GetMessageDtoById(message.Id);
                 return Ok(messageDto);
             }
 
@@ -42,14 +41,14 @@ namespace FirstApp.WebAPI.Controllers
         public async Task<ActionResult<PaginatedResult<MessageDto>>> GetMessagesByContainer([FromQuery] MessageParams messageParams)
         {
             messageParams.MemberId = User.getMemberId();
-            return await messageRepository.GetMessagesForMember(messageParams);
+            return await uow.messageRepository.GetMessagesForMember(messageParams);
         }
 
         [HttpGet("thread/{recipientId}")]
         public async Task<ActionResult<IReadOnlyList<MessageDto>>> GetMessageThread(string recipientId)
         {
             var currentMemberId = User.getMemberId();
-            return Ok(await messageRepository.GetMessageThread(currentMemberId, recipientId));
+            return Ok(await uow.messageRepository.GetMessageThread(currentMemberId, recipientId));
         }
 
         [HttpDelete("{id}")]
@@ -57,7 +56,7 @@ namespace FirstApp.WebAPI.Controllers
         {
             var memberId = User.getMemberId();
 
-            var message = await messageRepository.GetMessage(id);
+            var message = await uow.messageRepository.GetMessage(id);
 
             if (message == null)
                 return BadRequest("Can not delete this message.");
@@ -73,10 +72,10 @@ namespace FirstApp.WebAPI.Controllers
 
             if (message is { SenderDeleted: true, RecipientDeleted: true })
             {
-                messageRepository.DeleteMessage(message);
+                uow.messageRepository.DeleteMessage(message);
             }
 
-            if(await messageRepository.SaveAllAsync()) return Ok();
+            if (await uow.Complete()) return Ok();
             else return BadRequest("Problem deleting the message.");
 
         }
@@ -85,7 +84,7 @@ namespace FirstApp.WebAPI.Controllers
         public async Task<ActionResult<IReadOnlyList<MessageDto>>> GetUnreadMessages()
         {
             var memberId = User.getMemberId();
-            var messages = await messageRepository.GetUnreadMessages(memberId);
+            var messages = await uow.messageRepository.GetUnreadMessages(memberId);
 
             return Ok(messages);
         }

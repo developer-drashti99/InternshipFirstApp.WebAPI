@@ -16,7 +16,7 @@ namespace FirstApp.WebAPI.Interfaces
         Task<PaginatedResult<MessageDto>> GetMessagesForMember(MessageParams messageParams);
         Task<IReadOnlyList<MessageDto>> GetMessageThread(string currentMemberId, string recipientId);
         Task<MessageDto?> GetMessageDtoById(string id);
-        Task<bool> SaveAllAsync();
+        //Task<bool> SaveAllAsync();
         //for members of the group tracking (like instant seen feature and online for message read)
         void AddGroup(Group group);
         Task RemoveConnection(string connectionId);

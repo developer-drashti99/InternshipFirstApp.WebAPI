@@ -11,6 +11,6 @@ namespace FirstApp.WebAPI.Interfaces
         void DeleteLike(MemberLike like);
         void AddLike(MemberLike like);
 
-        Task<bool> SaveAllChanges();
+        //Task<bool> SaveAllChanges();
     }
 }

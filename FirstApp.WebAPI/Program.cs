@@ -28,9 +28,15 @@ builder.Services.AddCors();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
-builder.Services.AddScoped<IMemberRepository, MemberRepository>();
-builder.Services.AddScoped<ILikesRepository, LikesRepository>();
-builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+//because of UOW (Unit Of Work) we will include all repos in Unit Of Work interface and class
+
+//builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+//builder.Services.AddScoped<ILikesRepository, LikesRepository>();
+//builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
 builder.Services.AddScoped<LogUserActivity>();
 
@@ -110,8 +116,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 //added custom policy-based authorization ,"RequireAdminRole" for admin and "ModeratePhotoRole" for admin and moderator,These policies can be used to restrict access to certain actions or controllers based on the user's role.
 builder.Services.AddAuthorizationBuilder()
-    .AddPolicy("RequireAdminRole",policy=>policy.RequireRole("Admin"))
-    .AddPolicy("ModeratePhotoRole", policy=>policy.RequireRole("Admin","Moderator"));
+    .AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"))
+    .AddPolicy("ModeratePhotoRole", policy => policy.RequireRole("Admin", "Moderator"));
 
 
 //configure the HTTP request pipeline
@@ -145,7 +151,7 @@ try
     var context = services.GetRequiredService<AppDbContext>();
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
     await context.Database.MigrateAsync();
-    
+
     //in the case of restarting server(app) connections data will be releases
     await context.Connections.ExecuteDeleteAsync();
 

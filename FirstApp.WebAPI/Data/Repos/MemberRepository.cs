@@ -47,10 +47,10 @@ public class MemberRepository(AppDbContext context, UserManager<AppUser> userMan
         .ToListAsync();
     }
 
-    public async Task<bool> SaveAllAsync()
-    {
-        return await context.SaveChangesAsync() > 0;
-    }
+    //public async Task<bool> SaveAllAsync()
+    //{
+    //    return await context.SaveChangesAsync() > 0;
+    //}
 
     public void Update(Member member)
     {
