@@ -23,5 +23,6 @@ namespace FirstApp.WebAPI.Interfaces
         Task<Connection?> GetConnection(string connectionId);
         Task<Group?> GetMessageGroup(string groupName);
         Task<Group?> GetGroupForConnection(string connectionId);
+        Task<IReadOnlyList<MessageDto>> GetUnreadMessages(string memberId);
     }
 }

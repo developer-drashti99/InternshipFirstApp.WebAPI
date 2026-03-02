@@ -109,6 +109,18 @@ namespace FirstApp.WebAPI.Data.Repos
                 .ToListAsync();
         }
 
+        public async Task<IReadOnlyList<MessageDto>> GetUnreadMessages(string memberId)
+        {
+            return await context.Messages
+                .Where(m =>
+                    m.RecipientId == memberId &&
+                    m.DateRead == null &&
+                    !m.RecipientDeleted)
+                .OrderByDescending(m => m.MessageSent)
+                .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         public async Task RemoveConnection(string connectionId)
         {
             await context.Connections

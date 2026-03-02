@@ -53,7 +53,7 @@ export class ToastService {
     <img 
       src="${avatar || './default_user.jpg'}" 
       onerror="this.src='./default_user.jpg'"
-      class="w-5 rounded-full object-cover"
+      class="w-10 h-10 rounded-full object-cover ring-2 ring-base-200"
     /></div>
   `
       : ''

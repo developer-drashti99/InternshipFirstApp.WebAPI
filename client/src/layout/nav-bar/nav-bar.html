@@ -23,7 +23,7 @@
       <!-- MOBILE DROPDOWN -->
       <ul
         tabindex="0"
-        class="menu menu-sm dropdown-content mt-2 z-1 p-4 shadow-xl bg-base-100 text-base-content rounded-2xl w-64"
+        class="menu menu-sm dropdown-content mt-2 z-1 p-3 shadow-xl bg-base-100 text-base-content rounded-2xl w-64"
       >
         <!-- MAIN -->
         <li>
@@ -78,6 +78,87 @@
             <span>Account</span>
           </li>
           @if (accountService.isNormalUser()) {
+            <!-- 🔔 Notification Bell -->
+            <div class="dropdown dropdown-end">
+              <div tabindex="0" role="button" class="relative btn btn-ghost btn-circle">
+                <i class="pi pi-bell text-xl text-white"></i>
+
+                @if (notificationService.count() > 0) {
+                  <span
+                    class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center font-semibold"
+                  >
+                    {{ notificationService.count() }}
+                  </span>
+                }
+              </div>
+
+              <!-- DROPDOWN CONTENT -->
+              <div
+                tabindex="0"
+                class="dropdown-content mt-3 z-50 w-72 bg-base-100 text-base-content rounded-2xl shadow-xl p-0 overflow-hidden"
+              >
+                <!-- HEADER -->
+                <div class="flex justify-between items-center px-4 py-3 border-b bg-base-200/40">
+                  <div>
+                    <h3 class="font-semibold text-sm">Notifications</h3>
+                    <p class="text-xs opacity-60">
+                      {{ notificationService.count() }} unread messages
+                    </p>
+                  </div>
+
+                  @if (notificationService.count() > 0) {
+                    <button
+                      class="text-xs text-primary hover:underline"
+                      (click)="notificationService.clear()"
+                    >
+                      Clear All
+                    </button>
+                  }
+                </div>
+
+                <!-- LIST -->
+                <div class="max-h-50 overflow-y-auto">
+                  @if (notificationService.count() === 0) {
+                    <div class="p-8 text-center text-sm opacity-60">🔔 You're all caught up!</div>
+                  }
+
+                  @for (notification of notificationService.notifications(); track $index) {
+                    <a
+                      [routerLink]="['/members', notification.senderId, 'messages']"
+                      class="group flex gap-3 px-4 py-3 hover:bg-base-200/60 transition border-b last:border-none"
+                      (click)="notificationService.markAsRead(notification.id)"
+                    >
+                      <!-- Avatar -->
+                      <div class="relative">
+                        <img
+                          [src]="notification.senderImageUrl || 'default_user.jpg'"
+                          class="w-9 h-9 rounded-full object-cover"
+                        />
+
+                        <!-- Unread Dot -->
+                        <span
+                          class="absolute bottom-0 right-0 w-3 h-3 bg-primary rounded-full border-2 border-base-100"
+                        ></span>
+                      </div>
+
+                      <!-- Text -->
+                      <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-center">
+                          <p class="font-semibold truncate">
+                            {{ notification.senderDisplayName }}
+                          </p>
+                          <span class="text-xs opacity-50">New</span>
+                        </div>
+
+                        <p class="text-sm opacity-70 truncate mt-1">
+                          {{ notification.content }}
+                        </p>
+                      </div>
+                    </a>
+                  }
+                </div>
+              </div>
+            </div>
             <li>
               <a
                 routerLink="/members/{{ user.id }}"
@@ -121,7 +202,12 @@
                 placeholder="Password"
               />
 
-              <button type="submit" class="btn btn-primary btn-sm w-full rounded-xl">Login</button>
+              <button type="submit" class="btn btn-primary btn-sm w-full rounded-xl">
+              @if(loading()){
+            <span class="mr-2 loading loading-spinner"></span> 
+          }
+                Login
+              </button>
             </form>
           </li>
         }
@@ -167,7 +253,7 @@
         <li>
           <a routerLink="/members" routerLinkActive="font-bold" class="text-white">
             @if (accountService.isNormalUser()) {
-             <span> Matches</span>
+              <span> Matches</span>
             } @else {
               <span>Members</span>
             }
@@ -214,6 +300,87 @@
     </div>
 
     @if (accountService.currentUser(); as user) {
+      <!-- 🔔 Notification Bell -->
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="relative btn btn-ghost btn-circle">
+          <i class="pi pi-bell text-xl text-white"></i>
+
+          @if (notificationService.count() > 0) {
+            <span
+              class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center font-semibold"
+            >
+              {{ notificationService.count() }}
+            </span>
+          }
+        </div>
+
+        <!-- DROPDOWN CONTENT -->
+        <div
+          tabindex="0"
+          class="dropdown-content mt-4 z-50 w-80 bg-base-100 text-base-content rounded-3xl shadow-2xl p-0 overflow-hidden"
+        >
+          <!-- HEADER -->
+          <div class="flex justify-between items-center px-5 py-4 border-b bg-base-200/40">
+            <div>
+              <h3 class="font-semibold text-lg">Notifications</h3>
+              <p class="text-xs opacity-60">{{ notificationService.count() }} unread messages</p>
+            </div>
+
+            @if (notificationService.count() > 0) {
+              <button
+                class="text-sm text-primary hover:underline"
+                (click)="notificationService.clear()"
+              >
+                Clear All
+              </button>
+            }
+          </div>
+
+          <!-- LIST -->
+          <div class="max-h-50 overflow-y-auto">
+            @if (notificationService.count() === 0) {
+              <div class="p-8 text-center text-sm opacity-60">🔔 You're all caught up!</div>
+            }
+
+            @for (notification of notificationService.notifications(); track $index) {
+              <a
+                [routerLink]="['/members', notification.senderId, 'messages']"
+                class="group flex gap-4 px-5 py-3 hover:bg-base-200/60 transition duration-200 border-b last:border-none"
+                (click)="notificationService.markAsRead(notification.id)"
+              >
+                <!-- Avatar -->
+                <div class="relative">
+                  <img
+                    [src]="notification.senderImageUrl || 'default_user.jpg'"
+                    class="w-12 h-12 rounded-full object-cover"
+                  />
+
+                  <!-- Unread Dot -->
+                  <span
+                    class="absolute bottom-0 right-0 w-3 h-3 bg-primary rounded-full border-2 border-base-100"
+                  ></span>
+                </div>
+
+                <!-- Text -->
+                <div class="flex-1 min-w-0">
+                  <div class="flex justify-between items-center">
+                    <p class="font-semibold truncate">
+                      {{ notification.senderDisplayName }}
+                    </p>
+                  </div>
+
+                  <p class="text-sm opacity-70 truncate mt-1">
+                    {{ notification.content }}
+                  </p>
+                </div>
+                <div class="text-sm">
+                  {{ notification.messageSent | timeAgo }}
+                </div>
+              </a>
+            }
+          </div>
+        </div>
+      </div>
       <!-- Desktop User Dropdown -->
       <div class="dropdown dropdown-end">
         <div tabindex="0" role="button" class="btn btn-ghost flex items-center gap-2 text-white">
@@ -222,13 +389,17 @@
           <span>{{ user.displayName }}</span>
         </div>
 
-        <ul
+        <ul (click)="handleSelectUserItem()"
           tabindex="0"
           class="dropdown-content menu bg-base-100 text-base-content rounded-box z-1 w-52 p-2 shadow"
-        > @if (accountService.isNormalUser()) {
-          <li>
-            <a routerLink="/members/{{ user.id }}"> <i class="pi pi-user mr-2"></i> My Profile </a>
-          </li>}
+        >
+          @if (accountService.isNormalUser()) {
+            <li>
+              <a routerLink="/members/{{ user.id }}">
+                <i class="pi pi-user mr-2"></i> My Profile
+              </a>
+            </li>
+          }
           <li>
             <a (click)="logout()"> <i class="pi pi-logout mr-2"></i> Logout </a>
           </li>
@@ -253,7 +424,12 @@
           placeholder="Password"
         />
 
-        <button type="submit" class="btn btn-sm btn-primary">Login</button>
+        <button type="submit" class="btn btn-sm btn-primary">
+          @if(loading()){
+            <span class="mr-2 loading loading-spinner"></span> 
+          }
+          Login
+        </button>
       </form>
     }
   </div>

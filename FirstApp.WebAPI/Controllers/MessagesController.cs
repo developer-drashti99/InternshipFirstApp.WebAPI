@@ -81,5 +81,14 @@ namespace FirstApp.WebAPI.Controllers
 
         }
 
+        [HttpGet("unread")]
+        public async Task<ActionResult<IReadOnlyList<MessageDto>>> GetUnreadMessages()
+        {
+            var memberId = User.getMemberId();
+            var messages = await messageRepository.GetUnreadMessages(memberId);
+
+            return Ok(messages);
+        }
+
     }
 }

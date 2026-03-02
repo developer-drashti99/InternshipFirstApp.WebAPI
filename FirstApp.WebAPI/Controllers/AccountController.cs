@@ -2,6 +2,7 @@
 using FirstApp.WebAPI.Entities;
 using FirstApp.WebAPI.Extensions;
 using FirstApp.WebAPI.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -116,6 +117,21 @@ namespace FirstApp.WebAPI.Controllers
                 Expires = DateTime.UtcNow.AddDays(7)
             };
             Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+        }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<ActionResult> Logout()
+        {
+            await userManager.Users.
+                  Where(u => u.Id == User.getMemberId())
+                  .ExecuteUpdateAsync(setters => setters.SetProperty(
+                      u => u.RefreshToken, _ => null)
+                  .SetProperty(x => x.RefreshTokenExpiry, _ => null)
+                  );
+            Response.Cookies.Delete("refreshToken");
+
+            return Ok();
         }
     }
 }

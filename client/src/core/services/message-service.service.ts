@@ -5,7 +5,7 @@ import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@micros
 import { PaginatedResult } from '../../types/pagination';
 import { Message } from '../../types/message';
 import { AccountService } from './account-service.service';
-
+import { NotificationService } from './notification-service.service';
 @Injectable({
   providedIn: 'root',
 })
@@ -16,12 +16,13 @@ export class MessageService {
   private accountService = inject(AccountService);
   private hubConnection?: HubConnection;
   messageThread = signal<Message[]>([]);
+  private notificationService = inject(NotificationService);
 
   createHubConnection(otherUserId: string) {
     const currentUser = this.accountService.currentUser();
     if (!currentUser) return;
 
-    console.log("current "+currentUser.displayName)
+    console.log('current ' + currentUser.displayName);
     this.hubConnection = new HubConnectionBuilder()
       .withUrl(this.hubUrl + 'messages?userId=' + otherUserId, {
         accessTokenFactory: () => currentUser.token,
@@ -37,11 +38,12 @@ export class MessageService {
           ...message,
           currentUserSender: message.senderId !== otherUserId,
         })),
-      );
+      );  
+      this.notificationService.removeBySender(otherUserId);
     });
-    this.hubConnection.on("NewMessage",(message:Message)=>{
-      message.currentUserSender=message.senderId===currentUser.id;
-      this.messageThread.update(messages=>[...messages,message])
+    this.hubConnection.on('NewMessage', (message: Message) => {
+      message.currentUserSender = message.senderId === currentUser.id;
+      this.messageThread.update((messages) => [...messages, message]);
     });
   }
 
@@ -67,5 +69,9 @@ export class MessageService {
   }
   deleteMessage(id: string) {
     return this.http.delete(this.siteUrl + 'messages/' + id);
+  }
+
+  getUnreadMessages() {
+    return this.http.get<Message[]>(this.siteUrl + 'messages/unread');
   }
 }
