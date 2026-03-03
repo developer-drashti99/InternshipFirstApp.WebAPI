@@ -95,6 +95,13 @@ namespace FirstApp.WebAPI
                     }
                 }
             }
+
+
+            //global query filter for uploading photos 
+            //        modelBuilder.Entity<Photo>()
+            //.HasQueryFilter(p => p.IsApproved && !p.IsDeleted);
+            modelBuilder.Entity<Photo>()
+                .HasQueryFilter(p => !p.IsDeleted);
         }
     }
 }

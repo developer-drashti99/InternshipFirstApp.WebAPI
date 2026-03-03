@@ -3,38 +3,41 @@ import { inject } from '@angular/core';
 import { BusyService } from '../services/busy-service.service';
 import { delay, finalize, of, tap } from 'rxjs';
 // adding caching
-const cache = new Map<string, HttpEvent<unknown>>();//HttpEvent<unknown> is type of response
+const cache = new Map<string, HttpEvent<unknown>>(); //HttpEvent<unknown> is type of response
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   const busyService = inject(BusyService);
+  const skipLoader = req.headers.has('X-Skip-Loader');
 
-  const generateCacheKey=(url:string,params:HttpParams):string=>{
-    // for caching filters like min age, max age..... 
-    const paramString=params.keys().map(key=>`${params.get(key)}`)
-    .join('&');
-    return paramString ? `${url}?${paramString}`:url;
+  const generateCacheKey = (url: string, params: HttpParams): string => {
+    // for caching filters like min age, max age.....
+    const paramString = params
+      .keys()
+      .map((key) => `${params.get(key)}`)
+      .join('&');
+    return paramString ? `${url}?${paramString}` : url;
   };
 
-  const invalidateCache=(urlPattern:string)=>{
-    for(const key of cache.keys()){
-      if(key.includes(urlPattern)){
+  const invalidateCache = (urlPattern: string) => {
+    for (const key of cache.keys()) {
+      if (key.includes(urlPattern)) {
         cache.delete(key);
         console.log(key);
       }
     }
-  }
+  };
 
-  const cacheKey=generateCacheKey(req.url,req.params);
+  const cacheKey = generateCacheKey(req.url, req.params);
 
-  if(req.method.includes('POST') && req.url.includes('/likes')){
+  if (req.method.includes('POST') && req.url.includes('/likes')) {
     invalidateCache('/likes');
   }
- if (req.method === 'POST' && req.url.includes('messages')) {
-  invalidateCache('messages');
-}
-  if(req.method.includes('GET') && req.url.includes('/profile')){
+  if (req.method === 'POST' && req.url.includes('messages')) {
+    invalidateCache('messages');
+  }
+  if (req.method.includes('GET') && req.url.includes('/profile')) {
     invalidateCache('/profile');
   }
-  if(req.method.includes('POST') && req.url.includes('/logout')){
+  if (req.method.includes('POST') && req.url.includes('/logout')) {
     cache.clear();
   }
 
@@ -46,16 +49,33 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
     }
   }
 
-  busyService.busy();
+  // busyService.busy();
+  if (!skipLoader) {
+    busyService.busy();
+  }
+
+  // return next(req).pipe(
+  //   delay(500),
+  //   tap((response) => {
+  //     // cache.set(req.url,response)
+  //     cache.set(cacheKey, response);
+  //   }),
+  //   finalize(() => {
+  //     busyService.idle();
+  //   }),
+  // );
 
   return next(req).pipe(
-    delay(500),
-    tap(response=>{
-      // cache.set(req.url,response)
-      cache.set(cacheKey,response)
+    delay(300), // optional – reduce from 500 for smoother UX
+    tap((event) => {
+      if (req.method === 'GET') {
+        cache.set(cacheKey, event);
+      }
     }),
     finalize(() => {
-      busyService.idle()
-    })
+      if (!skipLoader) {
+        busyService.idle();
+      }
+    }),
   );
 };

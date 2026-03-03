@@ -16,6 +16,7 @@ export type Photo = {
   url: string
   publicId?: string
   memberId: string
+  isApproved:boolean
 }
 export type EditableMember = {
   displayName: string
@@ -33,4 +34,13 @@ export class MemberParams{
   pageSize=10
 
   orderBy="lastActive"
+}
+
+export type PhotoForModeration = {
+  id: number
+  url: string
+  memberId: string
+  memberUserName: string
+  memberDisplayName: string
+  isApproved: boolean
 }

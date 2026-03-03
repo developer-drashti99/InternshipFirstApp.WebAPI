@@ -1,8 +1,16 @@
 import { Component, inject, output, signal } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { RegisterCreds } from '../../../types/user';
 import { AccountService } from '../../../core/services/account-service.service';
-import { TextInputComponent } from "../../../shared/components/text-input/text-input.component";
+import { TextInputComponent } from '../../../shared/components/text-input/text-input.component';
 import { Router } from '@angular/router';
 
 @Component({
@@ -26,13 +34,16 @@ export class Register {
     this.credentialsForm = this.formBuilder.group({
       displayName: ['', Validators.required],
       // email: ['', [Validators.required, Validators.email]],
-      email: ['', [Validators.required, Validators.email, Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
-      )
-      ]],
-      password: ['', [Validators.required,
-      Validators.minLength(6)
-      ]],
-      confirmPassword: ['', [Validators.required, this.matchValues('password')]]
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.email,
+          Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/),
+        ],
+      ],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', [Validators.required, this.matchValues('password')]],
     });
 
     this.profileForm = this.formBuilder.group({
@@ -53,7 +64,7 @@ export class Register {
       const parent = control.parent;
       if (!parent) return null;
       const matchValue = parent.get(matchTo)?.value;
-      return control.value === matchValue ? null : { passwordMismatch: true }
+      return control.value === matchValue ? null : { passwordMismatch: true };
     };
   }
 
@@ -68,7 +79,7 @@ export class Register {
       return;
     }
 
-    this.currentStep.update(prevStep => prevStep + 1);
+    this.currentStep.update((prevStep) => prevStep + 1);
   }
 
   getMaxDate() {
@@ -84,32 +95,31 @@ export class Register {
   }
 
   prevStep() {
-    this.currentStep.update(prevStep => prevStep - 1);
+    this.currentStep.update((prevStep) => prevStep - 1);
   }
-
 
   register(): void {
     if (this.profileForm.valid && this.credentialsForm.valid) {
       const formData = { ...this.credentialsForm.value, ...this.profileForm.value };
       console.log(formData);
       this.accountService.register(formData).subscribe({
-        next: response => {
+        next: (response) => {
           console.log('Registration successful', response);
-          this.router.navigateByUrl('/members');
           this.accountService.registerMode.set(false);
+          // this.router.navigateByUrl('/members');
           this.cancel();
         },
-        error: error => {
+        error: (error) => {
           console.error('Registration failed', error);
           this.validationErrors.set(error);
-        }
+        },
       });
-
     }
     console.log(this.credentialsForm.value);
   }
   cancel(): void {
     this.cancelRegister.emit(false);
+    this.accountService.registerMode.set(false);
+    // this.router.navigateByUrl('/');
   }
-
 }

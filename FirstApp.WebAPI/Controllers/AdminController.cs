@@ -1,15 +1,14 @@
 ﻿using FirstApp.WebAPI.DTOs;
+using FirstApp.WebAPI.Entities.enums;
 using FirstApp.WebAPI.Helpers;
 using FirstApp.WebAPI.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FirstApp.WebAPI.Controllers
 {
-    public class AdminController(UserManager<AppUser> userManager,IMemberRepository memberRepository) : BaseApiController
+    public class AdminController(UserManager<AppUser> userManager, IUnitOfWork uow) : BaseApiController
     {
         #region comment 
         //[Authorize(Policy = "RequireAdminRole")]
@@ -41,7 +40,7 @@ namespace FirstApp.WebAPI.Controllers
         public async Task<ActionResult<PaginatedResult<UserWithRolesDto>>> GetUsersWithRoles(
      [FromQuery] UserParams userParams)
         {
-            return Ok(await memberRepository.GetUsersWithRolesAsync(userParams));
+            return Ok(await uow.memberRepository.GetUsersWithRolesAsync(userParams));
         }
 
         [Authorize(Policy = "RequireAdminRole")]
@@ -71,10 +70,23 @@ namespace FirstApp.WebAPI.Controllers
 
 
         [Authorize(Policy = "ModeratePhotoRole")]
-        [HttpGet("photos-to-moderates")]
-        public ActionResult GetPhotoForModeration()
+        [HttpGet("photos-to-moderate")]
+        public async Task<ActionResult<PaginatedResult<PhotoForModerationDto>>>
+    GetPhotosForModeration([FromQuery] int pageNumber = 1,
+                           [FromQuery] int pageSize = 10)
         {
-            return Ok("Only Admins or Moderators can see this");
+            var result = await uow.memberRepository
+                .GetUnapprovedPhotosAsync(pageNumber, pageSize);
+
+            return Ok(result);
+        }
+
+        [Authorize(Policy = "ModeratePhotoRole")]
+        [HttpPost("photos-to-moderate/{photoId}")]
+        public async Task<ActionResult> ApproveOrRejectPhoto(int photoId, [FromQuery] PhotoModerationAction action)
+        {
+            await uow.memberRepository.ModeratePhoto(photoId,action);
+            return Ok();
         }
     }
 }

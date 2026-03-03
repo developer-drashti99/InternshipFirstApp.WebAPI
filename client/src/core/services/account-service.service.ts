@@ -6,6 +6,8 @@ import { environment } from '../../environments/environment';
 import { LikesService } from './likes-service.service';
 import { PresenceService } from './presence-service.service';
 import { HubConnectionState } from '@microsoft/signalr';
+import { HttpHeaders } from '@angular/common/http';
+
 @Injectable({ providedIn: 'root' })
 export class AccountService {
   private http = inject(HttpClient);
@@ -27,7 +29,10 @@ export class AccountService {
 
   register(credentials: RegisterCreds) {
     return this.http
-      .post<User>(this.apiUrl + 'account/register', credentials, { withCredentials: true })
+      .post<User>(this.apiUrl + 'account/register', credentials, {
+        withCredentials: true,
+        headers: new HttpHeaders().set('X-Skip-Loader', 'true'),
+      })
       .pipe(
         tap((user) => {
           this.setcurrentUser(user);
@@ -38,7 +43,10 @@ export class AccountService {
   login(credentials: LoginCreds) {
     // ,{withCredentials:true} for getting refreshtoken
     return this.http
-      .post<User>(this.apiUrl + 'account/login', credentials, { withCredentials: true })
+      .post<User>(this.apiUrl + 'account/login', credentials, {
+        withCredentials: true,
+        headers: new HttpHeaders().set('X-Skip-Loader', 'true'),
+      })
       .pipe(
         tap((user) => {
           if (user) {
@@ -92,14 +100,20 @@ export class AccountService {
   }
 
   logout() {
-    this.http.post(this.apiUrl+'account/logout',{},{withCredentials:true}).subscribe({
-      next:()=>{
-        localStorage.removeItem('filters');
-        this.likeService.clearLikeIds();
-        this.currentUser.set(null);
-        this.presenceService.stopHubConnection();
-      }
-    });
+    this.http
+      .post(
+        this.apiUrl + 'account/logout',
+        {},
+        { withCredentials: true, headers: new HttpHeaders().set('X-Skip-Loader', 'true') },
+      )
+      .subscribe({
+        next: () => {
+          localStorage.removeItem('filters');
+          this.likeService.clearLikeIds();
+          this.currentUser.set(null);
+          this.presenceService.stopHubConnection();
+        },
+      });
   }
   private getRolesFromToken(user: User): string[] {
     const payload = user.token.split('.')[1];

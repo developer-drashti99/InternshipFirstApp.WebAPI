@@ -4,24 +4,32 @@
       <div class="grid grid-cols-5 auto-rows-min gap-3 p-5 overflow-auto">
         @for (photo of photos; track photo.id) {
           @if (isCurrentUser()) {
-            <div class="relative">
-              <img src="{{ photo.url }}" alt="photo of member" 
-              class="h-40 w-40 rounded-lg" />
-              <app-star-button 
-              [disabled]="photo.url ===memberService.member()?.imageUrl"
-              [selected]="photo.url ===memberService.member()?.imageUrl"
-              (clickEvent)="setMainPhoto(photo)"
+            <div class="relative group">
+              <img src="{{ photo.url }}" alt="photo of member" class="h-40 w-40 rounded-lg" />
+              <app-star-button
+                [disabled]="photo.url === memberService.member()?.imageUrl"
+                [selected]="photo.url === memberService.member()?.imageUrl"
+                [class.opacity-10]="!photo.isApproved"
+                (clickEvent)="setMainPhoto(photo)"
               />
-              <app-delete-button  
-              [disabled]="photo.url ===memberService.member()?.imageUrl"
-               (clickEvent)="openDeleteModal(photo.id)" 
-               class="absolute top-1 left-1"
-               />
+              @if (!photo.isApproved) {
+                <div
+                  class="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center"
+                >
+                  <span class="badge bg-red-600/40"> Awaiting Approval </span>
+                </div>
+              }
+              <app-delete-button
+                [disabled]="photo.url === memberService.member()?.imageUrl"
+                (clickEvent)="openDeleteModal(photo.id)"
+                class="absolute top-1 left-1"
+              />
             </div>
           } @else {
-             <div class="relative">
-               <img src="{{ photo.url }}" alt="photo of member"  class="w-full rounded-lg" />
-              </div>
+            <div class="relative">
+              <img src="{{ photo.url }}" alt="photo of member" 
+               class="h-40 w-40 rounded-lg"/>
+            </div>
           }
         }
         <!-- @for (photo of photoMocks; track $index){
@@ -38,15 +46,11 @@
 <dialog #deleteModal class="modal">
   <div class="modal-box">
     <h3 class="font-bold text-lg">Delete Image?</h3>
-    <p class="py-4">
-      This image will be deleted from your account. This action cannot be undone.
-    </p>
+    <p class="py-4">This image will be deleted from your account. This action cannot be undone.</p>
     <div class="modal-action">
       <form method="dialog">
         <!-- if there is a button in form, it will close the modal -->
-        <button class="btn btn-error mr-2" (click)="deletePhoto(photoToDeleteId!)">
-          Delete
-        </button>
+        <button class="btn btn-error mr-2" (click)="deletePhoto(photoToDeleteId!)">Delete</button>
         <button class="btn">Cancel</button>
       </form>
     </div>

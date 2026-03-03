@@ -1,5 +1,8 @@
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using FirstApp.WebAPI.DTOs;
 using FirstApp.WebAPI.Entities;
+using FirstApp.WebAPI.Entities.enums;
 using FirstApp.WebAPI.Helpers;
 using FirstApp.WebAPI.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -7,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FirstApp.WebAPI.Data.Repos;
 
-public class MemberRepository(AppDbContext context, UserManager<AppUser> userManager) : IMemberRepository
+public class MemberRepository(AppDbContext context, UserManager<AppUser> userManager, IMapper mapper) : IMemberRepository
 {
     public async Task<Member?> GetMemberByIdAsync(string id)
     {
@@ -39,12 +42,19 @@ public class MemberRepository(AppDbContext context, UserManager<AppUser> userMan
         return await PaginationHelper.CreateAsync(query, memberParams.PageNumber, memberParams.PageSize);
     }
 
-    public async Task<IReadOnlyList<Photo>> GetPhotosForMemberAsync(string memberId)
+    public async Task<IReadOnlyList<Photo>> GetPhotosForMemberAsync(
+     string memberId,
+     bool includeUnapproved = false)
     {
-        return await context.Members
-        .Where(m => m.Id == memberId)
-        .SelectMany(m => m.Photos)
-        .ToListAsync();
+        var query = context.Photos
+            .Where(p => p.MemberId == memberId);
+
+        if (!includeUnapproved)
+        {
+            query = query.Where(p => p.IsApproved);
+        }
+
+        return await query.ToListAsync();
     }
 
     //public async Task<bool> SaveAllAsync()
@@ -112,4 +122,36 @@ public class MemberRepository(AppDbContext context, UserManager<AppUser> userMan
             Metadata = pagedUsers.Metadata
         };
     }
+
+    public async Task<PaginatedResult<PhotoForModerationDto>>
+     GetUnapprovedPhotosAsync(int pageNumber, int pageSize)
+    {
+        var query = context.Photos
+            .Where(p => !p.IsApproved)
+            .ProjectTo<PhotoForModerationDto>(mapper.ConfigurationProvider);
+
+        return await PaginationHelper
+        .CreateAsync(query, pageNumber, pageSize);
+    }
+
+    public async Task ModeratePhoto(int photoId, PhotoModerationAction action)
+    {
+        var photo = await context.Photos.FindAsync(photoId);
+        if (photo == null)
+            throw new Exception("Photo not found");
+        switch (action)
+        {
+            case PhotoModerationAction.Approve:
+                photo.IsApproved = true;
+                break;
+
+            case PhotoModerationAction.Reject:
+                photo.IsDeleted = true;
+                break;
+        }
+
+        await context.SaveChangesAsync();
+
+    }
+
 }

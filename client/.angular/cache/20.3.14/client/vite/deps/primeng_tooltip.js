@@ -1,15 +1,10 @@
 import {
-  Button,
-  ButtonClasses,
-  ButtonDirective,
-  ButtonIcon,
-  ButtonLabel,
-  ButtonModule,
-  ButtonStyle
-} from "./chunk-7TTQ62P2.js";
-import "./chunk-E5XZVSSF.js";
-import "./chunk-DVWAJFZ5.js";
-import "./chunk-TDFCVT6M.js";
+  Tooltip,
+  TooltipClasses,
+  TooltipModule,
+  TooltipStyle
+} from "./chunk-ROGUA76I.js";
+import "./chunk-E3N65LJL.js";
 import "./chunk-PS7NZDZ2.js";
 import "./chunk-LTRWCZZA.js";
 import "./chunk-UWKVZRU5.js";
@@ -22,11 +17,8 @@ import "./chunk-D5A67E6H.js";
 import "./chunk-RSS3ODKE.js";
 import "./chunk-XSXJULYR.js";
 export {
-  Button,
-  ButtonClasses,
-  ButtonDirective,
-  ButtonIcon,
-  ButtonLabel,
-  ButtonModule,
-  ButtonStyle
+  Tooltip,
+  TooltipClasses,
+  TooltipModule,
+  TooltipStyle
 };

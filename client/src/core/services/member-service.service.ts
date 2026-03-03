@@ -6,7 +6,7 @@ import { tap } from 'rxjs';
 import { PaginatedResult } from '../../types/pagination';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MemberService {
   private http = inject(HttpClient);
@@ -30,23 +30,21 @@ export class MemberService {
       .set('maxAge', memberParams.maxAge)
       .set('orderBy', memberParams.orderBy);
 
-    if (memberParams.gender)
-      params = params.append('gender', memberParams.gender);
+    if (memberParams.gender) params = params.append('gender', memberParams.gender);
 
-    return this.http.get<PaginatedResult<Member>>(
-      this.siteUrl + 'Users', { params }).pipe(
-        tap(() => {
-          localStorage.setItem('filters', JSON.stringify(memberParams))
-        })
-      );
+    return this.http.get<PaginatedResult<Member>>(this.siteUrl + 'Users', { params }).pipe(
+      tap(() => {
+        localStorage.setItem('filters', JSON.stringify(memberParams));
+      }),
+    );
   }
 
   getMember(id: string) {
     return this.http.get<Member>(this.siteUrl + 'Users/' + id).pipe(
-      tap(member => {
-        this.member.set(member)
-      })
-    )
+      tap((member) => {
+        this.member.set(member);
+      }),
+    );
   }
   getMemberPhotos(id: string) {
     return this.http.get<Photo[]>(this.siteUrl + 'Users/' + id + '/photos');
@@ -59,7 +57,7 @@ export class MemberService {
   uploadPhoto(file: File) {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post<Photo>(this.siteUrl + 'Users/add-photo', formData)
+    return this.http.post<Photo>(this.siteUrl + 'Users/add-photo', formData);
   }
 
   setMainPhoto(photo: Photo) {
@@ -68,5 +66,14 @@ export class MemberService {
 
   deletePhoto(photoId: number) {
     return this.http.delete(this.siteUrl + 'Users/delete-photo/' + photoId);
+  }
+  approveOrRejectPhoto(photoId: number, action: 'Approve' | 'Reject') {
+    return this.http.post(
+      this.siteUrl + 'admin/photos-to-moderate/' + photoId,
+      {},
+      {
+        params: new HttpParams().set('action', action),
+      },
+    );
   }
 }

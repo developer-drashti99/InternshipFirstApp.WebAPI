@@ -1,6 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError } from 'rxjs';
+import { catchError, throwError } from 'rxjs';
 import { ToastService } from '../services/toast-service.service';
 import { NavigationExtras, Router } from '@angular/router';
 
@@ -17,30 +17,41 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
             break;
           case 400:
             if (error.error?.errors) {
-              const validationErrors = Object.values(error.error.errors).flat().join('\n');
+              const validationErrors = Object.values(error.error.errors).flat();
 
-              toast.error(validationErrors);
-            } else if (typeof error.error === 'string') {
-              toast.error(error.error);
-            } else {
-              toast.error(error.error?.title || 'Bad Request');
+              const validationErrorsMessage = `
+              <div>
+                <strong>Please fix the following:</strong>
+                <ul style="margin-top:8px; padding-left:18px;">
+                  ${validationErrors.map((err) => `<li>${err}</li>`).join('')}
+                </ul>
+              </div>
+              `;
+              toast.error(validationErrorsMessage);
             }
             break;
           case 401:
+            // Ignore refresh-token 401
             if (!req.url.includes('refresh-token')) {
-              toast.error('Unauthorized');
+              if (typeof error.error === 'string') {
+                toast.error(error.error);
+              } else {
+                toast.error('Invalid credentials');
+              }
             }
             break;
           case 404:
             router.navigateByUrl('/not-found');
             break;
-
+          case 0:
+            toast.error('Server is not reachable. Please try again later.');
+            break;
           default:
             toast.error('Something went wrong');
             break;
         }
       }
-      throw error;
+      return throwError(() => error);
     }),
   );
 };

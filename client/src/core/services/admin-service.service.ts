@@ -3,6 +3,7 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../../types/user';
 import { PaginatedResult } from '../../types/pagination';
+import { PhotoForModeration } from '../../types/member';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +21,12 @@ export class AdminService {
     return this.http.post<string[]>(
       this.apiUrl + 'admin/edit-roles/' + userId + '?roles=' + roles,
       {},
+    );
+  }
+  getPhotosToModerate(pageNumber: number, pageSize: number){
+    // photos-to-moderate
+      return this.http.get<PaginatedResult<PhotoForModeration>>(
+      `${this.apiUrl}admin/photos-to-moderate?pageNumber=${pageNumber}&pageSize=${pageSize}`,
     );
   }
 }

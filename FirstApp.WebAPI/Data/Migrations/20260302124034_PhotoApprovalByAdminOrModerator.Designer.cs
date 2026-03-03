@@ -3,6 +3,7 @@ using System;
 using FirstApp.WebAPI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FirstApp.WebAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260302124034_PhotoApprovalByAdminOrModerator")]
+    partial class PhotoApprovalByAdminOrModerator
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.10");
@@ -227,12 +230,6 @@ namespace FirstApp.WebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("IsApproved")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("MemberId")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -243,6 +240,9 @@ namespace FirstApp.WebAPI.Migrations
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("isApproved")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 

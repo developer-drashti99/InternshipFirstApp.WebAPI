@@ -65,7 +65,7 @@ namespace FirstApp.WebAPI.Controllers
         [HttpGet("{id}/photos")]
         public async Task<ActionResult<IReadOnlyList<Photo>>> GetMemberPhotos(string id)
         {
-            return Ok(await uow.memberRepository.GetPhotosForMemberAsync(id));
+            return Ok(await uow.memberRepository.GetPhotosForMemberAsync(id, User.getMemberId() == id));
         }
 
         [HttpPost]
@@ -172,7 +172,7 @@ namespace FirstApp.WebAPI.Controllers
                 if (result.Error != null) return BadRequest(result.Error.Message);
             }
 
-            member.Photos.Remove(photo);
+            photo.IsDeleted = true;
             if (await uow.Complete()) return Ok();
 
             return BadRequest("Problem in deleting the photo");

@@ -55,22 +55,22 @@ export class NavBar implements OnInit {
   }
 
   onLogin() {
+    this.accountService.registerMode.set(false);
+    this.loading.set(true);
+
     this.accountService.login(this.credentials).subscribe({
-      next: (response) => {
-        this.loading.set(true);
+      next: () => {
         this.toast.success('Logged in successfully');
-        console.log('Login successful', response);
-        this.route.navigateByUrl('/');
         this.credentials = { email: '', password: '' };
-
         this.clearNotifications();
-
         this.loadUnread();
+        this.route.navigateByUrl('/');
       },
       error: (error) => {
-        this.toast.error(error.error);
-        // console.log(error.error);
-        // console.error('Login failed', error.message),
+        if (error.status === 401) {
+          this.credentials.password = '';
+        }
+        this.loading.set(false);
       },
       complete: () => this.loading.set(false),
     });

@@ -14,9 +14,15 @@ namespace FirstApp.WebAPI.Mapping
         {
             CreateMap<Message, MessageDto>()
             .ForMember(dest => dest.SenderDisplayName, opt => opt.MapFrom(src => src.Sender.DisplayName))
-            .ForMember(dest=>dest.SenderImageUrl,opt=>opt.MapFrom(src=>src.Sender.ImageUrl))
+            .ForMember(dest => dest.SenderImageUrl, opt => opt.MapFrom(src => src.Sender.ImageUrl))
             .ForMember(dest => dest.RecipientDisplayName, opt => opt.MapFrom(src => src.Recipient.DisplayName))
-            .ForMember(dest=>dest.RecipientImageUrl,opt=>opt.MapFrom(src=>src.Recipient.ImageUrl));
+            .ForMember(dest => dest.RecipientImageUrl, opt => opt.MapFrom(src => src.Recipient.ImageUrl));
+
+            CreateMap<Photo, PhotoForModerationDto>()
+    .ForMember(dest => dest.MemberUserName,
+        opt => opt.MapFrom(src => src.Member.User.UserName))
+    .ForMember(dest => dest.MemberDisplayName,
+        opt => opt.MapFrom(src => src.Member.DisplayName));
         }
     }
 }
