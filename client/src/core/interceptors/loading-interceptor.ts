@@ -37,7 +37,10 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   if (req.method.includes('GET') && req.url.includes('/profile')) {
     invalidateCache('/profile');
   }
-  if (req.method.includes('POST') && req.url.includes('/logout')) {
+  if (req.method.includes('POST') && req.url.includes('photo')) {
+    cache.clear();
+  }
+  if (req.url.includes('/admin')) {
     cache.clear();
   }
 

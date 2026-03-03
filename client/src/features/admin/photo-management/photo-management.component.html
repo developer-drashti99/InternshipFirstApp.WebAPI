@@ -1,24 +1,41 @@
-<div class="flex flex-wrap justify-center gap-4 p-6">
-   <!-- <div class="grid grid-cols-5 auto-rows-min gap-3 p-5 overflow-auto"> -->
-  @for (photo of photos(); track photo.id) {
-    <div
-      class="relative group rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-300
-      w-50"
-    >
-      <!-- IMAGE -->
-      <img [src]="photo.url" alt="member photo" class="w-full aspect-square object-cover" />
-
-      <!-- ACTION BAR (BOTTOM SLIDE ON HOVER) -->
+@if (photos().length > 0) {
+  <div class="flex flex-wrap justify-center gap-4 p-6">
+    <!-- <div class="grid grid-cols-5 auto-rows-min gap-3 p-5 overflow-auto"> -->
+    @for (photo of photos(); track photo.id) {
       <div
-        class="absolute bottom-0 left-0 right-0 bg-black/70 backdrop-blur-sm p-3 flex justify-between gap-3 translate-y-full group-hover:translate-y-0 transition duration-300"
+        class="relative group rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 w-50"
       >
-       <button class="btn btn-sm btn-success" pTooltip="Approve" tooltipPosition="bottom"><i class="pi pi-check"></i></button>
-       <button class="btn btn-sm bg-red-500" pTooltip="Reject" tooltipPosition="bottom"><i class="pi pi-times"></i></button>
+        <!-- IMAGE -->
+        <img [src]="photo.url" alt="member photo" class="w-full aspect-square object-cover" />
 
-        <!-- <button class="btn btn-sm btn-error" (click)="deletePhoto(photo.id)">Delete</button> -->
+        <!-- ACTION BAR (BOTTOM SLIDE ON HOVER) -->
+        <div
+          class="absolute bottom-0 left-0 right-0 bg-black/70 backdrop-blur-sm p-3 flex justify-between gap-3 translate-y-full group-hover:translate-y-0 transition duration-300"
+        >
+          <button
+            class="btn btn-sm btn-success"
+            pTooltip="Approve"
+            tooltipPosition="bottom"
+            (click)="approvePhoto(photo.id)"
+          >
+            <i class="pi pi-check"></i>
+          </button>
+          <button
+            class="btn btn-sm bg-red-500"
+            pTooltip="Reject"
+            tooltipPosition="bottom"
+            (click)="unapprovePhoto(photo.id)"
+          >
+            <i class="pi pi-times"></i>
+          </button>
+
+          <!-- <button class="btn btn-sm btn-error" (click)="deletePhoto(photo.id)">Delete</button> -->
+        </div>
       </div>
-    </div>
-  }
-</div>
-<p-paginator [rows]="rows" [totalRecords]="totalRecords()" (onPageChange)="onPageChange($event)">
-</p-paginator>
+    }
+  </div>
+  <p-paginator [rows]="rows" [totalRecords]="totalRecords()" (onPageChange)="onPageChange($event)">
+  </p-paginator>
+} @else {
+  <p>There are no unapproved photos</p>
+}
