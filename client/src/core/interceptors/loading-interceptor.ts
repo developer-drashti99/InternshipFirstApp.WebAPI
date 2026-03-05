@@ -1,7 +1,8 @@
 import { HttpEvent, HttpInterceptorFn, HttpParams } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { BusyService } from '../services/busy-service.service';
-import { delay, finalize, of, tap } from 'rxjs';
+import { delay, finalize, identity, of, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
 // adding caching
 const cache = new Map<string, HttpEvent<unknown>>(); //HttpEvent<unknown> is type of response
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
@@ -69,7 +70,9 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   // );
 
   return next(req).pipe(
-    delay(300), // optional – reduce from 500 for smoother UX
+    // in production we won't add extra delay and null is not allowed in pipe so
+    // used identity
+    environment.production ? identity : delay(300), // optional – reduce from 500 for smoother UX
     tap((event) => {
       if (req.method === 'GET') {
         cache.set(cacheKey, event);

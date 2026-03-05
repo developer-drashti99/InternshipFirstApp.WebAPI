@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-test-errors',
@@ -9,7 +10,7 @@ import { Component, inject } from '@angular/core';
 })
 export class TestErrors {
   private http = inject(HttpClient);
-  private apiUrl = "http://localhost:5178/api/";
+  private apiUrl = environment.apiUrl;
 
   get404Error() {
     this.http.get(this.apiUrl + "buggy/not-found").subscribe(

@@ -1,6 +1,5 @@
 using FirstApp.WebAPI;
 using FirstApp.WebAPI.Data;
-using FirstApp.WebAPI.Data.Repos;
 using FirstApp.WebAPI.Helpers;
 using FirstApp.WebAPI.Interfaces;
 using FirstApp.WebAPI.Mapping;
@@ -15,13 +14,19 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// for deployment 
+var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+
+
 // Add services to the container.
 
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlOptions => sqlOptions.EnableRetryOnFailure()
+);
 });
 
 builder.Services.AddCors();
@@ -139,9 +144,14 @@ app.UseCors(policy =>
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.MapControllers();
 app.MapHub<PresenceHub>("hubs/presence");
 app.MapHub<MessageHub>("hubs/messages");
+//for any fallback (404) request
+app.MapFallbackToController("Index","Fallback");
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
