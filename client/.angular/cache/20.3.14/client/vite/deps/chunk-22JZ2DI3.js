@@ -6,11 +6,11 @@ import {
   PARENT_INSTANCE
 } from "./chunk-LTRWCZZA.js";
 import {
-  BaseStyle
-} from "./chunk-UWKVZRU5.js";
-import {
   Bind
 } from "./chunk-XMHTEWJD.js";
+import {
+  BaseStyle
+} from "./chunk-UWKVZRU5.js";
 import {
   PrimeTemplate,
   SharedModule
@@ -1791,4 +1791,4 @@ export {
   Scroller,
   ScrollerModule
 };
-//# sourceMappingURL=chunk-5VMU2NXJ.js.map
+//# sourceMappingURL=chunk-22JZ2DI3.js.map

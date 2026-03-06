@@ -136,17 +136,29 @@ public class MemberRepository(AppDbContext context, UserManager<AppUser> userMan
 
     public async Task ModeratePhoto(int photoId, PhotoModerationAction action)
     {
-        var photo = await context.Photos.FindAsync(photoId);
+        //var photo = await context.Photos.FindAsync(photoId);
+        var photo = await context.Photos
+      .Include(p => p.Member)
+          .ThenInclude(m => m.User)
+      .Include(p => p.Member.Photos)
+      .FirstOrDefaultAsync(p => p.Id == photoId);
         if (photo == null)
             throw new Exception("Photo not found");
         switch (action)
         {
             case PhotoModerationAction.Approve:
                 photo.IsApproved = true;
+                
+                // if (photo.Member.User.ImageUrl == null && photo.Member.ImageUrl == null)
+                // {
+                //     photo.Member.User.ImageUrl = photo.Url;
+                //     photo.Member.ImageUrl = photo.Url;
+                // }
                 break;
 
             case PhotoModerationAction.Reject:
                 photo.IsDeleted = true;
+                photo.Member.User.ImageUrl = null;
                 break;
         }
 

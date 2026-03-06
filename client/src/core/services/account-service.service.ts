@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { tap } from 'rxjs';
-import { User, LoginCreds, RegisterCreds, AuthUser } from '../../types/user';
+import { User, LoginCreds, RegisterCreds, AuthUser, ChangePassword } from '../../types/user';
 import { environment } from '../../environments/environment';
 import { LikesService } from './likes-service.service';
 import { PresenceService } from './presence-service.service';
@@ -17,7 +17,10 @@ export class AccountService {
   public currentUser = signal<User | null>(null);
   public registerMode = signal(false);
   private apiUrl = environment.apiUrl;
-
+  isAdmin = computed(() => {
+    const roles = this.currentUser()?.roles || [];
+    return roles.includes('Admin');
+  });
   isNormalUser(): boolean {
     if (!this.currentUser()) return false;
 
@@ -121,5 +124,11 @@ export class AccountService {
     const jsonPayload = JSON.parse(decoded);
     // return one role or multiple roles as array
     return Array.isArray(jsonPayload.role) ? jsonPayload.role : [jsonPayload.role];
+  }
+
+  changePassword(changePassword: ChangePassword) {
+    return this.http.post<ChangePassword>(this.apiUrl + 'users/change-pwd', changePassword, {
+      withCredentials: true,
+    });
   }
 }

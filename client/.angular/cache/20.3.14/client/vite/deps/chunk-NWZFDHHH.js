@@ -1,6 +1,6 @@
 import {
   BaseEditableHolder
-} from "./chunk-7V7O5LWZ.js";
+} from "./chunk-SO5PTMWQ.js";
 import {
   CheckIcon,
   MinusIcon
@@ -9,12 +9,12 @@ import {
   PARENT_INSTANCE
 } from "./chunk-LTRWCZZA.js";
 import {
-  BaseStyle
-} from "./chunk-UWKVZRU5.js";
-import {
   Bind,
   BindModule
 } from "./chunk-XMHTEWJD.js";
+import {
+  BaseStyle
+} from "./chunk-UWKVZRU5.js";
 import {
   PrimeTemplate,
   SharedModule
@@ -743,4 +743,4 @@ export {
   Checkbox,
   CheckboxModule
 };
-//# sourceMappingURL=chunk-ICWBNXTY.js.map
+//# sourceMappingURL=chunk-NWZFDHHH.js.map

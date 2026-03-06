@@ -9,11 +9,11 @@ import {
   PARENT_INSTANCE
 } from "./chunk-LTRWCZZA.js";
 import {
-  BaseStyle
-} from "./chunk-UWKVZRU5.js";
-import {
   BindModule
 } from "./chunk-XMHTEWJD.js";
+import {
+  BaseStyle
+} from "./chunk-UWKVZRU5.js";
 import {
   $,
   C,
@@ -939,4 +939,4 @@ export {
   Tooltip,
   TooltipModule
 };
-//# sourceMappingURL=chunk-ROGUA76I.js.map
+//# sourceMappingURL=chunk-5HARBMGP.js.map

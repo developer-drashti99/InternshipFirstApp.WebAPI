@@ -11,12 +11,12 @@ import {
   PARENT_INSTANCE
 } from "./chunk-LTRWCZZA.js";
 import {
-  BaseStyle
-} from "./chunk-UWKVZRU5.js";
-import {
   Bind,
   BindModule
 } from "./chunk-XMHTEWJD.js";
+import {
+  BaseStyle
+} from "./chunk-UWKVZRU5.js";
 import {
   PrimeTemplate,
   SharedModule

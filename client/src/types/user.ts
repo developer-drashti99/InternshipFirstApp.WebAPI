@@ -25,4 +25,10 @@ export type RegisterCreds = {
     dateOfBirth: string;
     city: string;
     country: string;
+    captchaToken:string;
+}
+export type ChangePassword={
+    oldPassword:string
+    newPassword:string
+    confirmPassword:string
 }

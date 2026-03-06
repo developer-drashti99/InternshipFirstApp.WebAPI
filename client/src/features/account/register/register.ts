@@ -12,10 +12,11 @@ import { RegisterCreds } from '../../../types/user';
 import { AccountService } from '../../../core/services/account-service.service';
 import { TextInputComponent } from '../../../shared/components/text-input/text-input.component';
 import { Router } from '@angular/router';
+import { NgxCaptchaModule } from 'ngx-captcha';
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, TextInputComponent],
+  imports: [ReactiveFormsModule, TextInputComponent,NgxCaptchaModule],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
@@ -30,6 +31,15 @@ export class Register {
   protected currentStep = signal(1);
   protected validationErrors = signal<string[]>([]);
 
+  siteKey: string = "6LdaiYEsAAAAAHkHYPoskdMvMiAaFnYzxyrhoanl";
+  captchaToken: string = '';
+
+handleSuccess(token: string) {
+  this.captchaToken = token;
+  this.credentialsForm.patchValue({
+    recaptcha: token
+  });
+}
   constructor() {
     this.credentialsForm = this.formBuilder.group({
       displayName: ['', Validators.required],
@@ -44,6 +54,7 @@ export class Register {
       ],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required, this.matchValues('password')]],
+            recaptcha: ['', Validators.required],
     });
 
     this.profileForm = this.formBuilder.group({
@@ -78,6 +89,12 @@ export class Register {
       this.credentialsForm.markAllAsTouched();
       return;
     }
+    // const token = grecaptcha.getResponse();
+
+    // if (!token) {
+    //   alert('Please complete captcha');
+    //   return;
+    // }
 
     this.currentStep.update((prevStep) => prevStep + 1);
   }

@@ -49,10 +49,12 @@ export class NavBar implements OnInit {
     const elem = document.activeElement as HTMLDivElement; // themes dropdown which is currently active or we can say open
     if (elem) elem.blur(); //for closing dropdown after selecting theme
   }
-  handleSelectUserItem() {
-    const elem = document.activeElement as HTMLDivElement; // profile dropdown which is currently active or we can say open
-    if (elem) elem.blur(); //for closing dropdown after selecting options
-  }
+ handleSelectUserItem() {
+  setTimeout(() => {
+    const elem = document.activeElement as HTMLElement;
+    if (elem) elem.blur();
+  }, 0);
+}
 
   onLogin() {
     this.accountService.registerMode.set(false);

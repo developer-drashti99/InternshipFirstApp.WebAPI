@@ -54,7 +54,7 @@
               <i class="pi pi-arrow-left"></i>
               Go Back
             </button>
-            @if (!isCurrentUser()) {
+            @if (!isCurrentUser()&& accountService.isNormalUser()) {
               <button
                 class="btn btn-primary flex-1 flex items-center justify-center gap-2"
                 (click)="likeService.toggleLike(member.id)"

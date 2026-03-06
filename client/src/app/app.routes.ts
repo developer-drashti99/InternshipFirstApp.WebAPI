@@ -16,6 +16,7 @@ import { Register } from '../features/account/register/register';
 import { ListComponent } from '../features/list/list-component.component';
 import { Admin } from '../features/admin/admin';
 import { adminGuard } from '../core/guards/admin-guard';
+import { ChangePasswordComponent } from '../features/change-password/change-password.component';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -23,23 +24,29 @@ export const routes: Routes = [
   {
     path: '',
     children: [
+      { path: 'change-pwd', component: ChangePasswordComponent },
       { path: 'members', component: MemberList },
       {
-        path: 'members/:id', component: MemberDetails,
+        path: 'members/:id',
+        component: MemberDetails,
         resolve: { member: memberResolver },
         runGuardsAndResolvers: 'always',
         children: [
           { path: '', redirectTo: 'profile', pathMatch: 'full' },
-          { path: 'profile', component: MemberProfileComponent, title: 'Profile', 
-            canDeactivate: [preventUnsavedChangesGuard] },
+          {
+            path: 'profile',
+            component: MemberProfileComponent,
+            title: 'Profile',
+            canDeactivate: [preventUnsavedChangesGuard],
+          },
           { path: 'messages', component: MemberMessagesComponent, title: 'Messages' },
           { path: 'photos', component: MemberPhotosComponent, title: 'Photos' },
-        ]
+        ],
       },
       { path: 'messages', component: Messages },
-      { path: 'admin', component: Admin,canActivate: [adminGuard] },
+      { path: 'admin', component: Admin, canActivate: [adminGuard] },
     ],
-    canActivate: [authGuard]
+    canActivate: [authGuard],
   },
   { path: 'lists', component: ListComponent },
   { path: 'errors', component: TestErrors },

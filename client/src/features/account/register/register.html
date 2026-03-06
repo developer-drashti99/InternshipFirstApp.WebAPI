@@ -16,7 +16,19 @@
           formControlName="confirmPassword"
           type="password"
         />
-
+        <!-- Captcha -->
+        <ngx-recaptcha2
+          #captchaElem class="w-full"
+          [siteKey]="siteKey"
+            formControlName="recaptcha"
+          (success)="handleSuccess($event)"
+        >
+        </ngx-recaptcha2>
+        <!-- <div
+          id="captcha"
+          class="g-recaptcha"
+          data-sitekey="6LfZt4AsAAAAAMyPtUMo20JYWL_QQDff_BZp8iCZ"
+        ></div> -->
         <div class="flex items-center justify-end gap-3">
           <button class="btn" (click)="cancel()">Cancel</button>
           <button
@@ -41,18 +53,25 @@
           <div class="font-semibold">Gender:</div>
           <label class="flex gap-3 items-center">
             <span>Male</span>
-            <input type="radio" formControlName="gender" 
-            value="Male" class="radio radio-primary">
-          </label>  
+            <input type="radio" formControlName="gender" value="Male" class="radio radio-primary" />
+          </label>
           <label class="flex gap-3 items-center">
             <span>Female</span>
-            <input type="radio" formControlName="gender" 
-            value="Female" class="radio radio-primary">
+            <input
+              type="radio"
+              formControlName="gender"
+              value="Female"
+              class="radio radio-primary"
+            />
           </label>
         </div>
-        <app-text-input label="Date Of Birth" [maxDate]="getMaxDate()"
-        [minDate]="getMinDate()"
-        formControlName="dateOfBirth" type="date" />
+        <app-text-input
+          label="Date Of Birth"
+          [maxDate]="getMaxDate()"
+          [minDate]="getMinDate()"
+          formControlName="dateOfBirth"
+          type="date"
+        />
         <app-text-input label="City" formControlName="city" />
         <app-text-input label="Country" formControlName="country" />
 
@@ -70,12 +89,11 @@
       </form>
     }
   </div>
-  @if(validationErrors().length>0)
-  {
+  @if (validationErrors().length > 0) {
     <div class="mt-5 flex bg-gray-200 rounded-2xl w-1/2 p-3 mx-auto">
       <ul class="flex flex-col text-error space-y-1">
         @for (error of validationErrors(); track $index) {
-          <li>{{error}}</li>
+          <li>{{ error }}</li>
         }
       </ul>
     </div>

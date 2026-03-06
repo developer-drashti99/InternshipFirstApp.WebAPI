@@ -77,7 +77,7 @@
           <li class="menu-title mt-4 text-primary text-xs uppercase tracking-wider">
             <span>Account</span>
           </li>
-          @if (accountService.isNormalUser()) {
+            @if (!accountService.isAdmin()) {
             <!-- 🔔 Notification Bell -->
             <div class="dropdown dropdown-end">
               <div tabindex="0" role="button" class="relative btn btn-ghost btn-circle">
@@ -306,8 +306,10 @@
       </ul>
     </div>
 
-    @if (accountService.currentUser(); as user) {
-      <!-- 🔔 Notification Bell -->
+    
+      @if(accountService.currentUser(); as user){
+    @if (!accountService.isAdmin()) 
+    {  <!-- 🔔 Notification Bell -->
       <div class="dropdown dropdown-end">
         <div tabindex="0" role="button" class="relative btn btn-ghost btn-circle">
           <i class="pi pi-bell text-xl text-white"></i>
@@ -387,7 +389,7 @@
             }
           </div>
         </div>
-      </div>
+      </div>}
       <!-- Desktop User Dropdown -->
       <div class="dropdown dropdown-end">
         <div tabindex="0" role="button" class="btn btn-ghost flex items-center gap-2 text-white">
@@ -409,11 +411,16 @@
             </li>
           }
           <li>
+              <a routerLink="/change-pwd">
+                <i class="pi pi-key mr-2"></i> Change Password
+              </a>
+            </li>
+          <li>
             <a (click)="logout()"> <i class="pi pi-logout mr-2"></i> Logout </a>
           </li>
         </ul>
-      </div>
-    } @else {
+      </div>}
+     @else {
       <!-- Desktop Login -->
       <form class="flex items-center gap-2" (ngSubmit)="onLogin()" #loginForm="ngForm">
         <input

@@ -5,12 +5,13 @@ using FirstApp.WebAPI.Entities;
 using FirstApp.WebAPI.DTOs;
 using FirstApp.WebAPI.Extensions;
 using FirstApp.WebAPI.Helpers;
+using Microsoft.AspNetCore.Identity;
 namespace FirstApp.WebAPI.Controllers
 {
     [Authorize]
-    public class UsersController(IUnitOfWork uow, IPhotoService photoService) : BaseApiController
+    public class UsersController(IUnitOfWork uow, IPhotoService photoService, UserManager<AppUser> userManager) : BaseApiController
     {
-        // [AllowAnonymous]
+
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<Member>>> GetUsers([FromQuery] MemberParams memberParams)
         {
@@ -61,6 +62,44 @@ namespace FirstApp.WebAPI.Controllers
         //         return BadRequest($"{ex.Message}  {ex.Data}");
         //     }
         // }
+
+        [HttpPost("change-pwd")]
+        public async Task<ActionResult> ChangePassword(ChangePasswordDto changePassword)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+            }
+
+            var userId = User.getMemberId();
+
+            if (userId == null)
+                return BadRequest("Please login to your account.");
+
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                return NotFound("User not found.");
+
+
+            var isOldPasswordCorrect = await userManager.CheckPasswordAsync(user, changePassword.OldPassword);
+
+            if (!isOldPasswordCorrect)
+                return BadRequest("Incorrect old password.");
+
+            var result = await userManager.ChangePasswordAsync(
+                user,
+                changePassword.OldPassword,
+                changePassword.NewPassword
+            );
+
+            if (!result.Succeeded)
+                return BadRequest(result.Errors.Select(e => e.Description));
+
+            return Ok(new { message = "Password has been changed." });
+        }
 
         [HttpGet("{id}/photos")]
         public async Task<ActionResult<IReadOnlyList<Photo>>> GetMemberPhotos(string id)
@@ -123,12 +162,12 @@ namespace FirstApp.WebAPI.Controllers
                 PublicId = result.PublicId,
                 MemberId = User.getMemberId(),
             };
-            if (member.ImageUrl == null)
-            {
-                member.ImageUrl = photo.Url;
-                member.User.ImageUrl = photo.Url;
-            }
-            ;
+            // if (member.ImageUrl == null)
+            // {
+            //     member.ImageUrl = photo.Url;
+            //     member.User.ImageUrl = photo.Url;
+            // }
+            // ;
             member.Photos.Add(photo);
 
             if (await uow.Complete()) return photo;

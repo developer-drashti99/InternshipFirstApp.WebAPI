@@ -28,6 +28,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
               </div>
               `;
               toast.error(validationErrorsMessage);
+              console.log(validationErrorsMessage);
             }
             break;
           case 401:

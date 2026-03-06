@@ -3,11 +3,11 @@ import {
   PARENT_INSTANCE
 } from "./chunk-LTRWCZZA.js";
 import {
-  BaseStyle
-} from "./chunk-UWKVZRU5.js";
-import {
   Bind
 } from "./chunk-XMHTEWJD.js";
+import {
+  BaseStyle
+} from "./chunk-UWKVZRU5.js";
 import {
   SharedModule
 } from "./chunk-AKNBGUIB.js";
