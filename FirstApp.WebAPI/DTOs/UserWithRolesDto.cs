@@ -1,10 +1,18 @@
-﻿namespace FirstApp.WebAPI.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FirstApp.WebAPI.DTOs
 {
     public class UserWithRolesDto
     {
-        public string Id { get; set; } = default!;
-        public string UserName { get; set; } = default!;
-        public string Email { get; set; } = default!;
+        public required string Id { get; set; }
+
+        [Required]
+        public required string UserName { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public required string Email { get; set; }
+
         public IList<string> Roles { get; set; } = new List<string>();
     }
 }

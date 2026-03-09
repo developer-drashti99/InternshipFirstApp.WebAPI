@@ -1,4 +1,3 @@
-using AutoMapper;
 using FirstApp.WebAPI.DTOs;
 using FirstApp.WebAPI.Entities;
 using FirstApp.WebAPI.Extensions;
@@ -14,11 +13,16 @@ namespace FirstApp.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<MessageDto>> CreateMessage(CreateMessageDto createMessageDto)
         {
-            var sender = await uow.memberRepository.GetMemberByIdAsync(User.getMemberId());
+            var senderId = User.getMemberId();
+
+            var sender = await uow.memberRepository.GetMemberByIdAsync(senderId);
             var recipient = await uow.memberRepository.GetMemberByIdAsync(createMessageDto.RecipientId);
 
-            if (recipient == null || sender == null || sender.Id == createMessageDto.RecipientId)
-                return BadRequest("Can not send message");
+            if (sender == null || recipient == null)
+                return BadRequest("Sender or recipient could not be found.");
+
+            if (senderId == createMessageDto.RecipientId)
+                return BadRequest("You cannot send a message to yourself.");
 
             var message = new Message
             {
@@ -28,27 +32,34 @@ namespace FirstApp.WebAPI.Controllers
             };
 
             uow.messageRepository.AddMessage(message);
-            if (await uow.Complete())
-            {
-                var messageDto = await uow.messageRepository.GetMessageDtoById(message.Id);
-                return Ok(messageDto);
-            }
 
-            return BadRequest("Failed to send message");
+            if (!await uow.Complete())
+                return BadRequest("Failed to send the message.");
+
+            var messageDto = await uow.messageRepository.GetMessageDtoById(message.Id);
+
+            return Ok(messageDto);
         }
 
         [HttpGet]
-        public async Task<ActionResult<PaginatedResult<MessageDto>>> GetMessagesByContainer([FromQuery] MessageParams messageParams)
+        public async Task<ActionResult<PaginatedResult<MessageDto>>> GetMessagesByContainer(
+            [FromQuery] MessageParams messageParams)
         {
             messageParams.MemberId = User.getMemberId();
-            return await uow.messageRepository.GetMessagesForMember(messageParams);
+
+            var messages = await uow.messageRepository.GetMessagesForMember(messageParams);
+
+            return Ok(messages);
         }
 
         [HttpGet("thread/{recipientId}")]
         public async Task<ActionResult<IReadOnlyList<MessageDto>>> GetMessageThread(string recipientId)
         {
             var currentMemberId = User.getMemberId();
-            return Ok(await uow.messageRepository.GetMessageThread(currentMemberId, recipientId));
+
+            var thread = await uow.messageRepository.GetMessageThread(currentMemberId, recipientId);
+
+            return Ok(thread);
         }
 
         [HttpDelete("{id}")]
@@ -59,10 +70,10 @@ namespace FirstApp.WebAPI.Controllers
             var message = await uow.messageRepository.GetMessage(id);
 
             if (message == null)
-                return BadRequest("Can not delete this message.");
+                return NotFound("Message not found.");
 
             if (message.SenderId != memberId && message.RecipientId != memberId)
-                return BadRequest("You can not delete this message.");
+                return BadRequest("You are not authorized to delete this message.");
 
             if (message.SenderId == memberId)
                 message.SenderDeleted = true;
@@ -70,24 +81,24 @@ namespace FirstApp.WebAPI.Controllers
             if (message.RecipientId == memberId)
                 message.RecipientDeleted = true;
 
-            if (message is { SenderDeleted: true, RecipientDeleted: true })
-            {
+            // physical delete only if both deleted
+            if (message.SenderDeleted && message.RecipientDeleted)
                 uow.messageRepository.DeleteMessage(message);
-            }
 
-            if (await uow.Complete()) return Ok();
-            else return BadRequest("Problem deleting the message.");
+            if (!await uow.Complete())
+                return BadRequest("Failed to delete the message.");
 
+            return Ok("Message deleted successfully.");
         }
 
         [HttpGet("unread")]
         public async Task<ActionResult<IReadOnlyList<MessageDto>>> GetUnreadMessages()
         {
             var memberId = User.getMemberId();
+
             var messages = await uow.messageRepository.GetUnreadMessages(memberId);
 
             return Ok(messages);
         }
-
     }
 }

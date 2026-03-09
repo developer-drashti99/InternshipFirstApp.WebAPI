@@ -3,6 +3,7 @@
 namespace FirstApp.WebAPI.Controllers
 {
     //if any angular route will be accessed using 5178 then it will redirected index of angular
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class FallbackController : Controller
     {
         public ActionResult Index()

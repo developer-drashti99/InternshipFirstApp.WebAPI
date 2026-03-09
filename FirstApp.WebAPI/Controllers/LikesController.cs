@@ -2,7 +2,6 @@
 using FirstApp.WebAPI.Extensions;
 using FirstApp.WebAPI.Helpers;
 using FirstApp.WebAPI.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FirstApp.WebAPI.Controllers
@@ -14,9 +13,12 @@ namespace FirstApp.WebAPI.Controllers
         public async Task<ActionResult> ToggleLike(string targetMemberId)
         {
             if (User.IsInRole("Admin"))
-                return BadRequest("Admins cannot like members.");
+                return BadRequest("Admins are not allowed to like members.");
+
             var sourceMemberId = User.getMemberId();
-            if (sourceMemberId == targetMemberId) return BadRequest("You cannot like yourself");
+
+            if (sourceMemberId == targetMemberId)
+                return BadRequest("You cannot like your own profile.");
 
             var existingLike = await uow.likesRepository.GetMemberLike(sourceMemberId, targetMemberId);
 
@@ -27,15 +29,18 @@ namespace FirstApp.WebAPI.Controllers
                     SourceMemberId = sourceMemberId,
                     TargetMemberId = targetMemberId
                 };
+
                 uow.likesRepository.AddLike(like);
             }
             else
             {
                 uow.likesRepository.DeleteLike(existingLike);
             }
-            if (await uow.Complete()) return Ok();
 
-            return BadRequest("Failed to update like");
+            if (await uow.Complete())
+                return Ok("Like status updated successfully.");
+
+            return BadRequest("Failed to update like status.");
         }
 
         [HttpGet("list")]
@@ -48,7 +53,9 @@ namespace FirstApp.WebAPI.Controllers
         public async Task<ActionResult<PaginatedResult<Member>>> GetMemberLikes([FromQuery] LikesParams likesParams)
         {
             likesParams.MemberId = User.getMemberId();
+
             var members = await uow.likesRepository.GetMemberLikes(likesParams);
+
             return Ok(members);
         }
     }

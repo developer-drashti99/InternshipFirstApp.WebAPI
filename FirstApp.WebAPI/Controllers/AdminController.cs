@@ -38,42 +38,48 @@ namespace FirstApp.WebAPI.Controllers
         [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("users-with-roles")]
         public async Task<ActionResult<PaginatedResult<UserWithRolesDto>>> GetUsersWithRoles(
-     [FromQuery] UserParams userParams)
+            [FromQuery] UserParams userParams)
         {
-            return Ok(await uow.memberRepository.GetUsersWithRolesAsync(userParams));
+            var result = await uow.memberRepository.GetUsersWithRolesAsync(userParams);
+
+            return Ok(result);
         }
 
         [Authorize(Policy = "RequireAdminRole")]
         [HttpPost("edit-roles/{userId}")]
         public async Task<ActionResult> EditRoles(string userId, [FromQuery] string roles)
         {
-            if (string.IsNullOrEmpty(roles)) return BadRequest("You must select at least one role.");
+            if (string.IsNullOrWhiteSpace(roles))
+                return BadRequest("At least one role must be selected.");
 
             var selectedRoles = roles.Split(",").ToArray();
 
             var user = await userManager.FindByIdAsync(userId);
 
-            if (user == null) return BadRequest("Could not retrieve user");
+            if (user == null)
+                return NotFound("User not found.");
 
             var userRoles = await userManager.GetRolesAsync(user);
 
             var result = await userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
 
-            if (!result.Succeeded) return BadRequest("Failed to add to roles");
+            if (!result.Succeeded)
+                return BadRequest("Failed to add roles to the user.");
 
             result = await userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
 
-            if (!result.Succeeded) return BadRequest("Failed to remove from roles");
+            if (!result.Succeeded)
+                return BadRequest("Failed to remove roles from the user.");
 
             return Ok(await userManager.GetRolesAsync(user));
         }
 
-
         [Authorize(Policy = "ModeratePhotoRole")]
         [HttpGet("photos-to-moderate")]
         public async Task<ActionResult<PaginatedResult<PhotoForModerationDto>>>
-    GetPhotosForModeration([FromQuery] int pageNumber = 1,
-                           [FromQuery] int pageSize = 10)
+        GetPhotosForModeration(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10)
         {
             var result = await uow.memberRepository
                 .GetUnapprovedPhotosAsync(pageNumber, pageSize);
@@ -83,10 +89,13 @@ namespace FirstApp.WebAPI.Controllers
 
         [Authorize(Policy = "ModeratePhotoRole")]
         [HttpPost("photos-to-moderate/{photoId}")]
-        public async Task<ActionResult> ApproveOrRejectPhoto(int photoId, [FromQuery] PhotoModerationAction action)
+        public async Task<ActionResult> ApproveOrRejectPhoto(
+            int photoId,
+            [FromQuery] PhotoModerationAction action)
         {
-            await uow.memberRepository.ModeratePhoto(photoId,action);
-            return Ok();
+            await uow.memberRepository.ModeratePhoto(photoId, action);
+
+            return Ok("Photo moderation action completed successfully.");
         }
     }
 }

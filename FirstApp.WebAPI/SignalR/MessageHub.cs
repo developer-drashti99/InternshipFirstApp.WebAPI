@@ -1,9 +1,7 @@
-﻿using AutoMapper;
-using FirstApp.WebAPI.DTOs;
+﻿using FirstApp.WebAPI.DTOs;
 using FirstApp.WebAPI.Entities;
 using FirstApp.WebAPI.Extensions;
 using FirstApp.WebAPI.Interfaces;
-using FirstApp.WebAPI.Mapping;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 

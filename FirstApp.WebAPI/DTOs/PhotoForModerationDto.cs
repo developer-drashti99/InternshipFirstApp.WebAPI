@@ -3,10 +3,15 @@
     public class PhotoForModerationDto
     {
         public int Id { get; set; }
-        public string Url { get; set; } = "";
+
+        public required string Url { get; set; }
+
         public bool IsApproved { get; set; }
-        public string MemberId { get; set; } = "";
-        public string MemberUserName { get; set; } = "";
-        public string MemberDisplayName { get; set; } = "";
+
+        public required string MemberId { get; set; }
+
+        public required string MemberUserName { get; set; }
+
+        public required string MemberDisplayName { get; set; }
     }
 }

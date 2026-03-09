@@ -1,5 +1,6 @@
 using FirstApp.WebAPI;
 using FirstApp.WebAPI.Data;
+using FirstApp.WebAPI.Filters;
 using FirstApp.WebAPI.Helpers;
 using FirstApp.WebAPI.Interfaces;
 using FirstApp.WebAPI.Mapping;
@@ -8,6 +9,7 @@ using FirstApp.WebAPI.Services;
 using FirstApp.WebAPI.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -15,7 +17,10 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add controllers
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ApiResponseFilter>();
+});
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -26,6 +31,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 builder.Services.AddCors();
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("auth", opt =>
+    {
+        opt.PermitLimit = 5;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 2;
+    });
+});
+
 
 // Email settings
 builder.Services.Configure<EmailSettings>(
@@ -126,6 +143,8 @@ app.UseAuthorization();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
+
+app.UseRateLimiter();
 
 app.MapControllers();
 app.MapHub<PresenceHub>("hubs/presence");

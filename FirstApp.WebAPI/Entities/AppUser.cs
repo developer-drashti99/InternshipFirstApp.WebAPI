@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using FirstApp.WebAPI.Entities;
 using Microsoft.AspNetCore.Identity;
 
