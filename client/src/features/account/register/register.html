@@ -1,4 +1,4 @@
-<div class="card w-full bg-base-100 mx-auto flex flex-col shadow-lg p-6 rounded-lg">
+<div class="card  w-full max-w-xl bg-base-100 mx-auto flex flex-col shadow-lg p-6 rounded-lg">
   <div class="card-title justify-center text-3xl text-primary">Registration</div>
   <div class="card-body w-full">
     <ul class="steps steps-vertical lg:steps-horizontal">
@@ -89,6 +89,13 @@
       </form>
     }
   </div>
+  <!-- Login Link -->
+      <div class="text-center text-sm mt-2">
+        Already have an account?
+        <a routerLink="/login" class="text-primary font-semibold hover:underline cursor-pointer">
+          Login
+        </a>
+      </div>
   @if (validationErrors().length > 0) {
     <div class="mt-5 flex bg-gray-200 rounded-2xl w-1/2 p-3 mx-auto">
       <ul class="flex flex-col text-error space-y-1">

@@ -81,4 +81,7 @@ export class ChangePasswordComponent {
       },
     });
   }
+  cancel(){
+    this.router.navigateByUrl('/');
+  }
 }

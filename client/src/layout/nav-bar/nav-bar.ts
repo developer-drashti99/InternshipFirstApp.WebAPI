@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccountService } from '../../core/services/account-service.service';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
@@ -35,12 +35,23 @@ export class NavBar implements OnInit {
 
   ngOnInit(): void {
     document.documentElement.setAttribute('data-theme', this.selectedTheme());
+    effect(() => {
+      const user = this.accountService.currentUser();
 
-    if (this.accountService.currentUser()) {
-      this.loadUnread();
+      if (user) {
+        this.loadUnread();
+      }
+    });
+  }
+  toggleTheme(event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+
+    if (checked) {
+      this.handleSelectedTheme('dark');
+    } else {
+      this.handleSelectedTheme('light');
     }
   }
-
   handleSelectedTheme(theme: string) {
     this.selectedTheme.set(theme);
     localStorage.setItem('theme', theme);
@@ -49,33 +60,11 @@ export class NavBar implements OnInit {
     const elem = document.activeElement as HTMLDivElement; // themes dropdown which is currently active or we can say open
     if (elem) elem.blur(); //for closing dropdown after selecting theme
   }
- handleSelectUserItem() {
-  setTimeout(() => {
-    const elem = document.activeElement as HTMLElement;
-    if (elem) elem.blur();
-  }, 0);
-}
-
-  onLogin() {
-    this.accountService.registerMode.set(false);
-    this.loading.set(true);
-
-    this.accountService.login(this.credentials).subscribe({
-      next: () => {
-        this.toast.success('Logged in successfully');
-        this.credentials = { email: '', password: '' };
-        this.clearNotifications();
-        this.loadUnread();
-        this.route.navigateByUrl('/');
-      },
-      error: (error) => {
-        if (error.status === 401) {
-          this.credentials.password = '';
-        }
-        this.loading.set(false);
-      },
-      complete: () => this.loading.set(false),
-    });
+  handleSelectUserItem() {
+    setTimeout(() => {
+      const elem = document.activeElement as HTMLElement;
+      if (elem) elem.blur();
+    }, 0);
   }
   clearNotifications() {
     this.notificationService.notifications.set([]);

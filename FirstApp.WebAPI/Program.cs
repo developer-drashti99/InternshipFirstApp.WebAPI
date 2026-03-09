@@ -14,92 +14,76 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// for deployment 
-// var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
-// builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
-
-
-// Add services to the container.
-
+// Add controllers
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlOptions => sqlOptions.EnableRetryOnFailure()
-);
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOptions => sqlOptions.EnableRetryOnFailure()
+    );
 });
 
 builder.Services.AddCors();
 
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IPhotoService, PhotoService>();
+// Email settings
+builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings")
+);
 
+// Token expiry for reset password
+builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
+{
+    opt.TokenLifespan = TimeSpan.FromMinutes(30);
+});
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-//because of UOW (Unit Of Work) we will include all repos in Unit Of Work interface and class
-
-//builder.Services.AddScoped<IMemberRepository, MemberRepository>();
-//builder.Services.AddScoped<ILikesRepository, LikesRepository>();
-//builder.Services.AddScoped<IMessageRepository, MessageRepository>();
-
-builder.Services.AddScoped<LogUserActivity>();
-
-// added automapper to the service container and specified the mapping profile
-builder.Services.AddAutoMapper(typeof(MappingProfile));
-
-//configured cloudinary api with key
-builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
-
-builder.Services.AddSignalR();
-
-builder.Services.AddSingleton<PresenceTracker>();
-
-//added identity core to the service container and specified the user and role types, as well as the database context for storing user information for authentication and authorization purposes. Also configured password and user options for identity.
+// Identity configuration (FIXED)
 builder.Services.AddIdentityCore<AppUser>(options =>
 {
+    options.Password.RequireDigit = true;
     options.Password.RequireNonAlphanumeric = false;
     options.User.RequireUniqueEmail = true;
-}).AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>();
+})
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<AppDbContext>()
+.AddDefaultTokenProviders();   // REQUIRED for reset password tokens
 
+// Services
+builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IPhotoService, PhotoService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<LogUserActivity>();
 
+// AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+// Cloudinary
+builder.Services.Configure<CloudinarySettings>(
+    builder.Configuration.GetSection("CloudinarySettings")
+);
+
+// SignalR
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<PresenceTracker>();
+
+// JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         var tokenKey = builder.Configuration["TokenKey"] ??
-        throw new Exception("No JWT Key Found -program.cs");
+        throw new Exception("No JWT Key Found - program.cs");
 
         options.TokenValidationParameters = new TokenValidationParameters()
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey)),
+            IssuerSigningKey =
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey)),
             ValidateAudience = false,
             ValidateIssuer = false
         };
 
-        // SignalR sends JWT token in query string (?access_token=...)
-        // instead of Authorization header during WebSocket connection.
-        // This extracts the token from the query string for hub requests
-        // so ASP.NET Core can validate the user properly.
-
-        //“SignalR → token comes from query string, not header.”
-        //new JwtBearerEvents()
-        //{
-        //    OnMessageReceived = context =>
-        //    {
-        //        var accessToken = context.Request.Query["access_token"];
-
-        //        var path = context.HttpContext.Request.Path;
-
-        //        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
-        //        {
-        //            context.Token = accessToken;
-        //        }
-
-        //        return Task.CompletedTask;
-        //    }
-        //}; 
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
@@ -118,28 +102,24 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-
-//added custom policy-based authorization ,"RequireAdminRole" for admin and "ModeratePhotoRole" for admin and moderator,These policies can be used to restrict access to certain actions or controllers based on the user's role.
+// Authorization policies
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"))
-    .AddPolicy("ModeratePhotoRole", policy => policy.RequireRole("Admin", "Moderator"));
+    .AddPolicy("ModeratePhotoRole",
+        policy => policy.RequireRole("Admin", "Moderator"));
 
-
-//configure the HTTP request pipeline
+// Build app
 var app = builder.Build();
 
+// Middleware
 app.UseMiddleware<ExceptionMiddleware>();
-
-// app.UseDeveloperExceptionPage();
 
 app.UseCors(policy =>
     policy.AllowAnyHeader()
     .AllowAnyMethod()
     .AllowCredentials()
     .WithOrigins("http://localhost:4200", "https://localhost:4200")
-    // .AllowAnyOrigin()
-    //.WithOrigins("http://localhost:4200/", "https://localhost:4200/")
-    );
+);
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -150,9 +130,10 @@ app.UseStaticFiles();
 app.MapControllers();
 app.MapHub<PresenceHub>("hubs/presence");
 app.MapHub<MessageHub>("hubs/messages");
-//for any fallback (404) request
-app.MapFallbackToController("Index","Fallback");
 
+app.MapFallbackToController("Index", "Fallback");
+
+// Database migration + seeding
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 
@@ -160,13 +141,12 @@ try
 {
     var context = services.GetRequiredService<AppDbContext>();
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
+
     await context.Database.MigrateAsync();
 
-    //in the case of restarting server(app) connections data will be releases
     await context.Connections.ExecuteDeleteAsync();
 
     await Seed.SeedUsers(userManager);
-
 }
 catch (Exception ex)
 {

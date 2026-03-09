@@ -11,12 +11,12 @@ import {
 import { RegisterCreds } from '../../../types/user';
 import { AccountService } from '../../../core/services/account-service.service';
 import { TextInputComponent } from '../../../shared/components/text-input/text-input.component';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { NgxCaptchaModule } from 'ngx-captcha';
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, TextInputComponent,NgxCaptchaModule],
+  imports: [ReactiveFormsModule, TextInputComponent,NgxCaptchaModule,RouterModule],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })

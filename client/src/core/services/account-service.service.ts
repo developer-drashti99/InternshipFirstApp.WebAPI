@@ -131,4 +131,19 @@ export class AccountService {
       withCredentials: true,
     });
   }
+  sendEmail(email:string) {
+    return this.http.post(this.apiUrl + 'users/forgot-password', {email}, {
+      withCredentials: true,
+    });
+  }
+  verifyOTP(email:string,otp:string) {
+    return this.http.post(this.apiUrl + 'users/verify-otp', {email,otp}, {
+      withCredentials: true,
+    });
+  }
+  resetPassword(email:string,newPassword:string) {
+    return this.http.post(this.apiUrl + 'users/reset-password', {email,newPassword}, {
+      withCredentials: true,
+    });
+  }
 }

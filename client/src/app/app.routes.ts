@@ -17,14 +17,18 @@ import { ListComponent } from '../features/list/list-component.component';
 import { Admin } from '../features/admin/admin';
 import { adminGuard } from '../core/guards/admin-guard';
 import { ChangePasswordComponent } from '../features/change-password/change-password.component';
+import { ForgotPasswordComponent } from '../features/forgot-password/forgot-password.component';
+import { LoginComponent } from '../features/account/login/login.component';
 
 export const routes: Routes = [
   { path: '', component: Home },
-  { path: 'reg', component: Register },
+  { path: 'register', component: Register },
+  { path: 'login', component: LoginComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
   {
     path: '',
     children: [
-      { path: 'change-pwd', component: ChangePasswordComponent },
+      { path: 'change-password', component: ChangePasswordComponent },
       { path: 'members', component: MemberList },
       {
         path: 'members/:id',

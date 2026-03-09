@@ -1,46 +1,47 @@
 import {
   Paginator,
   PaginatorModule
-} from "./chunk-VI4CYV4L.js";
-import "./chunk-SO5PTMWQ.js";
-import "./chunk-5HARBMGP.js";
-import "./chunk-22JZ2DI3.js";
-import "./chunk-EC74BISO.js";
+} from "./chunk-FPMYSN7I.js";
+import "./chunk-U2AK5U7W.js";
+import "./chunk-NXBYG33F.js";
+import "./chunk-HKMDG57B.js";
+import "./chunk-YR5ZU46U.js";
+import "./chunk-LJ5UMYHC.js";
+import "./chunk-NACUJ2BE.js";
 import "./chunk-E3N65LJL.js";
-import "./chunk-G27WNPQF.js";
-import "./chunk-PS7NZDZ2.js";
-import "./chunk-E5XZVSSF.js";
+import "./chunk-25TUJX44.js";
+import "./chunk-AUUT64DU.js";
+import "./chunk-F7X2JUCA.js";
 import {
   SpinnerIcon
-} from "./chunk-TDFCVT6M.js";
+} from "./chunk-KDTYME4R.js";
 import {
   BaseComponent,
   PARENT_INSTANCE
-} from "./chunk-LTRWCZZA.js";
+} from "./chunk-YQWFNXMU.js";
 import {
   Bind
-} from "./chunk-XMHTEWJD.js";
+} from "./chunk-LP5FMFYZ.js";
 import {
   BaseStyle
-} from "./chunk-UWKVZRU5.js";
+} from "./chunk-HBFXX2PB.js";
 import {
   FilterService,
   Footer,
   Header,
   SharedModule,
   TranslationKeys
-} from "./chunk-AKNBGUIB.js";
+} from "./chunk-A2YVDWCC.js";
 import {
   p
 } from "./chunk-TIK557PQ.js";
 import "./chunk-YELIFGFI.js";
-import "./chunk-3FESJAPR.js";
 import {
   CommonModule,
   NgIf,
   NgTemplateOutlet,
   SlicePipe
-} from "./chunk-ZY2NYKVD.js";
+} from "./chunk-BFB3O5TG.js";
 import "./chunk-R6U7IGMG.js";
 import {
   ChangeDetectionStrategy,
@@ -94,8 +95,9 @@ import {
   ɵɵtemplate,
   ɵɵtext,
   ɵɵtextInterpolate1
-} from "./chunk-D5A67E6H.js";
-import "./chunk-RSS3ODKE.js";
+} from "./chunk-KCBPBHS2.js";
+import "./chunk-Y72XGDAT.js";
+import "./chunk-HSWANC32.js";
 import "./chunk-XSXJULYR.js";
 
 // node_modules/@primeuix/styles/dist/dataview/index.mjs
