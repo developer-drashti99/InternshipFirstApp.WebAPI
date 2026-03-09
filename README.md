@@ -1,107 +1,115 @@
-# ❤️ Dating App – .NET Web API & Angular
+# ❤️ Dating App – API-first Overview
 
-A full-stack **Dating Application** built using **ASP.NET Core Web API** for the backend and **Angular** for the frontend.
-This project is developed as part of an **internship** to demonstrate clean architecture, authentication, error handling, and frontend-backend integration.
+This repository contains a **Dating App backend** built with **ASP.NET Core Web API** (plus an Angular client in `/client`).
 
----
-
-## 🚀 Tech Stack
-
-### Backend
-
-* ASP.NET Core Web API
-* Entity Framework Core
-* SQLite (Development)
-* JWT Authentication
-* Middleware-based Global Exception Handling
-
-### Frontend
-
-* Angular (Standalone Components)
-* TypeScript
-* Angular Signals
-* HTTP Interceptors
-* Route Guards
-* Modular Feature-Based Structure
+A full-stack Dating Application built with ASP.NET Core Web API (backend) and Angular (frontend). Developed during an internship to demonstrate clean architecture, JWT authentication, centralized error handling, and real-world frontend–backend integration.
 
 ---
 
-## 📁 Project Structure
+📌 Overview
+This application allows users to register, authenticate, and browse member profiles securely using JWT-based authentication. The project follows industry-style folder structure, DTO-based APIs, and a feature-driven Angular architecture, making it easy to scale and maintain.
 
-```
-FirstApp.WebAPI
-│
-├── FirstApp.WebAPI/        # ASP.NET Core Web API
-│   ├── Controllers
-│   ├── DTOs
-│   ├── Data
-│   ├── Middleware
-│   ├── Services
-│   ├── Interfaces
-│   ├── Errors
-│   └── Extensions
-│
-├── client/                # Angular Frontend
-│   ├── src/
-│   │   ├── app
-│   │   ├── core
-│   │   ├── features
-│   │   ├── shared
-│   │   └── layout
-│   ├── public
-│   └── ssl
-│
-└── README.md
-```
+
 
 ---
 
-## ✨ Features
+## 🚀 Backend Tech Stack
 
-### 🔐 Authentication & Authorization
-
-* User Registration
-* Login with JWT token
-* Auth Guards for protected routes
-
-### 🧑‍🤝‍🧑 Dating App Functionality
-
-* Member List
-* Member Details
-* User Profiles
-* Default user avatars
-
-### ⚠️ Error Handling (Centralized)
-
-* Global HTTP Error Interceptor (Angular)
-* Custom Error Pages:
-
-  * 404 – Not Found
-  * 500 – Server Error
-* ASP.NET Core Exception Middleware
-* Standardized API error responses
-
-### 🧠 Architecture Highlights
-
-* DTO-based API communication
-* Separation of concerns
-* Reusable services and interceptors
-* Feature-based Angular structure
+- ASP.NET Core Web API
+- Entity Framework Core
+- SQL Server (configured via `DefaultConnection`)
+- ASP.NET Core Identity (users + roles)
+- JWT Authentication + refresh token cookie
+- SignalR (presence + messaging)
+- Cloudinary integration for photos
+- Global exception middleware
 
 ---
 
-## 🛠️ Getting Started
+## 📍 Base URL and Route Pattern
 
-### Prerequisites
+- Default local API URL (from launch profile): `https://localhost:5178`
+- Base controller route: `api/[controller]`
 
-* .NET SDK 7+
-* Node.js 18+
-* Angular CLI
-* Git
+So, for example:
+- `AccountController` → `/api/account/...`
+- `UsersController` → `/api/users/...`
+- `MessagesController` → `/api/messages/...`
 
 ---
 
-## ▶️ Run Backend (ASP.NET Core)
+## 🔐 Authentication & Account Endpoints (`/api/account`)
+
+- `POST /register` – Register new user and create member profile
+- `POST /login` – Login with email/password
+- `POST /refresh-token` – Get a new access token using refresh token cookie
+- `POST /logout` – Logout user and clear refresh token (authorized)
+
+### Auth notes
+- Access token is JWT.
+- Refresh token is stored in an HTTP-only secure cookie named `refreshToken`.
+
+---
+
+## 👤 User / Member Endpoints (`/api/users`)
+
+> Most endpoints require authorization unless marked anonymous.
+
+- `GET /` – Get members list (supports query params from `MemberParams`)
+- `GET /{id}` – Get member details by id
+- `PUT /` – Update current member profile
+- `POST /change-pwd` – Change current user password
+- `GET /{id}/photos` – Get photos for a member
+- `POST /add-photo` – Upload a photo
+- `PUT /set-main-photo/{photoId}` – Set profile/main photo
+- `DELETE /delete-photo/{photoId}` – Soft-delete a photo
+
+### Password reset flow (anonymous)
+- `POST /forgot-password` – Send OTP email
+- `POST /verify-otp` – Verify OTP
+- `POST /reset-password` – Reset password
+
+---
+
+## 💌 Message Endpoints (`/api/messages`)
+
+- `POST /` – Send a new message
+- `GET /` – Get paginated messages for current member (`MessageParams`)
+- `GET /thread/{recipientId}` – Get message thread with another member
+- `DELETE /{id}` – Delete message (sender/recipient soft delete behavior)
+- `GET /unread` – Get unread messages for current member
+
+---
+
+## ❤️ Like Endpoints (`/api/likes`)
+
+- `POST /{targetMemberId}` – Toggle like/unlike member
+- `GET /list` – Get liked member IDs for current member
+- `GET /` – Get paginated members by likes filter (`LikesParams`)
+
+---
+
+## 🛡️ Admin Endpoints (`/api/admin`)
+
+Requires policies/roles as configured in API:
+
+- `GET /users-with-roles` – Get users with roles (admin policy)
+- `POST /edit-roles/{userId}?roles=Admin,Moderator` – Edit user roles (admin policy)
+- `GET /photos-to-moderate` – List unapproved photos (moderator policy)
+- `POST /photos-to-moderate/{photoId}?action=Approve|Reject` – Moderate photo
+
+---
+
+## ⚡ SignalR Hubs
+
+- `/hubs/presence`
+- `/hubs/messages`
+
+JWT for SignalR is accepted via query string `access_token`.
+
+---
+
+## 🛠️ Run the API
 
 ```bash
 cd FirstApp.WebAPI
@@ -109,15 +117,21 @@ dotnet restore
 dotnet run
 ```
 
-API will run on:
+---
 
-```
-https://localhost:5178
-```
+## 📁 Key Backend Folders
+
+- `Controllers` – API endpoints
+- `DTOs` – Request/response models
+- `Data` – EF Core context, repositories, migrations, seeding
+- `Services` – Token, photo, email services
+- `SignalR` – Hub implementations
+- `Middleware` – Global exception handling
+- `Helpers` – params, pagination, cross-cutting helpers
 
 ---
 
-## ▶️ Run Frontend (Angular)
+## 🧪 Optional: Run Angular Client
 
 ```bash
 cd client
@@ -125,51 +139,12 @@ npm install
 ng serve
 ```
 
-Frontend will run on:
-
-```
-http://localhost:4200
-```
-
----
-
-## 🔄 API & Frontend Integration
-
-* Angular communicates with Web API using `HttpClient`
-* JWT token is attached using an HTTP Interceptor
-* Errors are handled centrally and routed to proper error pages
-
----
-
-## 🧪 Testing Error Handling
-
-You can test error handling using:
-
-* Invalid routes → **404 page**
-* API exceptions → **Server Error page**
-* Unauthorized access → **Auth Guard redirect**
-
----
-
-## 📌 Internship Notes
-
-This project demonstrates:
-
-* Real-world full-stack development
-* Proper Git usage and commit practices
-* Clean and maintainable code structure
-* Industry-standard error handling patterns
+Client URL: `http://localhost:4200`
 
 ---
 
 ## 👩‍💻 Author
 
-**Drashti**
-Intern – Full Stack Developer
+**Drashti**  
+Intern – Full Stack Developer  
 GitHub: [developer-drashti99](https://github.com/developer-drashti99)
-
----
-
-## 📜 License
-
-This project is created for **learning and internship purposes**.
