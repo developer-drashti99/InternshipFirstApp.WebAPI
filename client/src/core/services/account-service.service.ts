@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { tap } from 'rxjs';
-import { User, LoginCreds, RegisterCreds, ApiResponse, ChangePassword } from '../../types/user';
+import { User, LoginCreds, RegisterCreds, ChangePassword } from '../../types/user';
 import { environment } from '../../environments/environment';
 import { LikesService } from './likes-service.service';
 import { PresenceService } from './presence-service.service';
 import { HubConnectionState } from '@microsoft/signalr';
 import { HttpHeaders } from '@angular/common/http';
+import { ApiResponse } from '../../types/api-response';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
