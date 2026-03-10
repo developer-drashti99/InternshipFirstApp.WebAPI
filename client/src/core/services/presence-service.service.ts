@@ -43,14 +43,18 @@ export class PresenceService {
       this.onlineUsers.set(userIds);
     });
 
-    this.hubConnection.on('NewMessageReceived', (message: Message) => {
-      this.toast.info(
-        message.senderDisplayName + ' has sent you a new message',
-        10000,
-        message.senderImageUrl,
-        `/members/${message.senderId}/messages`,
-      );
-    });
+  this.hubConnection.on('NewMessageReceived', (message: Message) => {
+
+  this.toast.info(
+    message.senderDisplayName + ' has sent you a new message',
+    10000,
+    message.senderImageUrl,
+    `/members/${message.senderId}/messages`,
+  );
+
+  this.notificationService.add(message);
+
+});
 
     //  for notifying in navbar
     this.hubConnection.on('NewMessageReceived', (message: Message) => {

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { tap } from 'rxjs';
-import { User, LoginCreds, RegisterCreds, AuthUser, ChangePassword } from '../../types/user';
+import { User, LoginCreds, RegisterCreds, ApiResponse, ChangePassword } from '../../types/user';
 import { environment } from '../../environments/environment';
 import { LikesService } from './likes-service.service';
 import { PresenceService } from './presence-service.service';
@@ -17,10 +17,12 @@ export class AccountService {
   public currentUser = signal<User | null>(null);
   public registerMode = signal(false);
   private apiUrl = environment.apiUrl;
+
   isAdmin = computed(() => {
     const roles = this.currentUser()?.roles || [];
     return roles.includes('Admin');
   });
+
   isNormalUser(): boolean {
     if (!this.currentUser()) return false;
 
@@ -32,13 +34,13 @@ export class AccountService {
 
   register(credentials: RegisterCreds) {
     return this.http
-      .post<User>(this.apiUrl + 'account/register', credentials, {
+      .post<ApiResponse<User>>(this.apiUrl + 'account/register', credentials, {
         withCredentials: true,
         headers: new HttpHeaders().set('X-Skip-Loader', 'true'),
       })
       .pipe(
-        tap((user) => {
-          this.setcurrentUser(user);
+        tap((response) => {
+          this.setcurrentUser(response.data);
         }),
       );
   }
@@ -46,14 +48,14 @@ export class AccountService {
   login(credentials: LoginCreds) {
     // ,{withCredentials:true} for getting refreshtoken
     return this.http
-      .post<User>(this.apiUrl + 'account/login', credentials, {
+      .post<ApiResponse<User>>(this.apiUrl + 'account/login', credentials, {
         withCredentials: true,
         headers: new HttpHeaders().set('X-Skip-Loader', 'true'),
       })
       .pipe(
-        tap((user) => {
-          if (user) {
-            this.setcurrentUser(user);
+        tap((response) => {
+          if (response.data) {
+            this.setcurrentUser(response.data);
             this.startTokenRefreshInterval();
           }
         }),
@@ -61,7 +63,7 @@ export class AccountService {
   }
 
   refreshToken() {
-    return this.http.post<User>(
+    return this.http.post<ApiResponse<User>>(
       this.apiUrl + 'account/refresh-token',
       {},
       { withCredentials: true },
@@ -72,10 +74,10 @@ export class AccountService {
     setInterval(
       () => {
         this.http
-          .post<User>(this.apiUrl + 'account/refresh-token', {}, { withCredentials: true })
+          .post<ApiResponse<User>>(this.apiUrl + 'account/refresh-token', {}, { withCredentials: true })
           .subscribe({
-            next: (user) => {
-              this.setcurrentUser(user);
+            next: (response) => {
+              this.setcurrentUser(response.data);
             },
             error: () => {
               this.logout();
@@ -118,31 +120,36 @@ export class AccountService {
         },
       });
   }
+
   private getRolesFromToken(user: User): string[] {
     const payload = user.token.split('.')[1];
     const decoded = atob(payload); //decode in base64
     const jsonPayload = JSON.parse(decoded);
+
     // return one role or multiple roles as array
     return Array.isArray(jsonPayload.role) ? jsonPayload.role : [jsonPayload.role];
   }
 
   changePassword(changePassword: ChangePassword) {
-    return this.http.post<ChangePassword>(this.apiUrl + 'users/change-pwd', changePassword, {
+    return this.http.post<ApiResponse<string>>(this.apiUrl + 'users/change-pwd', changePassword, {
       withCredentials: true,
     });
   }
-  sendEmail(email:string) {
-    return this.http.post(this.apiUrl + 'users/forgot-password', {email}, {
+
+  sendEmail(email: string) {
+    return this.http.post<ApiResponse<string>>(this.apiUrl + 'account/forgot-password', { email }, {
       withCredentials: true,
     });
   }
-  verifyOTP(email:string,otp:string) {
-    return this.http.post(this.apiUrl + 'users/verify-otp', {email,otp}, {
+
+  verifyOTP(email: string, otp: string) {
+    return this.http.post<ApiResponse<string>>(this.apiUrl + 'account/verify-otp', { email, otp }, {
       withCredentials: true,
     });
   }
-  resetPassword(email:string,newPassword:string) {
-    return this.http.post(this.apiUrl + 'users/reset-password', {email,newPassword}, {
+
+  resetPassword(email: string, newPassword: string) {
+    return this.http.post<ApiResponse<string>>(this.apiUrl + 'account/reset-password', { email, newPassword }, {
       withCredentials: true,
     });
   }

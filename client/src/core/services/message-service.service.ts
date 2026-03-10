@@ -6,6 +6,8 @@ import { PaginatedResult } from '../../types/pagination';
 import { Message } from '../../types/message';
 import { AccountService } from './account-service.service';
 import { NotificationService } from './notification-service.service';
+import { ApiResponse } from '../../types/api-response';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -15,6 +17,7 @@ export class MessageService {
   private http = inject(HttpClient);
   private accountService = inject(AccountService);
   private hubConnection?: HubConnection;
+
   messageThread = signal<Message[]>([]);
   private notificationService = inject(NotificationService);
 
@@ -23,6 +26,7 @@ export class MessageService {
     if (!currentUser) return;
 
     console.log('current ' + currentUser.displayName);
+
     this.hubConnection = new HubConnectionBuilder()
       .withUrl(this.hubUrl + 'messages?userId=' + otherUserId, {
         accessTokenFactory: () => currentUser.token,
@@ -38,9 +42,11 @@ export class MessageService {
           ...message,
           currentUserSender: message.senderId !== otherUserId,
         })),
-      );  
+      );
+
       this.notificationService.removeBySender(otherUserId);
     });
+
     this.hubConnection.on('NewMessage', (message: Message) => {
       message.currentUserSender = message.senderId === currentUser.id;
       this.messageThread.update((messages) => [...messages, message]);
@@ -58,20 +64,31 @@ export class MessageService {
       .append('pageSize', pageSize)
       .append('container', container);
 
-    return this.http.get<PaginatedResult<Message>>(this.siteUrl + 'messages', { params });
+    return this.http.get<ApiResponse<PaginatedResult<Message>>>(
+      this.siteUrl + 'messages',
+      { params }
+    );
   }
+
   getMessagesThread(memberId: string) {
-    return this.http.get<Message[]>(this.siteUrl + 'messages/thread/' + memberId);
+    return this.http.get<ApiResponse<Message[]>>(
+      this.siteUrl + 'messages/thread/' + memberId
+    );
   }
+
   sendMessage(recipientId: string, content: string) {
-    // return this.http.post<Message>(this.siteUrl + 'messages', { recipientId, content });
     return this.hubConnection?.invoke('SendMessage', { recipientId, content });
   }
+
   deleteMessage(id: string) {
-    return this.http.delete(this.siteUrl + 'messages/' + id);
+    return this.http.delete<ApiResponse<string>>(
+      this.siteUrl + 'messages/' + id
+    );
   }
 
   getUnreadMessages() {
-    return this.http.get<Message[]>(this.siteUrl + 'messages/unread');
+    return this.http.get<ApiResponse<Message[]>>(
+      this.siteUrl + 'messages/unread'
+    );
   }
 }
